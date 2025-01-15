@@ -4,7 +4,7 @@
 
 :root {
   /* 폰트 스타일 정의 */
-  --font-sans: "Prentendard", sans-serif;
+  --font-sans: 'Prentendard', sans-serif;
 
   /* 폰트 크기 정의 */
   --font--2xs: 12px;
