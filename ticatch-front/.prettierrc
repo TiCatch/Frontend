@@ -1,9 +1,9 @@
 {
   "singleQuote": true,
-  "singleAttributePerLine": true,
+  "singleAttributePerLine": false,
   "bracketSameLine": true,
   "endOfLine": "lf",
-  "trailingComma": "none",
-  "arrowParens": "avoid",
+  "trailingComma": "all",
+  "arrowParens": "always",
   "plugins": ["prettier-plugin-tailwindcss"]
 }
