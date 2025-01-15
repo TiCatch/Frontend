@@ -3,19 +3,68 @@
 @tailwind utilities;
 
 :root {
+  /* 폰트 스타일 정의 */
+  --font-sans: "Prentendard", sans-serif;
+
+  /* 폰트 크기 정의 */
+  --font--2xs: 12px;
+  --font-xs: 14px;
+  --font-s: 16px;
+  --font-m: 18px;
+  --font-l: 21px;
+  --font-xl: 24px;
+  --font-2xl: 36px;
+  --font-3xl: 48px;
+  --font-4xl: 60px;
+  --font-5xl: 72px;
+
+  /* 색상 정의 */
   --background: #ffffff;
-  --foreground: #171717;
+  --color-primary: #c04cfd;
+  --color-black: #424242;
+  --color-sub1: #931f1d;
+  --color-sub2: #f07167;
+  --color-sub3: #ffbe0b;
+  --color-sub3-50: #ffd371;
+  --color-sub4: #8cc084;
+  --color-sub4-50: #b3d5ac;
+  --color-sub5: #29bf12;
+  --color-sub6: #3396ff;
+  --color-sub7: #134074;
+
+  --purple-50: #f9edff;
+  --purple-100: #ebc8fe;
+  --purple-200: #e2adfe;
+  --purple-300: #d587fe;
+  --purple-400: #cd70fd;
+  --purple-500: #c04cfd;
+  --purple-600: #af45e6;
+  --purple-700: #8836b4;
+  --purple-800: #6a2a8b;
+  --purple-900: #51206a;
+
+  --gray-50: #f2f2f2;
+  --gray-100: #d5d5d5;
+  --gray-200: #c1c1c1;
+  --gray-300: #a5a5a5;
+  --gray-400: #939393;
+  --gray-500: #787878;
+  --gray-600: #6d6d6d;
+  --gray-700: #555555;
+  --gray-800: #424242;
+
+  /* 그림자 속성 정의 */
+  --simple-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #424242;
+    --color-black: #ffffff;
   }
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--color-black);
+  font-family: var(--font-sans);
 }
