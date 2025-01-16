@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import axiosClient from "@/lib/axiosClient";
+import axiosClient from "lib/axiosClient";
 
 export const runtime = "nodejs"; // Node.js 환경에서 실행
 
