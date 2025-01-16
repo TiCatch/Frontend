@@ -25,5 +25,5 @@ export default function Home() {
       <button onClick={handleTrigger}>가보자</button>
       <button onClick={handleStop}>멈추자</button>
     </div>
-  );
+  )
 }
