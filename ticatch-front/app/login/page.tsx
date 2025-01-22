@@ -1,5 +1,3 @@
-import React from 'react';
-
 const LoginPage = () => {
   const KAKAO_CLIENT_ID = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID as string;
   const KAKAO_REDIRECT_URI = process.env
