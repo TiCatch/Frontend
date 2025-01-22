@@ -53,6 +53,15 @@
   --gray-700: #555555;
   --gray-800: #424242;
 
+  --blackTip-4: rgba(0, 0, 0, 0.04);
+  --blackTip-8: rgba(0, 0, 0, 0.08);
+  --blackTip-12: rgba(0, 0, 0, 0.12);
+  --blackTip-14: rgba(0, 0, 0, 0.14);
+  --blackTip-18: rgba(0, 0, 0, 0.18);
+  --blackTip-20: rgba(0, 0, 0, 0.2);
+  --blackTip-28: rgba(0, 0, 0, 0.28);
+  --blackTip-60: rgba(0, 0, 0, 0.6);
+
   /* 그림자 속성 정의 */
   --simple-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
 }
