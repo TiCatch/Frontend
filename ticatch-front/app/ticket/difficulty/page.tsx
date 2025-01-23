@@ -18,19 +18,34 @@ export default function DifficultyPage() {
         <button
           onClick={() => handleSelect('Easy')}
           className="transition-transform hover:scale-105">
-          <Image src="/images/EasyCard.svg" alt="Easy" />
+          <Image
+            src="/images/EasyCard.svg"
+            alt="Easy"
+            width={200}
+            height={200}
+          />
         </button>
 
         <button
           onClick={() => handleSelect('Normal')}
           className="transition-transform hover:scale-105">
-          <Image src="/images/NormalCard.svg" alt="Normal" />
+          <Image
+            src="/images/NormalCard.svg"
+            alt="Normal"
+            width={200}
+            height={200}
+          />
         </button>
 
         <button
           onClick={() => handleSelect('Hard')}
           className="transition-transform hover:scale-105">
-          <Image src="/images/HardCard.svg" alt="Hard" />
+          <Image
+            src="/images/HardCard.svg"
+            alt="Hard"
+            width={200}
+            height={200}
+          />
         </button>
       </div>
     </div>
