@@ -62,6 +62,15 @@ export default {
       boxShadow: {
         simple: 'var(--simple-shadow)',
       },
+      keyframes: {
+        blink: {
+          '0%, 100%': { backgroundColor: 'var(--gray-400)' },
+          '50%': { backgroundColor: 'var(--purple-400)' },
+        },
+      },
+      animation: {
+        blink: 'blink 1.5s infinite',
+      },
     },
   },
   plugins: [],
