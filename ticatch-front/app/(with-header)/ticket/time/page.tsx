@@ -56,16 +56,18 @@ export default function TimePage() {
         <div className="flex w-full items-center justify-between px-[113px] pt-[200px]">
           <button
             onClick={() => setStartTime((prev) => Math.max(1, prev - 1))}
-            className="text-5xl">
+            className={`text-5xl ${startTime === 1 && 'cursor-not-allowed opacity-50'}`}
+            disabled={startTime === 1}>
             -
           </button>
           <div className="flex gap-2 text-5xl">
-            <span>{startTime}</span>
+            <span className="text-sub-4">{startTime}</span>
             <span>분</span>
           </div>
           <button
             onClick={() => setStartTime((prev) => Math.min(5, prev + 1))}
-            className="text-5xl">
+            className={`text-5xl ${startTime === 5 && 'cursor-not-allowed opacity-50'}`}
+            disabled={startTime === 5}>
             +
           </button>
         </div>
