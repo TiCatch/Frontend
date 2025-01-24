@@ -11,40 +11,40 @@ export default function DifficultyPage() {
   };
 
   return (
-    <div className="flex flex-col items-center gap-[104px]">
+    <div className="mt-[150px] flex flex-col items-center gap-[104px]">
       <span className="text-2xl font-bold">난이도 선택</span>
 
-      <div className="flex gap-[56px]">
+      <div className="flex w-full justify-between">
         <button
-          onClick={() => handleSelect('Easy')}
+          onClick={() => handleSelect('EASY')}
           className="transition-transform hover:scale-105">
           <Image
             src="/images/EasyCard.svg"
-            alt="Easy"
-            width={200}
-            height={200}
+            alt="EASY"
+            width={309}
+            height={392}
           />
         </button>
 
         <button
-          onClick={() => handleSelect('Normal')}
+          onClick={() => handleSelect('NORMAL')}
           className="transition-transform hover:scale-105">
           <Image
             src="/images/NormalCard.svg"
-            alt="Normal"
-            width={200}
-            height={200}
+            alt="NORMAL"
+            width={309}
+            height={392}
           />
         </button>
 
         <button
-          onClick={() => handleSelect('Hard')}
+          onClick={() => handleSelect('HARD')}
           className="transition-transform hover:scale-105">
           <Image
             src="/images/HardCard.svg"
-            alt="Hard"
-            width={200}
-            height={200}
+            alt="HARD"
+            width={309}
+            height={392}
           />
         </button>
       </div>
