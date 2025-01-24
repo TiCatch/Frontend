@@ -2,12 +2,13 @@
 
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { Level } from 'types/ticket';
 
-export default function DifficultyPage() {
+export default function LevelPage() {
   const router = useRouter();
 
-  const handleSelect = (difficulty: string) => {
-    router.push(`/ticket/time?difficulty=${difficulty}`);
+  const handleSelect = (level: Level) => {
+    router.push(`/ticket/time?level=${level}`);
   };
 
   return (

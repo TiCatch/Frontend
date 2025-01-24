@@ -10,21 +10,21 @@ export default function TimePage() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const difficulty = searchParams.get('difficulty');
-  const difficultyImages: { [key: string]: string } = {
+  const level = searchParams.get('level');
+  const levelImages: { [key: string]: string } = {
     EASY: '/images/EasyCard.svg',
     NORMAL: '/images/NormalCard.svg',
     HARD: '/images/HardCard.svg',
   };
 
-  if (!difficulty || !difficultyImages[difficulty]) {
+  if (!level || !levelImages[level]) {
     notFound();
   }
 
   const [startTime, setStartTime] = useState<number>(3);
 
   const handleClose = () => {
-    router.push('/ticket/difficulty');
+    router.push('/ticket/level');
   };
 
   const handleSubmit = async () => {
@@ -34,7 +34,7 @@ export default function TimePage() {
       const ticketingTime = currentTime.toISOString();
 
       const response = await axiosClient.post('/ticket/new', {
-        ticketingLevel: difficulty,
+        ticketingLevel: level,
         ticketingTime: ticketingTime,
       });
 
@@ -52,12 +52,7 @@ export default function TimePage() {
     <div className="flex w-full gap-[56px]">
       <div className="mt-[150px] flex flex-col items-center gap-[104px]">
         <span className="text-2xl font-bold">난이도 선택</span>
-        <Image
-          src={difficultyImages[difficulty]}
-          alt={difficulty}
-          width={309}
-          height={392}
-        />
+        <Image src={levelImages[level]} alt={level} width={309} height={392} />
       </div>
       <div
         className="mt-[50px] flex-grow bg-gray-50"
