@@ -55,6 +55,7 @@ export default {
       borderRadius: {
         12: '12px',
       },
+      container: { center: true, screens: { sm: '100%', md: '1040px' } },
     },
   },
   plugins: [],
