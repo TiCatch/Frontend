@@ -12,9 +12,9 @@ export default function TimePage() {
 
   const difficulty = searchParams.get('difficulty');
   const difficultyImages: { [key: string]: string } = {
-    Easy: '/images/EasyCard.svg',
-    Normal: '/images/NormalCard.svg',
-    Hard: '/images/HardCard.svg',
+    EASY: '/images/EasyCard.svg',
+    NORMAL: '/images/NormalCard.svg',
+    HARD: '/images/HardCard.svg',
   };
 
   if (!difficulty || !difficultyImages[difficulty]) {
