@@ -7,6 +7,7 @@ import CommonButton from '@components/button/CommonButton';
 import { axiosClient } from 'lib';
 import { levelImage } from '@constants/imagePath';
 import { Level } from 'types';
+import { createTicket } from 'api';
 
 export default function TimePage() {
   const searchParams = useSearchParams();
@@ -26,22 +27,9 @@ export default function TimePage() {
 
   const handleSubmit = async () => {
     try {
-      const currentTime = new Date();
-      currentTime.setMinutes(currentTime.getMinutes() + startTime);
-      const ticketingTime = currentTime.toISOString();
-
-      const response = await axiosClient.post('/ticket/new', {
-        ticketingLevel: level,
-        ticketingTime: ticketingTime,
-      });
-
-      if (response.status === 200) {
-        console.log('티켓팅 생성 완료');
-      } else {
-        throw new Error('서버 오류');
-      }
+      await createTicket(level, startTime);
     } catch (error) {
-      console.log('티켓팅 생성 실패');
+      console.error('티켓팅 생성 중 문제가 발생했습니다.', error);
     }
   };
 
