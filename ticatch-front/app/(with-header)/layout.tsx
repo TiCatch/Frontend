@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { headerImage } from '@constants/imagePath';
 
 export default function HeaderLayout({
   children,
@@ -8,7 +9,7 @@ export default function HeaderLayout({
   return (
     <div className="container">
       <div className="flex justify-between py-5">
-        <Image src="/images/Header.svg" alt="Header" width={128} height={24} />
+        <Image src={headerImage} alt="Header" width={128} height={24} />
         <span>로그아웃</span>
       </div>
       {children}

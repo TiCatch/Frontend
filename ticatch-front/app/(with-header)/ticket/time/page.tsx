@@ -5,19 +5,16 @@ import { useState } from 'react';
 import Image from 'next/image';
 import CommonButton from '@components/button/CommonButton';
 import { axiosClient } from 'lib';
+import { levelImage } from '@constants/imagePath';
+import { Level } from 'types';
 
 export default function TimePage() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const level = searchParams.get('level');
-  const levelImages: { [key: string]: string } = {
-    EASY: '/images/EasyCard.svg',
-    NORMAL: '/images/NormalCard.svg',
-    HARD: '/images/HardCard.svg',
-  };
+  const level = searchParams.get('level') as Level;
 
-  if (!level || !levelImages[level]) {
+  if (!level) {
     notFound();
   }
 
@@ -52,7 +49,7 @@ export default function TimePage() {
     <div className="flex w-full gap-[56px]">
       <div className="mt-[150px] flex flex-col items-center gap-[104px]">
         <span className="text-2xl font-bold">난이도 선택</span>
-        <Image src={levelImages[level]} alt={level} width={309} height={392} />
+        <Image src={levelImage[level]} alt={level} width={309} height={392} />
       </div>
       <div
         className="mt-[50px] flex-grow bg-gray-50"

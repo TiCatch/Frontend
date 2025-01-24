@@ -22,6 +22,7 @@
     "paths": {
       "@app/*": ["app/*"],
       "@components/*": ["components/*"],
+      "@constants/*": ["constants/*"],
       "@features/*": ["features/*"],
       "@hooks/*": ["hooks/*"],
       "@queries/*": ["queries/*"],

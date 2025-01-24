@@ -2,7 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Level } from 'types/ticket';
+import { Level } from 'types';
+import { levelImage } from '@constants/imagePath';
 
 export default function LevelPage() {
   const router = useRouter();
@@ -19,19 +20,14 @@ export default function LevelPage() {
         <button
           onClick={() => handleSelect('EASY')}
           className="transition-transform hover:scale-105">
-          <Image
-            src="/images/EasyCard.svg"
-            alt="EASY"
-            width={309}
-            height={392}
-          />
+          <Image src={levelImage.EASY} alt="EASY" width={309} height={392} />
         </button>
 
         <button
           onClick={() => handleSelect('NORMAL')}
           className="transition-transform hover:scale-105">
           <Image
-            src="/images/NormalCard.svg"
+            src={levelImage.NORMAL}
             alt="NORMAL"
             width={309}
             height={392}
@@ -41,12 +37,7 @@ export default function LevelPage() {
         <button
           onClick={() => handleSelect('HARD')}
           className="transition-transform hover:scale-105">
-          <Image
-            src="/images/HardCard.svg"
-            alt="HARD"
-            width={309}
-            height={392}
-          />
+          <Image src={levelImage.HARD} alt="HARD" width={309} height={392} />
         </button>
       </div>
     </div>
