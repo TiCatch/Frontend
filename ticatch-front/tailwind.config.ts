@@ -62,6 +62,10 @@ export default {
       boxShadow: {
         simple: 'var(--simple-shadow)',
       },
+      borderRadius: {
+        12: '12px',
+      },
+      container: { center: true, screens: { sm: '100%', md: '1040px' } },
       keyframes: {
         blink: {
           '0%, 100%': { backgroundColor: 'var(--gray-400)' },
