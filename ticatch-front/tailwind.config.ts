@@ -68,7 +68,7 @@ export default {
       container: { center: true, screens: { sm: '100%', md: '1040px' } },
       keyframes: {
         blink: {
-          '0%, 100%': { backgroundColor: 'var(--gray-400)' },
+          '0%, 100%': { backgroundColor: 'var(--gray-500)' },
           '50%': { backgroundColor: 'var(--purple-400)' },
         },
       },
