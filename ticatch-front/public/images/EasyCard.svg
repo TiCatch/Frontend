@@ -16,13 +16,13 @@
 <path d="M232 163C232 172.389 224.389 180 215 180C205.611 180 198 172.389 198 163C198 153.611 205.611 146 215 146C224.389 146 232 153.611 232 163Z" fill="#FF0066" fill-opacity="0.3"/>
 </g>
 <g filter="url(#filter5_df_120_1946)">
-<path d="M101 169H210C210 196.586 182.63 219 155.74 219C127.41 219 102.441 197.161 101 169Z" fill="url(#paint1_linear_120_1946)"/>
-</g>
-<g filter="url(#filter6_df_120_1946)">
 <path d="M201.75 126L179 140.104L205 153" stroke="#424242" stroke-width="6" stroke-linecap="round"/>
 </g>
-<g filter="url(#filter7_df_120_1946)">
+<g filter="url(#filter6_df_120_1946)">
 <path d="M107.419 126L130 141.014L105 154" stroke="#424242" stroke-width="6" stroke-linecap="round"/>
+</g>
+<g filter="url(#filter7_df_120_1946)">
+<path d="M101 169H210C210 196.586 182.63 219 155.74 219C127.41 219 102.441 197.161 101 169Z" fill="url(#paint1_linear_120_1946)"/>
 </g>
 </g>
 <defs>
@@ -97,7 +97,7 @@
 <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
 <feGaussianBlur stdDeviation="10" result="effect1_foregroundBlur_120_1946"/>
 </filter>
-<filter id="filter5_df_120_1946" x="97" y="168.5" width="117" height="58.5" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<filter id="filter5_df_120_1946" x="168.836" y="122.5" width="43.165" height="41.5012" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
 <feOffset dy="4"/>
@@ -108,7 +108,7 @@
 <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_120_1946" result="shape"/>
 <feGaussianBlur stdDeviation="0.25" result="effect2_foregroundBlur_120_1946"/>
 </filter>
-<filter id="filter6_df_120_1946" x="168.836" y="122.5" width="43.165" height="41.5012" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<filter id="filter6_df_120_1946" x="97.999" y="122.5" width="41.8975" height="42.501" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
 <feOffset dy="4"/>
@@ -119,7 +119,7 @@
 <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_120_1946" result="shape"/>
 <feGaussianBlur stdDeviation="0.25" result="effect2_foregroundBlur_120_1946"/>
 </filter>
-<filter id="filter7_df_120_1946" x="97.999" y="122.5" width="41.8975" height="42.501" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<filter id="filter7_df_120_1946" x="97" y="168.5" width="117" height="58.5" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
 <feFlood flood-opacity="0" result="BackgroundImageFix"/>
 <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
 <feOffset dy="4"/>
@@ -135,8 +135,8 @@
 <stop offset="1" stop-color="#D6CE75"/>
 </linearGradient>
 <linearGradient id="paint1_linear_120_1946" x1="155.5" y1="169" x2="155.5" y2="219" gradientUnits="userSpaceOnUse">
-<stop offset="1" stop-color="#D26262"/>
 <stop stop-color="#582929"/>
+<stop offset="1" stop-color="#D26262"/>
 </linearGradient>
 </defs>
 </svg>
