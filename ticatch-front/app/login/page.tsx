@@ -5,8 +5,8 @@ import { isTokenExpired } from 'api';
 import Link from 'next/link';
 import Image from 'next/image';
 
-import logo from 'public/logo.svg';
-import kakao from 'public/kakao.svg';
+import { logoImage } from '@constants/imagePath';
+import { kakaoImage } from '@constants/imagePath';
 
 const LoginPage = () => {
   const KAKAO_CLIENT_ID = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID as string;
@@ -27,7 +27,7 @@ const LoginPage = () => {
       <div className="flex items-end gap-[4px] text-2xl text-gray-500">
         {/* TiCath 로고. 클릭 시 메인으로 이동 */}
         <Link href="/" className="relative mr-[4px] h-[36px] w-[191px]">
-          <Image src={logo} alt="TiCatch" fill className="object-cover" />
+          <Image src={logoImage} alt="TiCatch" fill className="object-cover" />
         </Link>
         를 사용하기 위해 로그인하세요
         <div className="mb-[4px] h-[8px] w-[8px] animate-blink rounded-full" />
@@ -40,7 +40,7 @@ const LoginPage = () => {
           className="relative mt-[16px] flex h-[80px] w-[480px] items-center rounded-[16px] bg-[#fee500] px-[32px] py-[28px] shadow-simple">
           {/* 카카오 로고 */}
           <Image
-            src={kakao}
+            src={kakaoImage}
             alt="kakao icon"
             width={36}
             height={34}
