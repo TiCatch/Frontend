@@ -49,7 +49,7 @@ const LoginPage = () => {
           <div className="flex-1 text-center text-xl text-black">
             카카오로 1초만에 로그인/회원가입
           </div>
-          <div className="absolute left-0 top-0 h-[80px] w-[480px] cursor-pointer rounded-[16px] bg-blackTip-0.04 opacity-0 transition-opacity duration-200 hover:opacity-100"></div>
+          <div className="absolute left-0 top-0 h-[80px] w-[480px] rounded-[16px] bg-blackTip-0.04 opacity-0 transition-opacity duration-200 hover:opacity-100"></div>
         </a>
       </div>
     </div>
