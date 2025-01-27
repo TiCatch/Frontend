@@ -48,6 +48,16 @@ export default {
           6: 'var(--color-sub6)',
           7: 'var(--color-sub7)',
         },
+        blackTip: {
+          0.04: 'var(--blackTip-4)',
+          0.08: 'var(--blackTip-8)',
+          0.12: 'var(--blackTip-12)',
+          0.14: 'var(--blackTip-14)',
+          0.18: 'var(--blackTip-18)',
+          0.2: 'var(--blackTip-20)',
+          0.28: 'var(--blackTip-28)',
+          0.6: 'var(--blackTip-60)',
+        },
       },
       boxShadow: {
         simple: 'var(--simple-shadow)',
@@ -56,6 +66,15 @@ export default {
         12: '12px',
       },
       container: { center: true, screens: { sm: '100%', md: '1040px' } },
+      keyframes: {
+        blink: {
+          '0%, 100%': { backgroundColor: 'var(--gray-500)' },
+          '50%': { backgroundColor: 'var(--purple-400)' },
+        },
+      },
+      animation: {
+        blink: 'blink 1.5s infinite',
+      },
     },
   },
   plugins: [],

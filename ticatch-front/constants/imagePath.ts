@@ -4,4 +4,6 @@ export const levelImage = {
   HARD: '/images/HardCard.svg',
 };
 
-export const headerImage = '/images/Header.svg';
+export const logoImage = '/images/Logo.svg';
+
+export const kakaoImage = '/images/Kakao.svg';
