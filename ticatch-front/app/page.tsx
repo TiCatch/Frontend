@@ -6,9 +6,9 @@ export default function Home() {
   return (
     <div className="relative flex h-screen flex-col items-center justify-center gap-[72px] overflow-hidden">
       {/* 로고 이미지 */}
-      <Link href="/" className="relative h-[64px] w-[343px]">
+      <div className="relative h-[64px] w-[343px]">
         <Image src={logoImage} alt="TiCatch" fill className="object-cover" />
-      </Link>
+      </div>
 
       {/* 티켓팅 이동 버튼 */}
       <Link href="/ticket/level" className="group relative">
