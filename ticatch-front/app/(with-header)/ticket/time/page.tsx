@@ -1,22 +1,22 @@
 'use client';
 
-import { useSearchParams, useRouter, notFound } from 'next/navigation';
-import { useState } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useState, Suspense } from 'react';
 import Image from 'next/image';
 import CommonButton from '@components/button/CommonButton';
-import { axiosClient } from 'lib';
 import { levelImage } from '@constants/imagePath';
 import { Level } from 'types';
 import { createTicket } from 'api';
 
-export default function TimePage() {
+function TimeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const level = searchParams.get('level') as Level;
 
   if (!level) {
-    notFound();
+    router.push('/ticket/level');
+    return null;
   }
 
   const [startTime, setStartTime] = useState<number>(3);
@@ -80,5 +80,13 @@ export default function TimePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function TimePage() {
+  return (
+    <Suspense fallback={<div>로딩 중...</div>}>
+      <TimeContent />
+    </Suspense>
   );
 }
