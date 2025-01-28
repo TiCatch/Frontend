@@ -61,6 +61,7 @@ export default {
       },
       boxShadow: {
         simple: 'var(--simple-shadow)',
+        inner: 'var(--inner-shadow)',
       },
       borderRadius: {
         12: '12px',
@@ -71,9 +72,23 @@ export default {
           '0%, 100%': { backgroundColor: 'var(--gray-500)' },
           '50%': { backgroundColor: 'var(--purple-400)' },
         },
+        shine: {
+          '0%': {
+            transform: 'translateY(100%) translateX(-65%) rotate(-45deg)',
+          },
+          '100%': {
+            transform: 'translateY(100%) translateX(10%) rotate(-45deg)',
+          },
+        },
+        showText: {
+          '0%': { opacity: '0%' },
+          '100%': { opacity: '100%' },
+        },
       },
       animation: {
         blink: 'blink 1.5s infinite',
+        shine: 'shine 2s infinite ease',
+        'show-text': 'showText .5s ease-out forwards 4s',
       },
     },
   },
