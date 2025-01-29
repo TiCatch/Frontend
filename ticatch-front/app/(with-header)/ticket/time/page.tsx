@@ -5,14 +5,14 @@ import { useState, Suspense } from 'react';
 import Image from 'next/image';
 import CommonButton from '@components/button/CommonButton';
 import { levelImage } from '@constants/imagePath';
-import { Level } from 'types';
+import { TicketingLevel } from 'types';
 import { createTicket } from 'api';
 
 function TimeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const level = searchParams.get('level') as Level;
+  const level = searchParams.get('level') as TicketingLevel;
 
   if (!level) {
     router.push('/ticket/level');
@@ -27,7 +27,10 @@ function TimeContent() {
 
   const handleSubmit = async () => {
     try {
-      await createTicket(level, startTime);
+      const ticketData = await createTicket(level, startTime);
+      const ticketingId = ticketData.data.ticketingId;
+
+      router.push(`/ticket/${ticketingId}`);
     } catch (error) {
       console.error('티켓팅 생성 중 문제가 발생했습니다.', error);
     }

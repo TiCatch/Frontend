@@ -1,7 +1,10 @@
 import { axiosClient } from 'lib';
-import { Level } from 'types';
+import { TicketingLevel, TicketingResponse } from 'types';
 
-export const createTicket = async (level: Level, startTime: number) => {
+export const createTicket = async (
+  level: TicketingLevel,
+  startTime: number,
+) => {
   const currentTime = new Date();
   currentTime.setMinutes(currentTime.getMinutes() + startTime);
   const ticketingTime = currentTime.toISOString();
@@ -16,5 +19,20 @@ export const createTicket = async (level: Level, startTime: number) => {
     return response.data;
   }
 
+  throw new Error('에러 발생');
+};
+
+export const getTicket = async (
+  ticketingId: number,
+): Promise<TicketingResponse['data']> => {
+  const response = await axiosClient.get(`/ticket/${ticketingId}`);
+
+  if (response.data.statusCode === 200) {
+    return response.data.data;
+  }
+
+  if (response.data.statusCode === 441 || response.data.statusCode === 440) {
+    throw new Error(response.data.messages);
+  }
   throw new Error('에러 발생');
 };

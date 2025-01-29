@@ -2,13 +2,13 @@
 
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { Level } from 'types';
+import { TicketingLevel } from 'types';
 import { levelImage } from '@constants/imagePath';
 
 export default function LevelPage() {
   const router = useRouter();
 
-  const handleSelect = (level: Level) => {
+  const handleSelect = (level: TicketingLevel) => {
     router.push(`/ticket/time?level=${level}`);
   };
 
