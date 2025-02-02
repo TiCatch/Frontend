@@ -5,7 +5,6 @@ import { useParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import { TicketingResponse } from 'types';
 import CommonButton from '@components/button/CommonButton';
-import { levelColor } from '@constants/levelColor';
 
 export default function TicketDetailPage() {
   const params = useParams<{ ticketingId: string }>();
@@ -13,6 +12,22 @@ export default function TicketDetailPage() {
   const [remainingTime, setRemainingTime] = useState<string>('0:00');
   const isTicketingOpen = remainingTime === '0:00';
 
+  const levelAttribute = {
+    EASY: {
+      backgroundColor: 'bg-sub-4',
+      levelText: '하',
+    },
+    NORMAL: {
+      backgroundColor: 'bg-sub-3',
+      levelText: '중',
+    },
+    HARD: {
+      backgroundColor: 'bg-primary',
+      levelText: '상',
+    },
+  };
+
+  // 티켓팅 정보 GET
   useEffect(() => {
     if (params.ticketingId) {
       getTicket(Number(params.ticketingId))
@@ -21,6 +36,7 @@ export default function TicketDetailPage() {
     }
   }, [params.ticketingId]);
 
+  // 남은시간 계산 함수
   const calculateRemainingTime = (targetTime: number) => {
     const now = Date.now();
     const timeDiffMs = Math.max(0, targetTime - now);
@@ -32,6 +48,7 @@ export default function TicketDetailPage() {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
+  // 시간 update
   useEffect(() => {
     const targetTime = new Date(ticket?.ticketingTime + 'Z').getTime();
     setRemainingTime(calculateRemainingTime(targetTime));
@@ -46,10 +63,10 @@ export default function TicketDetailPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [ticket?.ticketingTime]);
+  }, [ticket]);
 
   const level = ticket?.ticketingLevel ?? 'EASY';
-  const { backgroundColor } = levelColor[level];
+  const { backgroundColor, levelText } = levelAttribute[level];
 
   if (!ticket) {
     return null;
@@ -65,7 +82,9 @@ export default function TicketDetailPage() {
           {/* 공연 정보 */}
           <div className="w-full">
             <h2 className="text-xl">공연 제목</h2>
-            <span className={`${backgroundColor} text-white`}>난이도 하</span>
+            <span className={`${backgroundColor} text-white`}>
+              난이도 {levelText}
+            </span>
 
             <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
               <p>
@@ -95,15 +114,15 @@ export default function TicketDetailPage() {
             backgroundColor="bg-white"
             textColor="text-gray-500"
             borderColor="border-gray-300"
-            onClick={() => console.log('취소하기 클릭')}
+            onClick={() => console.log('티켓팅 삭제 API연결')}
           />
           <CommonButton
             title={isTicketingOpen ? '예매하기' : remainingTime}
-            backgroundColor={backgroundColor}
+            backgroundColor={isTicketingOpen ? backgroundColor : 'bg-gray-300'}
             textColor={isTicketingOpen ? 'text-white' : 'text-gray-500'}
             isDisabled={!isTicketingOpen}
             onClick={() => {
-              console.log('예매하기 클릭');
+              console.log('예매하기 API연결');
             }}
           />
         </div>

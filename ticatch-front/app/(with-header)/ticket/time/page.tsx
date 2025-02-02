@@ -7,12 +7,29 @@ import CommonButton from '@components/button/CommonButton';
 import { levelImage } from '@constants/imagePath';
 import { TicketingLevel } from 'types';
 import { createTicket } from 'api';
+import { levelAttribute } from '@constants/levelAttribute';
 
 function TimeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const level = searchParams.get('level') as TicketingLevel;
+  const levelAttribute = {
+    EASY: {
+      backgroundColor: 'bg-sub-4',
+      textColor: 'text-sub-4',
+    },
+    NORMAL: {
+      backgroundColor: 'bg-sub-3',
+      textColor: 'text-sub-3',
+    },
+    HARD: {
+      backgroundColor: 'bg-primary',
+      textColor: 'text-primary',
+    },
+  };
+
+  const { backgroundColor, textColor } = levelAttribute[level];
 
   if (!level) {
     router.push('/ticket/level');
@@ -64,7 +81,7 @@ function TimeContent() {
             -
           </button>
           <div className="flex gap-2 text-5xl">
-            <span className="text-sub-4">{startTime}</span>
+            <span className={textColor}>{startTime}</span>
             <span>분</span>
           </div>
           <button
@@ -78,7 +95,7 @@ function TimeContent() {
           <CommonButton
             title="예약하기"
             onClick={handleSubmit}
-            backgroundColor="bg-sub-4"
+            backgroundColor={backgroundColor}
           />
         </div>
       </div>
