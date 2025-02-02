@@ -7,7 +7,6 @@ import CommonButton from '@components/button/CommonButton';
 import { levelImage } from '@constants/imagePath';
 import { TicketingLevel } from 'types';
 import { createTicket } from 'api';
-import { levelAttribute } from '@constants/levelAttribute';
 
 function TimeContent() {
   const searchParams = useSearchParams();
