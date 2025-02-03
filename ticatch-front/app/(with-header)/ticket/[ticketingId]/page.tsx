@@ -1,13 +1,14 @@
 'use client';
 
 import { getTicket } from 'api';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import { TicketingResponse } from 'types';
 import CommonButton from '@components/button/CommonButton';
 
 export default function TicketDetailPage() {
   const params = useParams<{ ticketingId: string }>();
+  const router = useRouter();
   const [ticket, setTicket] = useState<TicketingResponse['data'] | null>(null);
   const [remainingTime, setRemainingTime] = useState<string>('0:00');
   const isTicketingOpen = remainingTime === '0:00';
@@ -30,9 +31,15 @@ export default function TicketDetailPage() {
   // 티켓팅 정보 GET
   useEffect(() => {
     if (params.ticketingId) {
-      getTicket(Number(params.ticketingId))
-        .then(setTicket)
-        .catch(console.error);
+      getTicket(Number(params.ticketingId)).then(
+        ({ status, data, messages }) => {
+          if (status === 200 && data) {
+            setTicket(data);
+          } else {
+            console.error(messages);
+          }
+        },
+      );
     }
   }, [params.ticketingId]);
 

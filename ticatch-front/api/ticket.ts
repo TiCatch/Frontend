@@ -24,15 +24,18 @@ export const createTicket = async (
 
 export const getTicket = async (
   ticketingId: number,
-): Promise<TicketingResponse['data']> => {
-  const response = await axiosClient.get(`/ticket/${ticketingId}`);
+): Promise<{
+  status: number;
+  data: TicketingResponse['data'];
+  messages: string;
+}> => {
+  try {
+    const response = await axiosClient.get(`/ticket/${ticketingId}`);
 
-  if (response.data.statusCode === 200) {
-    return response.data.data;
-  }
+    const { statusCode, data, messages } = response.data;
 
-  if (response.data.statusCode === 441 || response.data.statusCode === 440) {
-    throw new Error(response.data.messages);
+    return { status: statusCode, data, messages };
+  } catch (error) {
+    throw new Error('티켓 정보를 가져오는 도중 오류가 발생했습니다.');
   }
-  throw new Error('에러 발생');
 };
