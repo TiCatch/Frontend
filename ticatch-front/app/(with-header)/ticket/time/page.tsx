@@ -5,14 +5,30 @@ import { useState, Suspense } from 'react';
 import Image from 'next/image';
 import CommonButton from '@components/button/CommonButton';
 import { levelImage } from '@constants/imagePath';
-import { Level } from 'types';
+import { TicketingLevel } from 'types';
 import { createTicket } from 'api';
 
 function TimeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const level = searchParams.get('level') as Level;
+  const level = searchParams.get('level') as TicketingLevel;
+  const levelAttribute = {
+    EASY: {
+      backgroundColor: 'bg-sub-4',
+      textColor: 'text-sub-4',
+    },
+    NORMAL: {
+      backgroundColor: 'bg-sub-3',
+      textColor: 'text-sub-3',
+    },
+    HARD: {
+      backgroundColor: 'bg-primary',
+      textColor: 'text-primary',
+    },
+  };
+
+  const { backgroundColor, textColor } = levelAttribute[level];
 
   if (!level) {
     router.push('/ticket/level');
@@ -27,7 +43,10 @@ function TimeContent() {
 
   const handleSubmit = async () => {
     try {
-      await createTicket(level, startTime);
+      const ticketData = await createTicket(level, startTime);
+      const ticketingId = ticketData.data.ticketingId;
+
+      router.push(`/ticket/${ticketingId}`);
     } catch (error) {
       console.error('티켓팅 생성 중 문제가 발생했습니다.', error);
     }
@@ -35,7 +54,7 @@ function TimeContent() {
 
   return (
     <div className="flex w-full gap-[56px]">
-      <div className="mt-[150px] flex flex-col items-center gap-[104px]">
+      <div className="flex min-h-[calc(100vh-64px)] flex-col items-center justify-center gap-[104px]">
         <span className="text-2xl font-bold">난이도 선택</span>
         <Image src={levelImage[level]} alt={level} width={309} height={392} />
       </div>
@@ -50,7 +69,7 @@ function TimeContent() {
             height={24}
           />
         </button>
-        <p className="pt-[60px] text-center text-2xl font-bold">
+        <p className="pt-[70px] text-center text-2xl font-bold">
           시작 시간 선택
         </p>
         <div className="flex w-full items-center justify-between px-[113px] pt-[200px]">
@@ -61,7 +80,7 @@ function TimeContent() {
             -
           </button>
           <div className="flex gap-2 text-5xl">
-            <span className="text-sub-4">{startTime}</span>
+            <span className={textColor}>{startTime}</span>
             <span>분</span>
           </div>
           <button
@@ -75,7 +94,7 @@ function TimeContent() {
           <CommonButton
             title="예약하기"
             onClick={handleSubmit}
-            backgroundColor="bg-sub-4"
+            backgroundColor={backgroundColor}
           />
         </div>
       </div>

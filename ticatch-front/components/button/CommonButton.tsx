@@ -2,6 +2,7 @@ interface ButtonProps {
   title: string;
   backgroundColor?: string;
   textColor?: string;
+  borderColor?: string;
   isDisabled?: boolean;
   onClick?: () => void;
 }
@@ -12,12 +13,13 @@ const CommonButton: React.FC<ButtonProps> = ({
   textColor = 'text-white',
   isDisabled = false,
   onClick,
+  borderColor = 'border-transparent',
 }) => {
   return (
     <button
       onClick={onClick}
       disabled={isDisabled}
-      className={`${textColor} rounded-12 px-[48px] py-[14px] text-lg ${isDisabled ? 'cursor-not-allowed bg-gray-300' : `${backgroundColor}`}`}>
+      className={`min-w-[160px] whitespace-nowrap ${textColor} border ${borderColor} rounded-12 px-[48px] py-[14px] text-lg ${isDisabled && 'cursor-not-allowed'} ${backgroundColor}`}>
       {title}
     </button>
   );

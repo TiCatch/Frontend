@@ -1,0 +1,122 @@
+'use client';
+
+import { getTicket } from 'api';
+import { useParams, useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { TicketingResponse } from 'types';
+import CommonButton from '@components/button/CommonButton';
+import { getRemainingTime } from '@utils/getRemainingTime';
+
+export default function TicketDetailPage() {
+  const params = useParams<{ ticketingId: string }>();
+  const router = useRouter();
+  const [ticket, setTicket] = useState<TicketingResponse['data'] | null>(null);
+  const [remainingTime, setRemainingTime] = useState<string>('0:00');
+  const isTicketingOpen = remainingTime === '0:00';
+
+  const levelAttribute = {
+    EASY: {
+      backgroundColor: 'bg-sub-4',
+      levelText: '하',
+    },
+    NORMAL: {
+      backgroundColor: 'bg-sub-3',
+      levelText: '중',
+    },
+    HARD: {
+      backgroundColor: 'bg-primary',
+      levelText: '상',
+    },
+  };
+
+  // 티켓팅 정보 GET
+  useEffect(() => {
+    if (params.ticketingId) {
+      getTicket(Number(params.ticketingId)).then(
+        ({ status, data, messages }) => {
+          if (status === 200 && data) {
+            setTicket(data);
+          } else {
+            console.error(messages);
+          }
+        },
+      );
+    }
+  }, [params.ticketingId]);
+
+  // 시간 update
+  useEffect(() => {
+    const targetTime = new Date(ticket?.ticketingTime + 'Z').getTime();
+    setRemainingTime(getRemainingTime(targetTime));
+
+    const interval = setInterval(() => {
+      const updatedTime = getRemainingTime(targetTime);
+      setRemainingTime(updatedTime);
+
+      if (updatedTime === '0:00') {
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [ticket]);
+
+  const level = ticket?.ticketingLevel ?? 'EASY';
+  const { backgroundColor, levelText } = levelAttribute[level];
+
+  if (!ticket) {
+    return null;
+  }
+
+  return (
+    <div>
+      <div className="flex flex-col gap-6 rounded-md border p-6">
+        <div className="flex gap-6">
+          {/* 이미지 */}
+          <div className="w-[180px] rounded-md bg-gray-300"></div>
+
+          {/* 공연 정보 */}
+          <div className="w-full">
+            <h2 className="text-xl">공연 제목</h2>
+            <span className={`${backgroundColor} text-white`}>
+              난이도 {levelText}
+            </span>
+
+            <ul className="mt-4 flex flex-wrap gap-y-4">
+              <li className="w-1/2">공연 기간: 2024.12.22 - 2024.12.31</li>
+              <li className="w-1/2">공연장: 예술의전당 오페라극장</li>
+              <li className="w-1/2">관람 시간: 180분</li>
+              <li className="w-1/2">관람 등급: 8세 이상</li>
+              <li className="w-1/2">장르: 공연</li>
+              <li className="w-1/2">할인 혜택: 없음</li>
+            </ul>
+          </div>
+        </div>
+        <div className="flex justify-end gap-4">
+          <CommonButton
+            title="취소하기"
+            backgroundColor="bg-white"
+            textColor="text-gray-500"
+            borderColor="border-gray-300"
+            onClick={() => console.log('티켓팅 삭제 API연결')}
+          />
+          <CommonButton
+            title={isTicketingOpen ? '예매하기' : remainingTime}
+            backgroundColor={isTicketingOpen ? backgroundColor : 'bg-gray-300'}
+            textColor={isTicketingOpen ? 'text-white' : 'text-gray-500'}
+            isDisabled={!isTicketingOpen}
+            onClick={() => {
+              console.log('예매하기 API연결');
+            }}
+          />
+        </div>
+      </div>
+
+      {/* 상세 정보 */}
+      <div className="mt-6 rounded-md border">
+        <div className="px-2 py-4">상세 정보</div>
+        <div className="h-screen w-full bg-gray-300"></div>
+      </div>
+    </div>
+  );
+}
