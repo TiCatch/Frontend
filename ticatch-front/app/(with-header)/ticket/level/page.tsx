@@ -13,7 +13,7 @@ export default function LevelPage() {
   };
 
   return (
-    <div className="mt-[150px] flex flex-col items-center gap-[104px]">
+    <div className="flex min-h-[calc(100vh-64px)] flex-col items-center justify-center gap-[104px]">
       <span className="text-2xl font-bold">난이도 선택</span>
 
       <div className="flex w-full justify-between">

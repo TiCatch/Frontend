@@ -54,7 +54,7 @@ function TimeContent() {
 
   return (
     <div className="flex w-full gap-[56px]">
-      <div className="mt-[150px] flex flex-col items-center gap-[104px]">
+      <div className="flex min-h-[calc(100vh-64px)] flex-col items-center justify-center gap-[104px]">
         <span className="text-2xl font-bold">난이도 선택</span>
         <Image src={levelImage[level]} alt={level} width={309} height={392} />
       </div>
@@ -69,7 +69,7 @@ function TimeContent() {
             height={24}
           />
         </button>
-        <p className="pt-[60px] text-center text-2xl font-bold">
+        <p className="pt-[70px] text-center text-2xl font-bold">
           시작 시간 선택
         </p>
         <div className="flex w-full items-center justify-between px-[113px] pt-[200px]">
