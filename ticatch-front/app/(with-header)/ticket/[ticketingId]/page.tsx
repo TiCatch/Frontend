@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import { TicketingResponse } from 'types';
 import CommonButton from '@components/button/CommonButton';
+import { getRemainingTime } from '@utils/getRemainingTime';
 
 export default function TicketDetailPage() {
   const params = useParams<{ ticketingId: string }>();
@@ -43,25 +44,13 @@ export default function TicketDetailPage() {
     }
   }, [params.ticketingId]);
 
-  // 남은시간 계산 함수
-  const calculateRemainingTime = (targetTime: number) => {
-    const now = Date.now();
-    const timeDiffMs = Math.max(0, targetTime - now);
-
-    if (timeDiffMs === 0) return '0:00';
-
-    const minutes = Math.floor(timeDiffMs / 1000 / 60);
-    const seconds = Math.floor((timeDiffMs / 1000) % 60);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  };
-
   // 시간 update
   useEffect(() => {
     const targetTime = new Date(ticket?.ticketingTime + 'Z').getTime();
-    setRemainingTime(calculateRemainingTime(targetTime));
+    setRemainingTime(getRemainingTime(targetTime));
 
     const interval = setInterval(() => {
-      const updatedTime = calculateRemainingTime(targetTime);
+      const updatedTime = getRemainingTime(targetTime);
       setRemainingTime(updatedTime);
 
       if (updatedTime === '0:00') {
