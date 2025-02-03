@@ -82,26 +82,14 @@ export default function TicketDetailPage() {
               난이도 {levelText}
             </span>
 
-            <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
-              <p>
-                <span>공연 기간:</span> 2024.12.22 - 2024.12.31
-              </p>
-              <p>
-                <span>공연장:</span> 예술의전당 오페라극장
-              </p>
-              <p>
-                <span>관람 시간:</span> 180분
-              </p>
-              <p>
-                <span>관람 등급:</span> 8세 이상
-              </p>
-              <p>
-                <span>장르:</span> 공연
-              </p>
-              <p>
-                <span>할인 혜택:</span> 없음
-              </p>
-            </div>
+            <ul className="mt-4 flex flex-wrap gap-y-4">
+              <li className="w-1/2">공연 기간: 2024.12.22 - 2024.12.31</li>
+              <li className="w-1/2">공연장: 예술의전당 오페라극장</li>
+              <li className="w-1/2">관람 시간: 180분</li>
+              <li className="w-1/2">관람 등급: 8세 이상</li>
+              <li className="w-1/2">장르: 공연</li>
+              <li className="w-1/2">할인 혜택: 없음</li>
+            </ul>
           </div>
         </div>
         <div className="flex justify-end gap-4">
