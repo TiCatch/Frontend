@@ -36,8 +36,12 @@ export default function TicketDetailPage() {
     if (params.ticketingId) {
       getTicket(Number(params.ticketingId)).then(
         ({ status, data, messages }) => {
-          if (status === 200 && data.ticketingStatus === 'WAITING') {
-            setTicket(data);
+          if (status === 200 && data) {
+            if (data.ticketingStatus === 'CANCELED') {
+              router.push('/');
+            } else {
+              setTicket(data);
+            }
           } else {
             console.error(messages);
           }
