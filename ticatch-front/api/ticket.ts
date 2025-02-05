@@ -39,3 +39,21 @@ export const getTicket = async (
     throw new Error('티켓 정보를 가져오는 도중 오류가 발생했습니다.');
   }
 };
+
+export const updateTicket = async (
+  ticketingId: number,
+): Promise<{
+  status: number;
+  data: TicketingResponse['data'];
+  messages: string;
+}> => {
+  try {
+    const response = await axiosClient.patch(`/ticket/${ticketingId}`);
+
+    const { statusCode, data, messages } = response.data;
+
+    return { status: statusCode, data, messages };
+  } catch (error) {
+    throw new Error('티켓 정보를 수정하는 도중 오류가 발생했습니다.');
+  }
+};

@@ -1,17 +1,19 @@
 'use client';
 
-import { getTicket } from 'api';
+import { getTicket, updateTicket } from 'api';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import { TicketingResponse } from 'types';
 import CommonButton from '@components/button/CommonButton';
 import { getRemainingTime } from '@utils/getRemainingTime';
+import CancelModal from '@components/Modal/CancelModal';
 
 export default function TicketDetailPage() {
   const params = useParams<{ ticketingId: string }>();
   const router = useRouter();
   const [ticket, setTicket] = useState<TicketingResponse['data'] | null>(null);
   const [remainingTime, setRemainingTime] = useState<string>('0:00');
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const isTicketingOpen = remainingTime === '0:00';
 
   const levelAttribute = {
@@ -34,7 +36,7 @@ export default function TicketDetailPage() {
     if (params.ticketingId) {
       getTicket(Number(params.ticketingId)).then(
         ({ status, data, messages }) => {
-          if (status === 200 && data) {
+          if (status === 200 && data.ticketingStatus === 'WAITING') {
             setTicket(data);
           } else {
             console.error(messages);
@@ -43,6 +45,19 @@ export default function TicketDetailPage() {
       );
     }
   }, [params.ticketingId]);
+
+  //티켓팅 취소
+  const handleCancelTicket = () => {
+    if (params.ticketingId) {
+      updateTicket(Number(params.ticketingId)).then(({ status, messages }) => {
+        if (status === 200) {
+          router.push('/');
+        } else {
+          console.error(messages);
+        }
+      });
+    }
+  };
 
   // 시간 update
   useEffect(() => {
@@ -98,7 +113,7 @@ export default function TicketDetailPage() {
             backgroundColor="bg-white"
             textColor="text-gray-500"
             borderColor="border-gray-300"
-            onClick={() => console.log('티켓팅 삭제 API연결')}
+            onClick={() => setIsModalOpen(true)}
           />
           <CommonButton
             title={isTicketingOpen ? '예매하기' : remainingTime}
@@ -117,6 +132,14 @@ export default function TicketDetailPage() {
         <div className="px-2 py-4">상세 정보</div>
         <div className="h-screen w-full bg-gray-300"></div>
       </div>
+      {isModalOpen && (
+        <CancelModal
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={() => {
+            handleCancelTicket();
+          }}
+        />
+      )}
     </div>
   );
 }
