@@ -1,5 +1,5 @@
 export const getRemainingTime = (targetTime: number): string => {
-  const now = Date.now();
+  const now = Date.now() + 9 * 60 * 60 * 1000;
   const timeDiffMs = Math.max(0, targetTime - now);
 
   if (timeDiffMs === 0) return '0:00';

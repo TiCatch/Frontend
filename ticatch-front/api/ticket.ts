@@ -7,6 +7,8 @@ export const createTicket = async (
 ) => {
   const currentTime = new Date();
   currentTime.setMinutes(currentTime.getMinutes() + startTime);
+
+  currentTime.setHours(currentTime.getHours() + 9);
   const ticketingTime = currentTime.toISOString();
 
   const response = await axiosClient.post('/ticket/new', {
@@ -37,5 +39,23 @@ export const getTicket = async (
     return { status: statusCode, data, messages };
   } catch (error) {
     throw new Error('티켓 정보를 가져오는 도중 오류가 발생했습니다.');
+  }
+};
+
+export const updateTicket = async (
+  ticketingId: number,
+): Promise<{
+  status: number;
+  data: TicketingResponse['data'];
+  messages: string;
+}> => {
+  try {
+    const response = await axiosClient.patch(`/ticket/${ticketingId}`);
+
+    const { statusCode, data, messages } = response.data;
+
+    return { status: statusCode, data, messages };
+  } catch (error) {
+    throw new Error('티켓 정보를 수정하는 도중 오류가 발생했습니다.');
   }
 };
