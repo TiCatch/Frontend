@@ -7,6 +7,8 @@ export const createTicket = async (
 ) => {
   const currentTime = new Date();
   currentTime.setMinutes(currentTime.getMinutes() + startTime);
+
+  currentTime.setHours(currentTime.getHours() + 9);
   const ticketingTime = currentTime.toISOString();
 
   const response = await axiosClient.post('/ticket/new', {
