@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { TicketingResponse } from 'types';
 import CommonButton from '@components/button/CommonButton';
 import { getRemainingTime } from '@utils/getRemainingTime';
-import CancelModal from '@components/Modal/CancelModal';
+import CommonModal from '@components/Modal/CommonModal';
 
 export default function TicketDetailPage() {
   const params = useParams<{ ticketingId: string }>();
@@ -61,6 +61,10 @@ export default function TicketDetailPage() {
         }
       });
     }
+  };
+
+  const handleClose = () => {
+    setIsModalOpen(false);
   };
 
   // 시간 update
@@ -137,11 +141,13 @@ export default function TicketDetailPage() {
         <div className="h-screen w-full bg-gray-300"></div>
       </div>
       {isModalOpen && (
-        <CancelModal
-          onClose={() => setIsModalOpen(false)}
-          onConfirm={() => {
-            handleCancelTicket();
-          }}
+        <CommonModal
+          onClose={handleClose}
+          onConfirm={handleCancelTicket}
+          title="예약하신 티켓팅을 취소하시겠습니까?"
+          subtitle="취소한 티켓팅은 되돌릴 수 없습니다."
+          confirmButtonText="취소하기"
+          cancelButtonText="닫기"
         />
       )}
     </div>
