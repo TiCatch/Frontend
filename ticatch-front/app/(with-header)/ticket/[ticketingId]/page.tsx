@@ -129,7 +129,13 @@ export default function TicketDetailPage() {
             textColor={isTicketingOpen ? 'text-white' : 'text-gray-500'}
             isDisabled={!isTicketingOpen}
             onClick={() => {
-              console.log('예매하기 API연결');
+              if (isTicketingOpen) {
+                window.open(
+                  '/reservation/payment',
+                  '_blank',
+                  'width=950,height=650,top=50,left=50,noopener,noreferrer',
+                );
+              }
             }}
           />
         </div>
