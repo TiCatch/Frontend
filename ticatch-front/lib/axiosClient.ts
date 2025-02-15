@@ -1,36 +1,55 @@
-import { isTokenExpired } from 'api';
+import { refreshAccessToken } from 'api';
 import axios from 'axios';
-import Router from 'next/router';
-
-const redirectToLogin = async () => {
-  await Router.push('/login');
-};
 
 export const axiosClient = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/api`,
+  baseURL: '/api/proxy',
   withCredentials: true,
 });
 
-axiosClient.interceptors.request.use(
-  (config) => {
-    // 임시 엑세스토큰
-    // const accessToken =
-    //   'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJib2F6NDFAbmF2ZXIuY29tIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE3Mzc3MDc4OTR9.K1iWRehuFVXPuDzOq-DIsflIujEGwVg1tYUCSa7VRTONDVsdXVAOf70U7GcRHtUPFicuI10QpnyOCJWiLCfa1Q';
+axiosClient.interceptors.request.use((config) => {
+  if (typeof window !== 'undefined') {
     const accessToken = localStorage.getItem('accessToken');
-
-    // 토큰 만료
-    if (accessToken && isTokenExpired(accessToken)) {
-      redirectToLogin();
-      return Promise.reject(new Error('Token 만료'));
-    }
-
-    // 토큰 유효
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+  }
+  return config;
+});
+
+let isRefreshing = false;
+let failedRequests: (() => void)[] = [];
+
+axiosClient.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response?.status === 500 && !originalRequest._retry) {
+      if (isRefreshing) {
+        return new Promise<void>((resolve) => {
+          failedRequests.push(() => resolve(axiosClient(originalRequest)));
+        });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        const newAccessToken = await refreshAccessToken();
+        localStorage.setItem('accessToken', newAccessToken);
+        axiosClient.defaults.headers.common['Authorization'] =
+          `Bearer ${newAccessToken}`;
+
+        failedRequests.forEach((cb) => cb());
+        failedRequests = [];
+
+        return axiosClient(originalRequest);
+      } catch (refreshError) {
+        localStorage.removeItem('accessToken');
+        window.location.href = '/login';
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
+    }
   },
 );
