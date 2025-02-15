@@ -1,5 +1,5 @@
 import { LoginResponse } from 'types';
-import { axiosClient } from 'lib';
+import { authClient } from 'lib';
 
 /**
  * 카카오 인증 코드로 로그인 요청
@@ -7,7 +7,7 @@ import { axiosClient } from 'lib';
  * @returns 로그인 응답 데이터
  */
 export const loginWithKakao = async (code: string): Promise<LoginResponse> => {
-  const response = await axiosClient.get('/auth/login/kakao', {
+  const response = await authClient.get('/auth/login/kakao', {
     params: { code },
   });
 
@@ -77,7 +77,7 @@ export const getUserStatusClient = async () => {
  * 로그아웃
  */
 export const logoutUser = async () => {
-  await axiosClient.post('/auth/logout');
+  await authClient.post('/auth/logout');
   localStorage.removeItem('accessToken');
   window.location.href = '/';
 };
@@ -87,7 +87,7 @@ export const logoutUser = async () => {
  * @returns 새로운 accessToken
  */
 export const refreshAccessToken = async () => {
-  const response = await axiosClient.post('/auth/reissue');
+  const response = await authClient.post('/auth/reissue');
   return response.data?.data?.tokenDto?.accessToken
     .replace(/^Bearer/, '')
     .trim();

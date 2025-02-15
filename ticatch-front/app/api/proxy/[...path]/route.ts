@@ -7,11 +7,26 @@ export async function GET(req: NextRequest) {
     const targetPath = req.nextUrl.pathname.replace('/proxy', '');
     const targetURL = `${backendURL}${targetPath}${req.nextUrl.search}`;
 
+    const isKakaoLogin = targetPath.includes('/auth/login/kakao');
+    const isReissue = targetPath.includes('/auth/reissue');
+
+    if (!isKakaoLogin && !isReissue) {
+      return NextResponse.json(
+        { message: 'Only auth requests should go through proxy' },
+        { status: 403 },
+      );
+    }
+
+    console.log('targetURL: ', targetURL);
+
+    const headers: Record<string, string> = {};
+    if (!isKakaoLogin) {
+      headers['Authorization'] = req.headers.get('authorization') || '';
+      headers['Cookie'] = req.headers.get('cookie') || '';
+    }
+
     const response = await axios.get(targetURL, {
-      headers: {
-        Authorization: req.headers.get('authorization') || '',
-        Cookie: req.headers.get('cookie') || '',
-      },
+      headers,
       withCredentials: true,
     });
 
@@ -37,25 +52,20 @@ export async function POST(req: NextRequest) {
     const targetPath = req.nextUrl.pathname.replace('/proxy', '');
     const targetURL = `${backendURL}${targetPath}`;
 
-    const isLogoutRequest = targetPath.includes('/auth/logout');
-    const isLoginRequest = targetPath.includes('/auth/login');
+    if (!targetPath.includes('/auth/logout')) {
+      return NextResponse.json(
+        { message: 'Only auth requests should go through proxy' },
+        { status: 403 },
+      );
+    }
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
+      Authorization: req.headers.get('authorization') || '',
+      Cookie: req.headers.get('cookie') || '',
     };
 
-    if (!isLoginRequest) {
-      const authToken = req.headers.get('authorization') || '';
-      const cookie = req.headers.get('cookie') || '';
-
-      if (authToken) headers['Authorization'] = authToken;
-      if (cookie) headers['Cookie'] = cookie;
-    }
-
-    // 로그아웃 요청이면 body 없이 요청
-    const body = isLogoutRequest ? undefined : await req.json();
-
-    const response = await axios.post(targetURL, body, {
+    const response = await axios.post(targetURL, undefined, {
       headers,
       withCredentials: true,
     });
