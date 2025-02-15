@@ -24,7 +24,7 @@
       "@components/*": ["components/*"],
       "@constants/*": ["constants/*"],
       "@features/*": ["features/*"],
-      "@hooks/*": ["hooks/*"],
+      "@hooks": ["hooks"],
       "@queries/*": ["queries/*"],
       "@utils/*": ["utils/*"]
     }
