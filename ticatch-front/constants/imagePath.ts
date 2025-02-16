@@ -7,3 +7,5 @@ export const levelImage = {
 export const logoImage = '/images/Logo.svg';
 
 export const kakaoImage = '/images/Kakao.svg';
+
+export const kakaoPayImage = '/images/Kakaopay.svg';
