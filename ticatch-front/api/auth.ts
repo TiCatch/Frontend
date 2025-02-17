@@ -1,5 +1,5 @@
 import { LoginResponse } from 'types';
-import { axiosClient } from 'lib';
+import { authClient } from 'lib';
 
 /**
  * 카카오 인증 코드로 로그인 요청
@@ -7,7 +7,7 @@ import { axiosClient } from 'lib';
  * @returns 로그인 응답 데이터
  */
 export const loginWithKakao = async (code: string): Promise<LoginResponse> => {
-  const response = await axiosClient.get('/auth/login/kakao', {
+  const response = await authClient.get('/auth/login/kakao', {
     params: { code },
   });
 
@@ -25,7 +25,7 @@ export const loginWithKakao = async (code: string): Promise<LoginResponse> => {
 };
 
 /**
- * JWT 토큰 디코딩딩
+ * JWT 토큰 디코딩
  * @param token JWT 토큰
  * @returns 디코딩된 페이로드
  */
@@ -50,4 +50,45 @@ export const isTokenExpired = (token: string): boolean => {
   if (!decoded || !decoded.exp) return true;
   const currentTime = Math.floor(Date.now() / 1000);
   return decoded.exp < currentTime;
+};
+
+/**
+ * 클라이언트 단에서 로그인 상태 확인 (localStorage의 accessToken 여부로 판단)
+ * @returns 로그인 여부
+ */
+export const getUserStatusClient = async () => {
+  if (typeof window === 'undefined') return false;
+  let accessToken = localStorage.getItem('accessToken');
+
+  if (!accessToken || isTokenExpired(accessToken)) {
+    try {
+      accessToken = await refreshAccessToken();
+      if (accessToken) {
+        localStorage.setItem('accessToken', accessToken);
+      }
+    } catch {
+      return false;
+    }
+  }
+  return !!accessToken;
+};
+
+/**
+ * 로그아웃
+ */
+export const logoutUser = async () => {
+  await authClient.post('/auth/logout');
+  localStorage.removeItem('accessToken');
+  window.location.href = '/';
+};
+
+/**
+ *
+ * @returns 새로운 accessToken
+ */
+export const refreshAccessToken = async () => {
+  const response = await authClient.post('/auth/reissue');
+  return response.data?.data?.tokenDto?.accessToken
+    .replace(/^Bearer/, '')
+    .trim();
 };

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { isTokenExpired } from 'api';
+import { isTokenExpired, logoutUser } from 'api';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -18,7 +18,7 @@ const LoginPage = () => {
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
     if (accessToken && isTokenExpired(accessToken)) {
-      localStorage.removeItem('accessToken');
+      logoutUser();
     }
   }, []);
 
