@@ -7,7 +7,8 @@ export const fetchSVG = async (url: string): Promise<string | null> => {
 
     svgText = svgText
       .replace(/width=".*?"/, 'width="100%"')
-      .replace(/height=".*?"/, 'height="100%"');
+      .replace(/height=".*?"/, 'height="100%"')
+      .replace(/<rect /g, '<rect style="cursor:pointer" fill="transparent" ');
 
     return DOMPurify.sanitize(svgText);
   } catch (error) {

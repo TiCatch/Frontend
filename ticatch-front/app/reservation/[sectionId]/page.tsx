@@ -1,15 +1,105 @@
-import { notFound } from 'next/navigation';
+'use client';
+import { fetchSVG } from '@utils/fetchSVG';
+import { use, useEffect, useState, useRef } from 'react';
 
-interface SectionPageProps {
-  params: { sectionId: string };
+interface SeatsPageProps {
+  params: Promise<{ sectionId: string }>;
 }
 
-export default function SeatsPage({ params }: SectionPageProps) {
-  const { sectionId } = params;
+export default function SeatsPage({ params }: SeatsPageProps) {
+  const resolvedParams = use(params);
+  const { sectionId } = resolvedParams;
+  const [seatSVG, setSeatSVG] = useState<string | null>(null);
+  const [selectedSeat, setSelectedSeat] = useState<string | null>(null);
+  const svgContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const loadSvg = async () => {
+      const svg = await fetchSVG(
+        `https://ticatch-content.s3.ap-southeast-2.amazonaws.com/seat-img/S${sectionId}.svg`,
+      );
+      setSeatSVG(svg);
+    };
+
+    loadSvg();
+  }, []);
+
+  useEffect(() => {
+    if (!svgContainerRef.current) return;
+
+    const rects = svgContainerRef.current.querySelectorAll('rect');
+
+    rects.forEach((rect) => {
+      const row = rect.closest('g')?.getAttribute('class');
+      const col = rect.getAttribute('class');
+      const seatInfo = `S${sectionId}:${row}:${col}`;
+
+      if (seatInfo === selectedSeat) {
+        rect.setAttribute('fill', '#C04CFD');
+      } else {
+        rect.setAttribute('fill', 'transparent');
+      }
+    });
+  }, [selectedSeat]);
+
+  const handleSeatClick = (event: React.MouseEvent<HTMLElement>) => {
+    if (!svgContainerRef.current) return;
+
+    const target = event.target as SVGElement;
+
+    if (target.tagName !== 'rect') {
+      return;
+    }
+
+    const clickedRect = target as SVGRectElement;
+    const rowGroup = clickedRect.closest('g');
+    const row = rowGroup?.getAttribute('class');
+    const col = clickedRect.getAttribute('class');
+    const seatInfo = `S${sectionId}:${row}:${col}`;
+
+    if (selectedSeat === seatInfo) {
+      setSelectedSeat(null);
+    } else {
+      setSelectedSeat(seatInfo);
+    }
+  };
 
   return (
-    <>
-      <p>{sectionId}구역의 상세 페이지</p>
-    </>
+    <div className="flex h-full w-full flex-col gap-4">
+      <div className="text-lg font-bold">좌석선택</div>
+      <div className="flex min-h-0 flex-grow gap-4">
+        {/* 왼쪽 구역 */}
+        <div className="-center flex w-2/3 flex-col justify-center rounded bg-gray-50 p-8 shadow-md">
+          <div
+            ref={svgContainerRef}
+            className="h-full"
+            dangerouslySetInnerHTML={{ __html: seatSVG || '' }}
+            onClick={handleSeatClick}
+          />
+        </div>
+
+        {/* 오른쪽 구역 */}
+        <div className="flex w-1/3 flex-col gap-4 rounded bg-gray-50 p-4 shadow-md">
+          <div className="flex justify-center text-gray-600">
+            좌석선택 이후 5분 이내 결제가 완료되지 않을 시 선택하신 좌석의 선점
+            기회를 잃게 됩니다.
+          </div>
+
+          {selectedSeat && (
+            <div className="text-center text-lg font-semibold">
+              선택한 좌석: {selectedSeat}
+            </div>
+          )}
+
+          <div className="mt-auto w-full">
+            <button
+              className={`mt-4 w-full rounded-12 py-4 text-lg text-white transition ${selectedSeat ? 'cursor-pointer bg-primary' : 'cursor-not-allowed bg-gray-300'}`}
+              disabled={!selectedSeat}>
+              좌석 선택 완료
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
