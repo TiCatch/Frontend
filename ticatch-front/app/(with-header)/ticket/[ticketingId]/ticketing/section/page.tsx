@@ -22,8 +22,8 @@ export default function SectionPage() {
     const target = event.target as SVGElement;
     const targetClass = target.getAttribute('class');
 
-    if (target.tagName === 'path' && targetClass !== 'stage') {
-      router.push(`/reservation/${targetClass}`);
+    if (target.tagName === 'path' && targetClass !== 'STAGE') {
+      router.push(`/ticketing/${targetClass}`);
     }
   };
 
@@ -61,13 +61,13 @@ export default function SectionPage() {
         </div>
 
         {/* 오른쪽 구역 */}
-        <div className="flex w-1/3 flex-col gap-4 rounded bg-gray-50 p-4 shadow-md">
+        <div className="flex w-1/3 flex-col gap-4 rounded bg-gray-50 p-8 shadow-md">
           <div className="flex justify-center text-gray-600">
-            좌석선택 이후 5분이내 결제가 완료되지 않을 시 선택하신 좌석의 선점
+            좌석선택 이후 5분 이내 결제가 완료되지 않을 시 선택하신 좌석의 선점
             기회를 잃게 됩니다.
           </div>
           <div className="mt-auto w-full">
-            <button className="mt-4 w-full rounded-12 bg-primary py-4 text-lg text-white">
+            <button className="mt-4 w-full cursor-not-allowed rounded-12 bg-gray-300 py-4 text-lg text-white">
               좌석 선택 완료
             </button>
           </div>
