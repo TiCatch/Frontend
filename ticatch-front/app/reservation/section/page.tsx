@@ -1,9 +1,11 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { fetchSVG } from '@utils/fetchSVG';
+import { useRouter } from 'next/navigation';
 
 export default function SectionPage() {
   const [totalSVG, setTotalSVG] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const loadSvg = async () => {
@@ -16,6 +18,33 @@ export default function SectionPage() {
     loadSvg();
   }, []);
 
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    const target = event.target as SVGElement;
+    const targetClass = target.getAttribute('class');
+
+    if (target.tagName === 'path' && targetClass !== 'stage') {
+      router.push(`/reservation/${targetClass}`);
+    }
+  };
+
+  const handleMouseOver = (event: React.MouseEvent<HTMLElement>) => {
+    const target = event.target as SVGElement;
+    const targetClass = target.getAttribute('class');
+
+    if (target.tagName === 'path' && targetClass !== 'STAGE') {
+      target.style.opacity = '0.5';
+      target.style.cursor = 'pointer';
+    }
+  };
+
+  const handleMouseOut = (event: React.MouseEvent<HTMLElement>) => {
+    const target = event.target as SVGElement;
+    const targetClass = target.getAttribute('class');
+    if (target.tagName === 'path' && targetClass !== 'STAGE') {
+      target.style.opacity = '1';
+    }
+  };
+
   return (
     <div className="flex h-full w-full flex-col gap-4">
       <div className="text-lg font-bold">좌석선택</div>
@@ -25,6 +54,9 @@ export default function SectionPage() {
           <div
             className="h-full"
             dangerouslySetInnerHTML={{ __html: totalSVG || '' }}
+            onMouseOver={handleMouseOver}
+            onMouseOut={handleMouseOut}
+            onClick={handleClick}
           />
         </div>
 
@@ -34,7 +66,6 @@ export default function SectionPage() {
             좌석선택 이후 5분이내 결제가 완료되지 않을 시 선택하신 좌석의 선점
             기회를 잃게 됩니다.
           </div>
-
           <div className="mt-auto w-full">
             <button className="mt-4 w-full rounded-12 bg-primary py-4 text-lg text-white">
               좌석 선택 완료
