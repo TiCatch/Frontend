@@ -131,7 +131,7 @@ export default function TicketDetailPage() {
             onClick={() => {
               if (isTicketingOpen) {
                 window.open(
-                  '/reservation/payment',
+                  '/reservation/section',
                   '_blank',
                   'width=950,height=650,top=50,left=50,noopener,noreferrer',
                 );
