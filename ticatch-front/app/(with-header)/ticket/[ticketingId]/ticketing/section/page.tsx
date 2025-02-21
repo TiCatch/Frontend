@@ -1,9 +1,10 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { fetchSVG } from '@utils/fetchSVG';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 export default function SectionPage() {
+  const params = useParams<{ ticketingId: string }>();
   const [totalSVG, setTotalSVG] = useState<string | null>(null);
   const router = useRouter();
 
@@ -23,7 +24,7 @@ export default function SectionPage() {
     const targetClass = target.getAttribute('class');
 
     if (target.tagName === 'path' && targetClass !== 'STAGE') {
-      router.push(`/ticketing/${targetClass}`);
+      router.push(`/ticket/${params.ticketingId}/ticketing/${targetClass}`);
     }
   };
 
@@ -62,7 +63,7 @@ export default function SectionPage() {
 
         {/* 오른쪽 구역 */}
         <div className="flex w-1/3 flex-col gap-4 rounded bg-gray-50 p-8 shadow-md">
-          <div className="flex justify-center text-gray-600">
+          <div className="flex justify-center text-sm text-gray-600">
             좌석선택 이후 5분 이내 결제가 완료되지 않을 시 선택하신 좌석의 선점
             기회를 잃게 됩니다.
           </div>

@@ -3,6 +3,7 @@ import { fetchSVG } from '@utils/fetchSVG';
 import { use, useEffect, useState, useRef } from 'react';
 import { ArrowBackIos } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
+import { getSectionSeats } from 'api';
 
 interface SeatsPageProps {
   params: Promise<{ sectionId: string; ticketingId: string }>;
@@ -67,6 +68,20 @@ export default function SeatsPage({ params }: SeatsPageProps) {
     }
   };
 
+  const handleConfirmSeat = async () => {
+    if (!selectedSeat) return;
+    try {
+      const seatData = await getSectionSeats(ticketingId, selectedSeat);
+      if (seatData.status === 200) {
+        router.push(`/ticket/${ticketingId}/ticketing/payment`);
+      } else if (seatData.status === 450) {
+        alert('이미 선점된 좌석입니다.');
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="flex h-full w-full flex-col gap-4">
       <div className="text-lg font-bold">좌석선택</div>
@@ -77,9 +92,11 @@ export default function SeatsPage({ params }: SeatsPageProps) {
 
           <div
             className="flex cursor-pointer items-center self-start"
-            onClick={() => router.push('/reservation/section')}>
-            <ArrowBackIos />
-            <div className="text-lg">좌석도 전체보기</div>
+            onClick={() =>
+              router.push(`/ticket/${ticketingId}/ticketing/section`)
+            }>
+            <ArrowBackIos sx={{ fontSize: 16 }} />
+            <div className="text-sm">좌석도 전체보기</div>
           </div>
 
           <div
@@ -92,7 +109,7 @@ export default function SeatsPage({ params }: SeatsPageProps) {
 
         {/* 오른쪽 구역 */}
         <div className="flex w-1/3 flex-col gap-4 rounded bg-gray-50 p-8 shadow-md">
-          <div className="flex justify-center text-gray-600">
+          <div className="flex justify-center text-sm text-gray-600">
             좌석선택 이후 5분 이내 결제가 완료되지 않을 시 선택하신 좌석의 선점
             기회를 잃게 됩니다.
           </div>
@@ -106,7 +123,8 @@ export default function SeatsPage({ params }: SeatsPageProps) {
           <div className="mt-auto w-full">
             <button
               className={`mt-4 w-full rounded-12 py-4 text-lg text-white transition ${selectedSeat ? 'cursor-pointer bg-primary' : 'cursor-not-allowed bg-gray-300'}`}
-              disabled={!selectedSeat}>
+              disabled={!selectedSeat}
+              onClick={handleConfirmSeat}>
               좌석 선택 완료
             </button>
           </div>

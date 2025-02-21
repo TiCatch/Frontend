@@ -1,12 +1,15 @@
-export const getSectionSeats = async (ticketingId: string, section: string) => {
-  try {
-    const response = await fetch(`/api/ticket/seats/${ticketingId}/${section}`);
-    if (!response.ok) throw new Error('에러발생');
+import { axiosClient } from 'lib';
 
-    const result = await response.json();
-    return result.data || {};
+export const getSectionSeats = async (ticketingId: string, seatKey: string) => {
+  try {
+    const response = await axiosClient.get(
+      `/ticket/seats/${ticketingId}/check/${seatKey}`,
+    );
+
+    const { statusCode } = response.data;
+
+    return { status: statusCode };
   } catch (error) {
-    console.error(error);
-    return {};
+    throw new Error('좌석데이터 confirm 오류');
   }
 };
