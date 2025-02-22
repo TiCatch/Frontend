@@ -1,0 +1,79 @@
+'use client';
+import { useEffect, useState } from 'react';
+import { fetchSVG } from '@utils/fetchSVG';
+import { useParams, useRouter } from 'next/navigation';
+
+export default function SectionPage() {
+  const params = useParams<{ ticketingId: string }>();
+  const [totalSVG, setTotalSVG] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const loadSvg = async () => {
+      const svg = await fetchSVG(
+        'https://ticatch-content.s3.ap-southeast-2.amazonaws.com/seat-img/TOTAL.svg',
+      );
+      setTotalSVG(svg);
+    };
+
+    loadSvg();
+  }, []);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    const target = event.target as SVGElement;
+    const targetClass = target.getAttribute('class');
+
+    if (target.tagName === 'path' && targetClass !== 'STAGE') {
+      router.push(`/ticket/${params.ticketingId}/ticketing/${targetClass}`);
+    }
+  };
+
+  const handleMouseOver = (event: React.MouseEvent<HTMLElement>) => {
+    const target = event.target as SVGElement;
+    const targetClass = target.getAttribute('class');
+
+    if (target.tagName === 'path' && targetClass !== 'STAGE') {
+      target.style.opacity = '0.5';
+      target.style.cursor = 'pointer';
+    }
+  };
+
+  const handleMouseOut = (event: React.MouseEvent<HTMLElement>) => {
+    const target = event.target as SVGElement;
+    const targetClass = target.getAttribute('class');
+    if (target.tagName === 'path' && targetClass !== 'STAGE') {
+      target.style.opacity = '1';
+    }
+  };
+
+  return (
+    <div className="flex h-full w-full flex-col gap-4">
+      <div className="text-lg font-bold">좌석선택</div>
+      <div className="flex min-h-0 flex-grow gap-4">
+        {/* 왼쪽 구역 */}
+        <div className="-center flex w-2/3 flex-col justify-center rounded bg-gray-50 p-8 shadow-md">
+          <div
+            className="h-full"
+            dangerouslySetInnerHTML={{ __html: totalSVG || '' }}
+            onMouseOver={handleMouseOver}
+            onMouseOut={handleMouseOut}
+            onClick={handleClick}
+          />
+        </div>
+
+        {/* 오른쪽 구역 */}
+        <div className="flex w-1/3 flex-col gap-4 rounded bg-gray-50 p-8 shadow-md">
+          <div className="flex justify-center text-sm text-gray-600">
+            좌석선택 이후 5분 이내 결제가 완료되지 않을 시 선택하신 좌석의 선점
+            기회를 잃게 됩니다.
+          </div>
+          <div className="mt-auto w-full">
+            <button className="mt-4 w-full cursor-not-allowed rounded-12 bg-gray-300 py-4 text-lg text-white">
+              좌석 선택 완료
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

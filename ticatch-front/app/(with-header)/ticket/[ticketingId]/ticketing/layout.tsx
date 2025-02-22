@@ -1,4 +1,4 @@
-export default function HeaderLayout({
+export default function TicketingLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
