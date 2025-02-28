@@ -78,6 +78,8 @@ export default function TicketDetailPage() {
 
       if (updatedTime === '0:00') {
         clearInterval(interval);
+        // 가상 요청 시작!
+        triggerVirtualUsers();
       }
     }, 1000);
 
@@ -90,6 +92,23 @@ export default function TicketDetailPage() {
   if (!ticket) {
     return null;
   }
+
+  const triggerVirtualUsers = async () => {
+    try {
+      const res = await fetch(
+        `/api/ticket/waiting/${params.ticketingId}/VIRTUAL`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ level }),
+        },
+      );
+    } catch (error) {
+      console.log('가상 요청 시작 에러: ', error);
+    }
+  };
 
   return (
     <div>
