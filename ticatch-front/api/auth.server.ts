@@ -8,5 +8,5 @@ import { cookies } from 'next/headers';
  */
 export const getUserStatusServer = async () => {
   const cookieStore = cookies();
-  return (await cookieStore).has('refreshToken');
+  return (await cookieStore).has('refresh-token');
 };

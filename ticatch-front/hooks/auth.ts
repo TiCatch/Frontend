@@ -32,8 +32,13 @@ export const useLoginWithKakao = () => {
 export const useLogout = () => {
   const queryClient = useQueryClient();
 
-  return () => {
-    logoutUser();
-    queryClient.invalidateQueries({ queryKey: ['userStatus'] });
-  };
+  return useMutation({
+    mutationFn: logoutUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['userStatus'] });
+    },
+    onError: (error) => {
+      console.log('Logout failed: ', error);
+    },
+  });
 };

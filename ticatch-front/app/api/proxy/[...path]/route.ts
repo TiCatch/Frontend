@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export async function GET(req: NextRequest) {
   try {
-    const backendURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}`;
+    const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL;
     const targetPath = req.nextUrl.pathname.replace('/proxy', '');
     const targetURL = `${backendURL}${targetPath}${req.nextUrl.search}`;
 
@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const backendURL = `${process.env.NEXT_PUBLIC_BACKEND_URL}`;
+    const backendURL = process.env.NEXT_PUBLIC_BACKEND_URL;
     const targetPath = req.nextUrl.pathname.replace('/proxy', '');
     const targetURL = `${backendURL}${targetPath}`;
 
