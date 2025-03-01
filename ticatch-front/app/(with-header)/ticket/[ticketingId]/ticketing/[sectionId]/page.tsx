@@ -3,7 +3,7 @@ import { fetchSVG } from '@utils/fetchSVG';
 import { use, useEffect, useState, useRef } from 'react';
 import { ArrowBackIos } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
-import { getSectionSeats } from 'api';
+import { getCheckSeat, getSectionSeats } from 'api';
 
 interface SeatsPageProps {
   params: Promise<{ sectionId: string; ticketingId: string }>;
@@ -15,6 +15,7 @@ export default function SeatsPage({ params }: SeatsPageProps) {
   const { sectionId, ticketingId } = resolvedParams;
   const [seatSVG, setSeatSVG] = useState<string | null>(null);
   const [selectedSeat, setSelectedSeat] = useState<string | null>(null);
+  const [disabledSeats, setDisabledSeats] = useState<Set<string>>(new Set());
   const svgContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -29,6 +30,20 @@ export default function SeatsPage({ params }: SeatsPageProps) {
   }, []);
 
   useEffect(() => {
+    const fetchDisabledSeats = async () => {
+      try {
+        const seats = await getSectionSeats(ticketingId, sectionId);
+        const reservedSeats = new Set(Object.keys(seats));
+        setDisabledSeats(reservedSeats);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchDisabledSeats();
+  }, [ticketingId, sectionId]);
+
+  useEffect(() => {
     if (!svgContainerRef.current) return;
 
     const rects = svgContainerRef.current.querySelectorAll('rect');
@@ -38,13 +53,16 @@ export default function SeatsPage({ params }: SeatsPageProps) {
       const col = rect.getAttribute('class');
       const seatInfo = `S${sectionId}:${row}:${col}`;
 
-      if (seatInfo === selectedSeat) {
+      if (disabledSeats.has(seatInfo)) {
+        rect.setAttribute('fill', '#a5a5a5');
+        rect.setAttribute('pointer-events', 'none');
+      } else if (seatInfo === selectedSeat) {
         rect.setAttribute('fill', '#C04CFD');
       } else {
         rect.setAttribute('fill', 'transparent');
       }
     });
-  }, [selectedSeat]);
+  }, [selectedSeat, disabledSeats]);
 
   const handleSeatClick = (event: React.MouseEvent<HTMLElement>) => {
     if (!svgContainerRef.current) return;
@@ -71,7 +89,7 @@ export default function SeatsPage({ params }: SeatsPageProps) {
   const handleConfirmSeat = async () => {
     if (!selectedSeat) return;
     try {
-      const seatData = await getSectionSeats(ticketingId, selectedSeat);
+      const seatData = await getCheckSeat(ticketingId, selectedSeat);
       if (seatData.status === 200) {
         router.push(`/ticket/${ticketingId}/ticketing/payment`);
       } else if (seatData.status === 450) {
