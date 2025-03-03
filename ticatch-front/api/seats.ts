@@ -17,10 +17,10 @@ export const getCheckSeat = async (ticketingId: string, seatKey: string) => {
 export const getSectionSeats = async (ticketingId: string, section: string) => {
   try {
     const response = await axiosClient.get(
-      `/ticket/seats/${ticketingId}/${section}`,
+      `/ticket/seats/${ticketingId}/S${section}`,
     );
 
-    return response.data.data;
+    return response.data;
   } catch (error) {
     throw new Error('section 좌석 조회 오류');
   }
