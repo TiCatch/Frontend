@@ -1,26 +1,18 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { axiosClient } from 'lib/axiosClient';
 import { TicketingLevel } from 'types';
 
-export const runtime = 'nodejs';
+export async function POST(req: NextRequest, context: any) {
+  const params = context.params as Record<string, string>;
 
-export async function POST(
-  req: Request,
-  context: { params: { ticketingId: string; userType: string } },
-) {
-  const params = await context.params;
-  if (!params) {
-    return NextResponse.json({ error: 'Missing params' }, { status: 400 });
-  }
-
-  const { ticketingId, userType } = params;
-
-  if (!ticketingId || !userType) {
+  if (!params?.ticketingId || !params?.userType) {
     return NextResponse.json(
       { error: 'Missing ticketingId or userType' },
       { status: 400 },
     );
   }
+
+  const { ticketingId, userType } = params;
 
   try {
     const body = await req.json();
@@ -29,7 +21,8 @@ export async function POST(
     if (!level) {
       return NextResponse.json({ error: 'Missing level' }, { status: 400 });
     }
-    startTicketing(ticketingId, userType, level);
+
+    await startTicketing(ticketingId, userType, level);
 
     return NextResponse.json({
       message: `Simulation started successfully for level: ${level}`,
