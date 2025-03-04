@@ -20,7 +20,7 @@ export const getSectionSeats = async (ticketingId: string, section: string) => {
       `/ticket/seats/${ticketingId}/S${section}`,
     );
 
-    return response.data;
+    return response.data.data;
   } catch (error) {
     throw new Error('section 좌석 조회 오류');
   }
