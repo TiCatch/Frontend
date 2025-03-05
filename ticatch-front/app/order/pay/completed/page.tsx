@@ -1,9 +1,10 @@
 'use client';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { approvePayment } from 'api';
 
 export default function PaymentPageClient() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const pg_token = searchParams.get('pg_token');
   const accessToken = localStorage.getItem('accessToken');
@@ -16,15 +17,13 @@ export default function PaymentPageClient() {
 
     const processPayment = async () => {
       try {
-        console.log(ticketingId, seatInfo);
-        console.log('✅ 결제 완료! pg_token:', pg_token);
         await approvePayment(pg_token);
-
-        // window.opener.opener.location.href = '/ticket/complete';
-        // window.close();
-        // window.opener.close();
+        localStorage.setItem('paymentSuccess', 'true');
+        localStorage.removeItem('paymentSuccess');
+        window.close();
+        window.opener.close();
       } catch (error) {
-        console.error('❌ 결제 승인 실패:', error);
+        console.error(error);
       }
     };
 
