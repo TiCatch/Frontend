@@ -15,12 +15,18 @@ export default function PaymentPage() {
   const handlePayment = async () => {
     if (!isChecked) return;
     try {
-      const paymentUrl = await requestPayment(`구매좌석: ${seat}`, 1);
+      const { tid, next_redirect_pc_url } = await requestPayment(
+        `구매좌석: ${seat}`,
+        1,
+      );
+
+      localStorage.setItem('tid', tid);
       localStorage.setItem('ticketingId', params.ticketingId);
       localStorage.setItem('seatInfo', seat);
-      window.open(paymentUrl, '_blank', 'width=500,height=700');
+
+      window.open(next_redirect_pc_url, '_blank', 'width=500,height=700');
     } catch (error) {
-      console.error(error);
+      console.error('❌ 결제 요청 중 오류 발생:', error);
     }
   };
 
