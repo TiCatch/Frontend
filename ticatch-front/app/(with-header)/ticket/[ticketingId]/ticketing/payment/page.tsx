@@ -2,8 +2,28 @@
 import Image from 'next/image';
 import { kakaoPayImage } from '@constants/imagePath';
 import { TERMS_OF_KAKAOPAY } from '@constants/terms';
+import { useState } from 'react';
+import { requestPayment } from 'api';
+import { useSearchParams, useParams } from 'next/navigation';
 
 export default function PaymentPage() {
+  const params = useParams<{ ticketingId: string }>();
+  const searchParams = useSearchParams();
+  const seat = searchParams.get('seat') ?? '';
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handlePayment = async () => {
+    if (!isChecked) return;
+    try {
+      const paymentUrl = await requestPayment(`구매좌석: ${seat}`, 1);
+      localStorage.setItem('ticketingId', params.ticketingId);
+      localStorage.setItem('seatInfo', seat);
+      window.open(paymentUrl, '_blank', 'width=500,height=700');
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="flex h-full w-full flex-col gap-4">
       <div className="text-lg font-bold">결제/예매정보</div>
@@ -23,7 +43,12 @@ export default function PaymentPage() {
           <div className="flex min-h-0 flex-grow flex-col gap-4">
             <span>예매자동의</span>
             <div className="flex items-center gap-2">
-              <input type="checkbox" className="h-4 w-4" />
+              <input
+                type="checkbox"
+                className="h-4 w-4"
+                checked={isChecked}
+                onChange={(e) => setIsChecked(e.target.checked)}
+              />
               <span>[필수] 카카오 전자금융 이용약관 동의</span>
             </div>
             <div className="h-0 flex-grow overflow-y-auto text-sm text-gray-600">
@@ -41,7 +66,14 @@ export default function PaymentPage() {
 
           <div className="mt-auto w-full">
             <span className="font-bold">총 결제금액 0원</span>
-            <button className="mt-4 w-full rounded-12 bg-primary py-4 text-lg text-white">
+            <button
+              className={`mt-4 w-full rounded-12 py-4 text-lg ${
+                isChecked
+                  ? 'bg-primary text-white'
+                  : 'cursor-not-allowed bg-gray-300 text-gray-500'
+              }`}
+              disabled={!isChecked}
+              onClick={handlePayment}>
               결제하기
             </button>
           </div>

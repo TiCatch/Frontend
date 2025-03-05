@@ -92,7 +92,9 @@ export default function SeatsPage({ params }: SeatsPageProps) {
     try {
       const seatData = await getCheckSeat(ticketingId, selectedSeat);
       if (seatData.status === 200) {
-        router.push(`/ticket/${ticketingId}/ticketing/payment`);
+        router.push(
+          `/ticket/${ticketingId}/ticketing/payment?seat=${selectedSeat}`,
+        );
       } else if (seatData.status === 450) {
         alert('이미 선점된 좌석입니다.');
       }
