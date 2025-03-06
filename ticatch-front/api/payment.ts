@@ -1,5 +1,4 @@
 import { axiosClient } from 'lib';
-import axios from 'axios';
 
 export const requestPayment = async (
   name: string,

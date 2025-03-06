@@ -1,25 +1,27 @@
 'use client';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
-import { approvePayment } from 'api';
+import { approvePayment, successTicket } from 'api';
 
 export default function PaymentPageClient() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const pg_token = searchParams.get('pg_token');
-  const accessToken = localStorage.getItem('accessToken');
 
   useEffect(() => {
-    if (!pg_token || !accessToken) return;
+    if (!pg_token) return;
 
     const ticketingId = localStorage.getItem('ticketingId');
-    const seatInfo = localStorage.getItem('seatInfo');
+    const seatInfo = localStorage.getItem('seatInfo') as string;
 
     const processPayment = async () => {
       try {
         await approvePayment(pg_token);
+        await successTicket(Number(ticketingId), seatInfo);
+
         localStorage.setItem('paymentSuccess', 'true');
         localStorage.removeItem('paymentSuccess');
+        localStorage.removeItem('ticketingId');
+        localStorage.removeItem('seatInfo');
         window.close();
         window.opener.close();
       } catch (error) {
@@ -28,7 +30,7 @@ export default function PaymentPageClient() {
     };
 
     processPayment();
-  }, [pg_token, accessToken]);
+  }, [pg_token]);
 
   return (
     <div className="flex h-screen items-center justify-center">
