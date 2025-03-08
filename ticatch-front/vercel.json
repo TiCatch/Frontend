@@ -3,6 +3,10 @@
     {
       "source": "/api/proxy/:path*",
       "destination": "/api/proxy/:path*"
+    },
+    {
+      "source": "/api/ticket/waiting/:ticketingId/:userType",
+      "destination": "/api/ticket/waiting/:ticketingId/:userType"
     }
   ]
 }
