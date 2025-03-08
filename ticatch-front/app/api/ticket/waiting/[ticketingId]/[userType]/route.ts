@@ -3,44 +3,44 @@ import { axiosClient } from 'lib/axiosClient';
 import { TicketingLevel } from 'types';
 
 export async function POST(req: NextRequest, context: any) {
-  const params = context.params as Record<string, string>;
+  const params = (await context.params) as Record<string, string>;
 
   if (!params?.ticketingId || !params?.userType) {
     return NextResponse.json(
-      { error: 'Missing ticketingId or userType' },
+      { error: '티켓팅 아이디나 유저 타입이 존재하지 않습니다.' },
       { status: 400 },
     );
   }
 
   const { ticketingId, userType } = params;
 
-  try {
-    const body = await req.json();
-    const { level } = body;
+  const body = await req.json();
+  const { level, batchIndex = 0 } = body;
 
-    if (!level) {
-      return NextResponse.json({ error: 'Missing level' }, { status: 400 });
-    }
-
-    await startTicketing(ticketingId, userType, level);
-
-    return NextResponse.json({
-      message: `Simulation started successfully for level: ${level}`,
-    });
-  } catch (error) {
+  if (!level) {
     return NextResponse.json(
-      { error: 'Invalid request body' },
+      { error: '레벨이 존재하지 않습니다.' },
       { status: 400 },
     );
   }
+
+  const nextBatch = await startTicketing(
+    ticketingId,
+    userType,
+    level,
+    batchIndex,
+  );
+
+  return NextResponse.json(nextBatch);
 }
 
 const startTicketing = async (
   ticketingId: string,
   userType: string,
   level: TicketingLevel,
+  batchIndex: number,
 ) => {
-  console.log('Start simulation');
+  console.log(`Batch ${batchIndex}`);
 
   let userCount: number;
   let initialBatchSize: number;
@@ -60,41 +60,50 @@ const startTicketing = async (
       initialBatchSize = 100;
       break;
     default:
-      return NextResponse.json({ error: 'Invalid level' }, { status: 400 });
+      console.error('유효하지 않은 레벨입니다.');
+      return { done: true };
   }
 
   let k = 0.7;
-  let time = 0;
+  let batchSize = Math.max(
+    Math.round(initialBatchSize * Math.exp(-k * batchIndex)),
+    minBatchSize,
+  );
 
-  for (let i = 0; i < userCount; ) {
-    let batchSize = Math.max(
-      Math.round(initialBatchSize * Math.exp(-k * time)),
-      minBatchSize,
-    );
-
-    const batch = Array.from(
-      { length: Math.min(batchSize, userCount - i) },
-      (_, index) => i + index,
-    );
-    i += batch.length;
-    time += 1;
-
-    await Promise.all(
-      batch.map(async (id) => {
-        try {
-          const response = await axiosClient.get(
-            `/ticket/waiting/${ticketingId}/${userType}`,
-          );
-          console.log('id:', id, response?.data?.data);
-        } catch (error) {
-          console.log(error);
-        }
-      }),
-    );
-
-    console.log(`배치 ${i / batchSize + 1}완료 (Batch Size: ${batchSize})`);
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  const batchStartIndex = batchIndex * batchSize;
+  if (batchStartIndex >= userCount) {
+    return { done: true };
   }
-  console.log('모두 완료~');
+
+  const batch = Array.from(
+    { length: Math.min(batchSize, userCount - batchStartIndex) },
+    (_, index) => batchStartIndex + index,
+  );
+
+  console.log(`Batch ${batchIndex} 실행 중 (Size: ${batch.length})`);
+
+  for (const id of batch) {
+    try {
+      const response = await axiosClient.get(
+        `/ticket/waiting/${ticketingId}/${userType}`,
+      );
+
+      if (Number(response?.data?.statusCode) === 442) {
+        console.log('442 응답 수신: ', response?.data?.messages);
+        return { done: true };
+      } else {
+        console.log(`요청 성공 - ID: ${id}, 응답:`, response?.data?.data);
+      }
+    } catch (error) {
+      console.error(`요청 실패 (ID: ${id})`, error);
+    }
+  }
+
+  return {
+    nextBatch: batchIndex + 1,
+    ticketingId,
+    userType,
+    level,
+    done: false,
+  };
 };
