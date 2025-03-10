@@ -64,8 +64,8 @@ const startTicketing = async (
       return { done: true };
   }
 
-  let k = 0.7;
-  let batchSize = Math.max(
+  const k = 0.7;
+  const batchSize = Math.max(
     Math.round(initialBatchSize * Math.exp(-k * batchIndex)),
     minBatchSize,
   );
@@ -94,6 +94,7 @@ const startTicketing = async (
           throw new Error('STOP_PROCESS');
         }
 
+        console.log(`요청 성공 - ID: ${id}, 응답:`, response?.data?.data);
         return response?.data;
       } catch (error) {
         if ((error as Error).message === 'STOP_PROCESS') {
