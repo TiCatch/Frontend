@@ -77,4 +77,5 @@
 body {
   color: var(--color-black);
   font-family: var(--font-sans);
+  background-color: var(--background);
 }
