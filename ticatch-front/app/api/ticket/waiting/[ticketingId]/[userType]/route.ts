@@ -82,21 +82,35 @@ const startTicketing = async (
 
   console.log(`Batch ${batchIndex} 실행 중 (Size: ${batch.length})`);
 
-  for (const id of batch) {
-    try {
-      const response = await axiosClient.get(
-        `/ticket/waiting/${ticketingId}/${userType}`,
-      );
+  const responses = await Promise.allSettled(
+    batch.map(async (id) => {
+      try {
+        const response = await axiosClient.get(
+          `/ticket/waiting/${ticketingId}/${userType}`,
+        );
 
-      if (Number(response?.data?.statusCode) === 442) {
-        console.log('442 응답 수신: ', response?.data?.messages);
-        return { done: true };
-      } else {
-        console.log(`요청 성공 - ID: ${id}, 응답:`, response?.data?.data);
+        if (Number(response?.data?.statusCode) === 442) {
+          console.log('442 응답 수신: ', response?.data?.messages);
+          throw new Error('STOP_PROCESS');
+        }
+
+        return response?.data;
+      } catch (error) {
+        if ((error as Error).message === 'STOP_PROCESS') {
+          throw error;
+        }
+        return null;
       }
-    } catch (error) {
-      console.error(`요청 실패 (ID: ${id})`, error);
-    }
+    }),
+  );
+
+  const has442Error = responses.some(
+    (res) =>
+      res.status === 'rejected' && res.reason?.message === 'STOP_PROCESS',
+  );
+
+  if (has442Error) {
+    return { done: true };
   }
 
   return {
