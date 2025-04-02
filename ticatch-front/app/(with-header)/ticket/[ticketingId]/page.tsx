@@ -31,6 +31,19 @@ export default function TicketDetailPage() {
     },
   };
 
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'paymentSuccess' && event.newValue === 'true') {
+        router.push('/ticket/complete');
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [router]);
+
   // 티켓팅 정보 GET
   useEffect(() => {
     if (params.ticketingId) {

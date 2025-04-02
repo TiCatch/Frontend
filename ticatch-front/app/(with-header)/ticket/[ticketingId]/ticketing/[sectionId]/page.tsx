@@ -3,7 +3,7 @@ import { fetchSVG } from '@utils/fetchSVG';
 import { use, useEffect, useState, useRef } from 'react';
 import { ArrowBackIos } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
-import { getSectionSeats } from 'api';
+import { getCheckSeat, getSectionSeats } from 'api';
 
 interface SeatsPageProps {
   params: Promise<{ sectionId: string; ticketingId: string }>;
@@ -13,23 +13,42 @@ export default function SeatsPage({ params }: SeatsPageProps) {
   const router = useRouter();
   const resolvedParams = use(params);
   const { sectionId, ticketingId } = resolvedParams;
+
   const [seatSVG, setSeatSVG] = useState<string | null>(null);
   const [selectedSeat, setSelectedSeat] = useState<string | null>(null);
+  const [disabledSeats, setDisabledSeats] = useState<Set<string>>(new Set());
+  const [isLoading, setIsLoading] = useState(true);
   const svgContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const loadSvg = async () => {
-      const svg = await fetchSVG(
-        `https://ticatch-content.s3.ap-southeast-2.amazonaws.com/seat-img/S${sectionId}.svg`,
-      );
-      setSeatSVG(svg);
+    const fetchSeatsData = async () => {
+      try {
+        const seats = await getSectionSeats(ticketingId, sectionId);
+        console.log(seats);
+
+        const reservedSeats = new Set(
+          Object.entries(seats)
+            .filter(([_, value]) => value === true)
+            .map(([key]) => key),
+        );
+        setDisabledSeats(reservedSeats);
+
+        const svg = await fetchSVG(
+          `https://ticatch-content.s3.ap-southeast-2.amazonaws.com/seat-img/S${sectionId}.svg`,
+        );
+        setSeatSVG(svg);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    loadSvg();
-  }, []);
+    fetchSeatsData();
+  }, [ticketingId, sectionId]);
 
   useEffect(() => {
-    if (!svgContainerRef.current) return;
+    if (!svgContainerRef.current || isLoading || !seatSVG) return;
 
     const rects = svgContainerRef.current.querySelectorAll('rect');
 
@@ -38,22 +57,22 @@ export default function SeatsPage({ params }: SeatsPageProps) {
       const col = rect.getAttribute('class');
       const seatInfo = `S${sectionId}:${row}:${col}`;
 
-      if (seatInfo === selectedSeat) {
+      if (disabledSeats.has(seatInfo)) {
+        rect.setAttribute('fill', '#a5a5a5');
+        rect.setAttribute('pointer-events', 'none');
+      } else if (seatInfo === selectedSeat) {
         rect.setAttribute('fill', '#C04CFD');
       } else {
         rect.setAttribute('fill', 'transparent');
       }
     });
-  }, [selectedSeat]);
+  }, [seatSVG, disabledSeats, selectedSeat, isLoading]);
 
   const handleSeatClick = (event: React.MouseEvent<HTMLElement>) => {
     if (!svgContainerRef.current) return;
 
     const target = event.target as SVGElement;
-
-    if (target.tagName !== 'rect') {
-      return;
-    }
+    if (target.tagName !== 'rect') return;
 
     const clickedRect = target as SVGRectElement;
     const rowGroup = clickedRect.closest('g');
@@ -71,9 +90,11 @@ export default function SeatsPage({ params }: SeatsPageProps) {
   const handleConfirmSeat = async () => {
     if (!selectedSeat) return;
     try {
-      const seatData = await getSectionSeats(ticketingId, selectedSeat);
+      const seatData = await getCheckSeat(ticketingId, selectedSeat);
       if (seatData.status === 200) {
-        router.push(`/ticket/${ticketingId}/ticketing/payment`);
+        router.push(
+          `/ticket/${ticketingId}/ticketing/payment?seat=${selectedSeat}`,
+        );
       } else if (seatData.status === 450) {
         alert('이미 선점된 좌석입니다.');
       }
@@ -99,12 +120,18 @@ export default function SeatsPage({ params }: SeatsPageProps) {
             <div className="text-sm">좌석도 전체보기</div>
           </div>
 
-          <div
-            ref={svgContainerRef}
-            className="h-full"
-            dangerouslySetInnerHTML={{ __html: seatSVG || '' }}
-            onClick={handleSeatClick}
-          />
+          {isLoading ? (
+            <div className="flex h-full items-center justify-center">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-gray-600"></div>
+            </div>
+          ) : (
+            <div
+              ref={svgContainerRef}
+              className="h-full"
+              dangerouslySetInnerHTML={{ __html: seatSVG || '' }}
+              onClick={handleSeatClick}
+            />
+          )}
         </div>
 
         {/* 오른쪽 구역 */}
@@ -122,7 +149,11 @@ export default function SeatsPage({ params }: SeatsPageProps) {
 
           <div className="mt-auto w-full">
             <button
-              className={`mt-4 w-full rounded-12 py-4 text-lg text-white transition ${selectedSeat ? 'cursor-pointer bg-primary' : 'cursor-not-allowed bg-gray-300'}`}
+              className={`mt-4 w-full rounded-12 py-4 text-lg text-white transition ${
+                selectedSeat
+                  ? 'cursor-pointer bg-primary'
+                  : 'cursor-not-allowed bg-gray-300'
+              }`}
               disabled={!selectedSeat}
               onClick={handleConfirmSeat}>
               좌석 선택 완료

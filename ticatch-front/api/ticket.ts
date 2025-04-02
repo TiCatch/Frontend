@@ -1,5 +1,5 @@
 import { axiosClient } from 'lib';
-import { TicketingLevel, TicketingResponse } from 'types';
+import { TicketingLevel, TicketingResponse, CompleteResponse } from 'types';
 
 export const createTicket = async (
   level: TicketingLevel,
@@ -57,5 +57,21 @@ export const updateTicket = async (
     return { status: statusCode, data, messages };
   } catch (error) {
     throw new Error('티켓 정보를 수정하는 도중 오류가 발생했습니다.');
+  }
+};
+
+export const successTicket = async (
+  ticketingId: number,
+  seatInfo: string,
+): Promise<CompleteResponse> => {
+  try {
+    const response = await axiosClient.post('/ticket/complete', {
+      ticketingId,
+      seatInfo,
+    });
+
+    return response.data;
+  } catch (error) {
+    throw new Error('티켓팅 실패');
   }
 };

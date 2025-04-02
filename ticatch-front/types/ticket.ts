@@ -15,3 +15,18 @@ export interface TicketingResponse {
     ticketingStatus: TicketingStatus;
   };
 }
+
+export interface CompleteResponse {
+  statusCode: number;
+  messages: string;
+  developerMessage: string;
+  timestamp: string;
+  data: {
+    userId: number;
+    ticketingId: number;
+    ticketingLevel: TicketingLevel;
+    seatInfo: string;
+    ticketingStartTime: string;
+    ticketingEndTime: string;
+  };
+}
