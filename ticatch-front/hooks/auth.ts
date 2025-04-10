@@ -1,16 +1,31 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getUserStatusClient, loginWithKakao, logoutUser } from 'api';
+import { useEffect, useState } from 'react';
 
 /**
  * 로그인 상태 확인 (localStorage)
  */
 export const useUserStatus = () => {
-  return useQuery({
+  const [isClient, setIsClient] = useState(false);
+
+  // hydration 이후에만 쿼리 실행
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['userStatus'],
     queryFn: getUserStatusClient,
     staleTime: 1000 * 60 * 5,
-    enabled: typeof window !== 'undefined',
+    enabled: isClient,
   });
+
+  return {
+    userStatus: data,
+    isLoggedIn: !!data,
+    isLoading,
+    isError,
+  };
 };
 
 /**

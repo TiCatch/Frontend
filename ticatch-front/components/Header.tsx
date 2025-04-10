@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const Header = () => {
-  const { data: isLoggedIn } = useUserStatus();
+  const { isLoggedIn } = useUserStatus();
   const logout = useLogout();
 
   return (

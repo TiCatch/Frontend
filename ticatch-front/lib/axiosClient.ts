@@ -23,9 +23,13 @@ axiosClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-    if (error.response?.status === 500 && !originalRequest._retry) {
+
+    const status = error.response?.status;
+    const isTokenError = status === 401 || status === 403;
+
+    if (isTokenError && !originalRequest._retry) {
       if (isRefreshing) {
-        return new Promise<void>((resolve) => {
+        return new Promise((resolve) => {
           failedRequests.push(() => resolve(axiosClient(originalRequest)));
         });
       }
@@ -45,10 +49,18 @@ axiosClient.interceptors.response.use(
         return axiosClient(originalRequest);
       } catch (refreshError) {
         localStorage.removeItem('accessToken');
-        window.location.href = '/login';
+
+        if (typeof window !== 'undefined') {
+          const isOnLoginPage = window.location.pathname === '/login';
+          if (!isOnLoginPage) {
+            window.location.href = '/login';
+          }
+        }
+
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
+        failedRequests = [];
       }
     }
 
