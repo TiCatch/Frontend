@@ -87,8 +87,6 @@ export const logoutUser = async () => {
  * @returns 새로운 accessToken
  */
 export const refreshAccessToken = async () => {
-  const response = await authClient.post('/auth/reissue');
-  return response.data?.data?.tokenDto?.accessToken
-    .replace(/^Bearer/, '')
-    .trim();
+  const response = await authClient.get('/auth/reissue');
+  return response.data?.data?.accessToken.replace(/^Bearer/, '').trim();
 };

@@ -17,8 +17,6 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    console.log('targetURL: ', targetURL);
-
     const headers: Record<string, string> = {};
     if (!isKakaoLogin) {
       headers['Authorization'] = req.headers.get('authorization') || '';

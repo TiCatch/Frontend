@@ -4,9 +4,7 @@ import { useEffect } from 'react';
 import { isTokenExpired, logoutUser } from 'api';
 import Link from 'next/link';
 import Image from 'next/image';
-
-import { logoImage } from '@constants/imagePath';
-import { kakaoImage } from '@constants/imagePath';
+import { logoImage, kakaoImage } from '@constants/imagePath';
 
 const LoginPage = () => {
   const KAKAO_CLIENT_ID = process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID as string;
