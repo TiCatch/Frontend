@@ -1,5 +1,4 @@
 import CommonButton from '@components/button/CommonButton';
-import Image from 'next/image';
 import { Close } from '@mui/icons-material';
 
 interface ModalProps {
@@ -44,7 +43,7 @@ const CommonModal: React.FC<ModalProps> = ({
         )}
         <div className="flex flex-col items-center justify-between gap-[14px] break-keep px-[24px] text-center">
           <p className="whitespace-pre-line text-xl leading-[1.4]">{title}</p>
-          <p className="text-l text-gray-300">{subtitle}</p>
+          <p className="text-m text-gray-300">{subtitle}</p>
         </div>
         <div className="flex w-full justify-center gap-[14px] pb-[8px] pt-[12px]">
           {onClose && (

@@ -11,6 +11,18 @@ export default {
       fontFamily: {
         sans: ['var(--font-sans)', 'sans-serif'],
       },
+      fontSize: {
+        '2xs': 'var(--font-2xs)',
+        xs: 'var(--font-xs)',
+        s: 'var(--font-s)',
+        m: 'var(--font-m)',
+        l: 'var(--font-l)',
+        xl: 'var(--font-xl)',
+        '2xl': 'var(--font-2xl)',
+        '3xl': 'var(--font-3xl)',
+        '4xl': 'var(--font-4xl)',
+        '5xl': 'var(--font-5xl)',
+      },
       colors: {
         background: 'var(--background)',
         primary: 'var(--color-primary)',
