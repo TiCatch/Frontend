@@ -58,12 +58,14 @@ export default function SeatsPage({ params }: SeatsPageProps) {
       const seatInfo = `S${sectionId}:${row}:${col}`;
 
       if (disabledSeats.has(seatInfo)) {
-        rect.setAttribute('fill', '#a5a5a5');
+        rect.setAttribute('fill', '#D5D5D5');
+        rect.setAttribute('stroke', '#D5D5D5');
         rect.setAttribute('pointer-events', 'none');
       } else if (seatInfo === selectedSeat) {
-        rect.setAttribute('fill', '#C04CFD');
+        rect.setAttribute('fill', '#EBC8FE');
+        rect.setAttribute('stroke', '#787878');
       } else {
-        rect.setAttribute('fill', 'transparent');
+        rect.setAttribute('fill', '#D587FE');
       }
     });
   }, [seatSVG, disabledSeats, selectedSeat, isLoading]);
