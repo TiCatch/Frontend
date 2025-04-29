@@ -1,6 +1,7 @@
 'use client';
+
 import { fetchSVG } from '@utils/fetchSVG';
-import { use, useEffect, useState, useRef } from 'react';
+import { use, useEffect, useState, useRef, useCallback } from 'react';
 import { ArrowBackIos } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { getCheckSeat, getSectionSeats } from 'api';
@@ -20,32 +21,33 @@ export default function SeatsPage({ params }: SeatsPageProps) {
   const [isLoading, setIsLoading] = useState(true);
   const svgContainerRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const fetchSeatsData = async () => {
-      try {
-        const seats = await getSectionSeats(ticketingId, sectionId);
-        console.log(seats);
+  const fetchSeatsData = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const seats = await getSectionSeats(ticketingId, sectionId);
+      console.log(seats);
 
-        const reservedSeats = new Set(
-          Object.entries(seats)
-            .filter(([_, value]) => value === true)
-            .map(([key]) => key),
-        );
-        setDisabledSeats(reservedSeats);
+      const reservedSeats = new Set(
+        Object.entries(seats)
+          .filter(([_, value]) => value === true)
+          .map(([key]) => key),
+      );
+      setDisabledSeats(reservedSeats);
 
-        const svg = await fetchSVG(
-          `https://ticatch-content.s3.ap-southeast-2.amazonaws.com/seat-img/S${sectionId}.svg`,
-        );
-        setSeatSVG(svg);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchSeatsData();
+      const svg = await fetchSVG(
+        `https://ticatch-content.s3.ap-southeast-2.amazonaws.com/seat-img/S${sectionId}.svg`,
+      );
+      setSeatSVG(svg);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   }, [ticketingId, sectionId]);
+
+  useEffect(() => {
+    fetchSeatsData();
+  }, [fetchSeatsData]);
 
   useEffect(() => {
     if (!svgContainerRef.current || isLoading || !seatSVG) return;
@@ -68,7 +70,7 @@ export default function SeatsPage({ params }: SeatsPageProps) {
         rect.setAttribute('fill', '#D587FE');
       }
     });
-  }, [seatSVG, disabledSeats, selectedSeat, isLoading]);
+  }, [seatSVG, disabledSeats, selectedSeat, isLoading, sectionId]);
 
   const handleSeatClick = (event: React.MouseEvent<HTMLElement>) => {
     if (!svgContainerRef.current) return;
@@ -99,6 +101,8 @@ export default function SeatsPage({ params }: SeatsPageProps) {
         );
       } else if (seatData.status === 450) {
         alert('이미 선점된 좌석입니다.');
+        setSelectedSeat(null);
+        await fetchSeatsData();
       }
     } catch (error) {
       console.error(error);
@@ -109,7 +113,7 @@ export default function SeatsPage({ params }: SeatsPageProps) {
     <div className="flex h-full w-full flex-col gap-4">
       <div className="text-lg font-bold">좌석선택</div>
       <div className="flex min-h-0 flex-grow gap-4">
-        {/* 왼쪽 구역 */}
+        {/* 왼쪽 영역 */}
         <div className="flex w-2/3 flex-col items-center justify-center gap-4 rounded bg-gray-50 p-8 shadow-md">
           <div>현재 보고계신 구역은 S{sectionId} 구역 입니다.</div>
 
@@ -136,7 +140,7 @@ export default function SeatsPage({ params }: SeatsPageProps) {
           )}
         </div>
 
-        {/* 오른쪽 구역 */}
+        {/* 오른쪽 영역 */}
         <div className="flex w-1/3 flex-col gap-4 rounded bg-gray-50 p-8 shadow-md">
           <div className="flex justify-center text-sm text-gray-600">
             좌석선택 이후 5분 이내 결제가 완료되지 않을 시 선택하신 좌석의 선점
