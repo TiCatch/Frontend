@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 
 const CheckAnimation = dynamic(() => import('@components/Animation/Check'), {
   ssr: false,
+  loading: () => <div className="h-[200px] w-[200px]" />,
 });
 
 export default function CompletePage() {
