@@ -1,6 +1,7 @@
 'use client';
+
 import { fetchSVG } from '@utils/fetchSVG';
-import { use, useEffect, useState, useRef } from 'react';
+import { use, useEffect, useState, useRef, useCallback } from 'react';
 import { ArrowBackIos } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { getCheckSeat, getSectionSeats } from 'api';
@@ -20,32 +21,33 @@ export default function SeatsPage({ params }: SeatsPageProps) {
   const [isLoading, setIsLoading] = useState(true);
   const svgContainerRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const fetchSeatsData = async () => {
-      try {
-        const seats = await getSectionSeats(ticketingId, sectionId);
-        console.log(seats);
+  const fetchSeatsData = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const seats = await getSectionSeats(ticketingId, sectionId);
+      console.log(seats);
 
-        const reservedSeats = new Set(
-          Object.entries(seats)
-            .filter(([_, value]) => value === true)
-            .map(([key]) => key),
-        );
-        setDisabledSeats(reservedSeats);
+      const reservedSeats = new Set(
+        Object.entries(seats)
+          .filter(([_, value]) => value === true)
+          .map(([key]) => key),
+      );
+      setDisabledSeats(reservedSeats);
 
-        const svg = await fetchSVG(
-          `https://ticatch-content.s3.ap-southeast-2.amazonaws.com/seat-img/S${sectionId}.svg`,
-        );
-        setSeatSVG(svg);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchSeatsData();
+      const svg = await fetchSVG(
+        `https://ticatch-content.s3.ap-southeast-2.amazonaws.com/seat-img/S${sectionId}.svg`,
+      );
+      setSeatSVG(svg);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   }, [ticketingId, sectionId]);
+
+  useEffect(() => {
+    fetchSeatsData();
+  }, [fetchSeatsData]);
 
   useEffect(() => {
     if (!svgContainerRef.current || isLoading || !seatSVG) return;
@@ -58,15 +60,17 @@ export default function SeatsPage({ params }: SeatsPageProps) {
       const seatInfo = `S${sectionId}:${row}:${col}`;
 
       if (disabledSeats.has(seatInfo)) {
-        rect.setAttribute('fill', '#a5a5a5');
+        rect.setAttribute('fill', '#D5D5D5');
+        rect.setAttribute('stroke', '#D5D5D5');
         rect.setAttribute('pointer-events', 'none');
       } else if (seatInfo === selectedSeat) {
-        rect.setAttribute('fill', '#C04CFD');
+        rect.setAttribute('fill', '#EBC8FE');
+        rect.setAttribute('stroke', '#787878');
       } else {
-        rect.setAttribute('fill', 'transparent');
+        rect.setAttribute('fill', '#D587FE');
       }
     });
-  }, [seatSVG, disabledSeats, selectedSeat, isLoading]);
+  }, [seatSVG, disabledSeats, selectedSeat, isLoading, sectionId]);
 
   const handleSeatClick = (event: React.MouseEvent<HTMLElement>) => {
     if (!svgContainerRef.current) return;
@@ -97,6 +101,8 @@ export default function SeatsPage({ params }: SeatsPageProps) {
         );
       } else if (seatData.status === 450) {
         alert('이미 선점된 좌석입니다.');
+        setSelectedSeat(null);
+        await fetchSeatsData();
       }
     } catch (error) {
       console.error(error);
