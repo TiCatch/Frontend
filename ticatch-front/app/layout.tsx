@@ -4,6 +4,7 @@ import './globals.css';
 import Providers from 'providers';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { getUserStatusServer } from 'api/auth.server';
+import TicketingGuard from '@components/Modal/TicketingGuard';
 
 const pretendard = localFont({
   src: [
@@ -42,7 +43,10 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={pretendard.variable}>
-        <Providers dehydratedState={dehydratedState}>{children}</Providers>
+        <Providers dehydratedState={dehydratedState}>
+          <TicketingGuard />
+          {children}
+        </Providers>
       </body>
     </html>
   );
