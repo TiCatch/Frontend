@@ -19,7 +19,7 @@ const CommonButton: React.FC<ButtonProps> = ({
     <button
       onClick={onClick}
       disabled={isDisabled}
-      className={`min-w-[160px] whitespace-nowrap ${textColor} border ${borderColor} rounded-12 px-[48px] py-[14px] text-lg ${isDisabled && 'cursor-not-allowed'} ${backgroundColor}`}>
+      className={`relative flex h-[46px] min-w-[160px] items-center justify-center whitespace-nowrap ${textColor} border ${borderColor} text-m rounded-[8px] px-[32px] py-[14px] ${isDisabled && 'cursor-not-allowed'} btn-hover-overlay overflow-hidden ${backgroundColor}`}>
       {title}
     </button>
   );

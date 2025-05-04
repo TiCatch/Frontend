@@ -1,6 +1,6 @@
 'use client';
 
-import { getTicket } from 'api';
+import { enterWaiting, getTicket, updateTicket } from 'api';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import { TicketingResponse } from 'types';
@@ -129,6 +129,22 @@ export default function TicketDetailPage() {
     }
   };
 
+  const enterTicketing = async () => {
+    try {
+      const { status, data } = await enterWaiting(params.ticketingId);
+      if (status === 200) {
+        const waitingNumber = data.data.waitingNumber as number;
+        window.open(
+          `/ticket/${params.ticketingId}/ticketing/${waitingNumber > 0 ? 'waiting' : 'section'}`,
+          '_blank',
+          'width=950,height=650,top=50,left=50,noopener,noreferrer',
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       <div className="flex flex-col gap-6 rounded-md border p-6">
@@ -168,11 +184,7 @@ export default function TicketDetailPage() {
             isDisabled={!isTicketingOpen}
             onClick={() => {
               if (isTicketingOpen) {
-                window.open(
-                  `/ticket/${params.ticketingId}/ticketing/section`,
-                  '_blank',
-                  'width=950,height=650,top=50,left=50,noopener,noreferrer',
-                );
+                enterTicketing();
               }
             }}
           />

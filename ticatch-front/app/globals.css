@@ -79,3 +79,17 @@ body {
   font-family: var(--font-sans);
   background-color: var(--background);
 }
+
+.btn-hover-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: transparent;
+  pointer-events: none;
+  transition: background-color 0.2s;
+  border-radius: 8px;
+}
+
+.btn-hover-overlay:hover::after {
+  background-color: var(--blackTip-8);
+}
