@@ -6,11 +6,15 @@ import Image from 'next/image';
 import CommonButton from '@components/button/CommonButton';
 import { levelImage } from '@constants/imagePath';
 import { TicketingLevel } from 'types';
-import { createTicket } from 'api';
+import { useActiveTicket, useUserStatus } from '@hooks';
+import queryClient from 'providers/queryClient';
 
 function TimeContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+
+  const { isLoggedIn, isLoading: isUserLoading } = useUserStatus();
+  const { createTicket } = useActiveTicket(isLoggedIn && !isUserLoading);
 
   const level = searchParams.get('level') as TicketingLevel;
   const levelAttribute = {
@@ -41,12 +45,17 @@ function TimeContent() {
     router.push('/ticket/level');
   };
 
+  // 티켓팅 생성
   const handleSubmit = async () => {
     try {
-      const ticketData = await createTicket(level, startTime);
+      const ticketData = await createTicket({
+        level,
+        startTime,
+      });
       const ticketingId = ticketData.data.ticketingId;
 
       router.push(`/ticket/${ticketingId}`);
+      queryClient.setQueryData(['activeTicket'], ticketData.data);
     } catch (error) {
       console.error('티켓팅 생성 중 문제가 발생했습니다.', error);
     }
