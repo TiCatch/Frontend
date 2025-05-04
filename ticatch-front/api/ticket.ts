@@ -75,3 +75,13 @@ export const successTicket = async (
     throw new Error('티켓팅 실패');
   }
 };
+
+export const fetchActiveTicket = async () => {
+  try {
+    const res = await axiosClient.get('/ticket/in-progress');
+    return res.status === 200 ? (res.data.data ?? null) : null;
+  } catch (error: any) {
+    if (error.response?.status === 443) return null;
+    throw new Error('티켓 진행 상태 확인 도중 에러');
+  }
+};
