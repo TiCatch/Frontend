@@ -25,16 +25,12 @@ const TicketingGuard = () => {
     const match = pathname.match(/^\/ticket\/(\d+)/);
     const currentTicketId = match?.[1] || null;
     if (
-      activeTicketId &&
       currentTicketId &&
-      Number(currentTicketId) !== Number(activeTicketId)
+      ((activeTicketId && Number(currentTicketId) !== Number(activeTicketId)) ||
+        !activeTicketId)
     ) {
       setOpenInvalidModal(true);
       return;
-    }
-
-    if (!activeTicketId && currentTicketId) {
-      setOpenInvalidModal(true);
     }
 
     const isInsideTicketPage = pathname.startsWith(`/ticket/${activeTicketId}`);
@@ -55,7 +51,6 @@ const TicketingGuard = () => {
 
   const handleConfirmLeave = () => {
     updateTicket(Number(activeTicketId));
-
     setOpenLeaveModal(false);
   };
 
