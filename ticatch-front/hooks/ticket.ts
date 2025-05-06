@@ -13,7 +13,7 @@ export const useActiveTicket = (enabled: boolean) => {
     queryFn: fetchActiveTicket,
     enabled,
     retry: false,
-    staleTime: 1000 * 60,
+    staleTime: 1000 * 60 * 30,
     refetchOnWindowFocus: true,
   });
 
