@@ -71,8 +71,6 @@ export default function TicketDetailPage() {
     if (ticketingId) {
       updateTicket(ticketingId).then(({ status, messages }) => {
         if (status === 200) {
-          queryClient.setQueryData(['activeTicket'], null);
-          queryClient.invalidateQueries({ queryKey: ['activeTicket'] });
           router.push('/');
           handleClose();
         } else {

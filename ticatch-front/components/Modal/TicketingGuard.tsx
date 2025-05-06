@@ -54,13 +54,7 @@ const TicketingGuard = () => {
   };
 
   const handleConfirmLeave = () => {
-    setOpenLeaveModal(false);
-
-    updateTicket(Number(activeTicketId)).then(({ status }) => {
-      if (status === 200) {
-        queryClient.invalidateQueries({ queryKey: ['activeTicket'] });
-      }
-    });
+    updateTicket(Number(activeTicketId));
 
     setOpenLeaveModal(false);
   };

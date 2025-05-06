@@ -55,7 +55,6 @@ function TimeContent() {
       const ticketingId = ticketData.data.ticketingId;
 
       router.push(`/ticket/${ticketingId}`);
-      queryClient.setQueryData(['activeTicket'], ticketData.data);
     } catch (error) {
       console.error('티켓팅 생성 중 문제가 발생했습니다.', error);
     }

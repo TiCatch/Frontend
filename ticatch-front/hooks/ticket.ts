@@ -4,6 +4,7 @@ import {
   fetchActiveTicket,
   updateTicket as updateTicketApi,
 } from 'api';
+import queryClient from 'providers/queryClient';
 import { TicketingLevel } from 'types';
 
 export const useActiveTicket = (enabled: boolean) => {
@@ -26,11 +27,18 @@ export const useActiveTicket = (enabled: boolean) => {
     }) => {
       return createTicket(level, startTime);
     },
+    onSuccess: (data) => {
+      queryClient.setQueryData(['activeTicket'], data.data);
+    },
   });
 
   const updateTicketMutation = useMutation({
     mutationFn: async (ticketingId: number) => {
       return updateTicketApi(ticketingId);
+    },
+    onSuccess: () => {
+      queryClient.setQueryData(['activeTicket'], null);
+      queryClient.invalidateQueries({ queryKey: ['activeTicket'] });
     },
   });
 
