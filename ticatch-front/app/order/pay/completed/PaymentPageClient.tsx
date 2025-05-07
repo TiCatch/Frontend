@@ -1,7 +1,10 @@
 'use client';
 
 import { useEffect } from 'react';
-import { approvePayment, successTicket } from 'api';
+import { approvePayment } from 'api';
+import { useActiveTicket, useUserStatus } from '@hooks';
+const { isLoggedIn, isLoading: isUserLoading } = useUserStatus();
+const { successTicket } = useActiveTicket(isLoggedIn && !isUserLoading);
 
 interface PaymentPageClientProps {
   pg_token: string;
@@ -13,13 +16,13 @@ export default function PaymentPageClient({
   useEffect(() => {
     if (!pg_token) return;
 
-    const ticketingId = localStorage.getItem('ticketingId');
+    const ticketingId = Number(localStorage.getItem('ticketingId'));
     const seatInfo = localStorage.getItem('seatInfo') as string;
 
     const processPayment = async () => {
       try {
         await approvePayment(pg_token);
-        await successTicket(Number(ticketingId), seatInfo);
+        await successTicket({ ticketingId, seatInfo });
 
         localStorage.setItem('paymentSuccess', 'true');
         localStorage.removeItem('paymentSuccess');

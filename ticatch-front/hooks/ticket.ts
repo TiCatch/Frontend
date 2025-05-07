@@ -2,6 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import {
   createTicket,
   fetchActiveTicket,
+  successTicket,
   updateTicket as updateTicketApi,
 } from 'api';
 import queryClient from 'providers/queryClient';
@@ -42,11 +43,28 @@ export const useActiveTicket = (enabled: boolean) => {
     },
   });
 
+  const successTicketMutation = useMutation({
+    mutationFn: async ({
+      ticketingId,
+      seatInfo,
+    }: {
+      ticketingId: number;
+      seatInfo: string;
+    }) => {
+      return successTicket(ticketingId, seatInfo);
+    },
+    onSuccess: () => {
+      queryClient.setQueryData(['activeTicket'], null);
+      queryClient.invalidateQueries({ queryKey: ['activeTicket'] });
+    },
+  });
+
   return {
     activeTicketId: activeTicket?.ticketingId || null,
     activeTicket,
     isLoading,
     createTicket: createTicketMutation.mutateAsync,
     updateTicket: updateTicketMutation.mutateAsync,
+    successTicket: successTicketMutation.mutateAsync,
   };
 };
