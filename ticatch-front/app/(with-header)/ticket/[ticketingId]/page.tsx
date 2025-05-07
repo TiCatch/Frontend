@@ -8,7 +8,6 @@ import CommonButton from '@components/button/CommonButton';
 import { getRemainingTime } from '@utils/getRemainingTime';
 import CommonModal from '@components/Modal/CommonModal';
 import { useActiveTicket, useUserStatus } from '@hooks';
-import queryClient from 'providers/queryClient';
 
 export default function TicketDetailPage() {
   const params = useParams<{ ticketingId: string }>();
@@ -16,7 +15,9 @@ export default function TicketDetailPage() {
   const ticketingId = Number(params.ticketingId);
 
   const { isLoggedIn, isLoading: isUserLoading } = useUserStatus();
-  const { updateTicket } = useActiveTicket(isLoggedIn && !isUserLoading);
+  const { updateTicket, successTicket } = useActiveTicket(
+    isLoggedIn && !isUserLoading,
+  );
 
   const [ticket, setTicket] = useState<TicketingResponse['data'] | null>(null);
   const [remainingTime, setRemainingTime] = useState<string>('0:00');
@@ -39,8 +40,10 @@ export default function TicketDetailPage() {
   };
 
   useEffect(() => {
-    const handleStorageChange = (event: StorageEvent) => {
+    const handleStorageChange = async (event: StorageEvent) => {
       if (event.key === 'paymentSuccess' && event.newValue === 'true') {
+        const seatInfo = localStorage.getItem('seatInfo') as string;
+        await successTicket({ ticketingId, seatInfo });
         router.push('/ticket/complete');
       }
     };
