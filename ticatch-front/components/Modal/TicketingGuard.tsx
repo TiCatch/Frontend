@@ -2,7 +2,6 @@
 
 import { useActiveTicket, useUserStatus } from '@hooks';
 import { usePathname, useRouter } from 'next/navigation';
-import queryClient from 'providers/queryClient';
 import { useEffect, useState } from 'react';
 import CommonModal from './CommonModal';
 
@@ -33,7 +32,9 @@ const TicketingGuard = () => {
       return;
     }
 
-    const isInsideTicketPage = pathname.startsWith(`/ticket/${activeTicketId}`);
+    const isInsideTicketPage =
+      pathname.startsWith(`/ticket/${activeTicketId}`) ||
+      pathname.startsWith('/order/pay/completed');
     if (activeTicketId && !isInsideTicketPage) {
       setOpenLeaveModal(true);
       return;
