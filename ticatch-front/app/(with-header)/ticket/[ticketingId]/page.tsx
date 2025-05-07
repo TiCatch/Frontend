@@ -7,10 +7,17 @@ import { TicketingResponse } from 'types';
 import CommonButton from '@components/button/CommonButton';
 import { getRemainingTime } from '@utils/getRemainingTime';
 import CommonModal from '@components/Modal/CommonModal';
+import { useActiveTicket, useUserStatus } from '@hooks';
+import queryClient from 'providers/queryClient';
 
 export default function TicketDetailPage() {
   const params = useParams<{ ticketingId: string }>();
   const router = useRouter();
+  const ticketingId = Number(params.ticketingId);
+
+  const { isLoggedIn, isLoading: isUserLoading } = useUserStatus();
+  const { updateTicket } = useActiveTicket(isLoggedIn && !isUserLoading);
+
   const [ticket, setTicket] = useState<TicketingResponse['data'] | null>(null);
   const [remainingTime, setRemainingTime] = useState<string>('0:00');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,29 +53,26 @@ export default function TicketDetailPage() {
 
   // 티켓팅 정보 GET
   useEffect(() => {
-    if (params.ticketingId) {
-      getTicket(Number(params.ticketingId)).then(
-        ({ status, data, messages }) => {
-          if (status === 200 && data) {
-            if (data.ticketingStatus === 'CANCELED') {
-              router.push('/');
-            } else {
-              setTicket(data);
-            }
-          } else {
-            console.error(messages);
-          }
-        },
-      );
-    }
-  }, [params.ticketingId]);
+    if (!ticketingId) return;
+
+    getTicket(ticketingId).then(({ status, data, messages }) => {
+      if (status === 200 && data) {
+        if (data.ticketingStatus !== 'CANCELED') {
+          setTicket(data);
+        }
+      } else {
+        console.error(messages);
+      }
+    });
+  }, [ticketingId]);
 
   //티켓팅 취소
   const handleCancelTicket = () => {
-    if (params.ticketingId) {
-      updateTicket(Number(params.ticketingId)).then(({ status, messages }) => {
+    if (ticketingId) {
+      updateTicket(ticketingId).then(({ status, messages }) => {
         if (status === 200) {
           router.push('/');
+          handleClose();
         } else {
           console.error(messages);
         }
@@ -89,10 +93,13 @@ export default function TicketDetailPage() {
       const updatedTime = getRemainingTime(targetTime);
       setRemainingTime(updatedTime);
 
-      if (updatedTime === '0:00') {
+      // 가상 요청 시작! (중복 방지)
+      if (updatedTime === '0:01') {
+        setTimeout(() => {
+          triggerVirtualUsers();
+        }, 1000);
+      } else if (updatedTime === '0:00') {
         clearInterval(interval);
-        // 가상 요청 시작!
-        triggerVirtualUsers();
       }
     }, 1000);
 
@@ -108,16 +115,13 @@ export default function TicketDetailPage() {
 
   const triggerVirtualUsers = async () => {
     try {
-      const res = await fetch(
-        `/api/ticket/waiting/${params.ticketingId}/VIRTUAL`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ level }),
+      await fetch(`/api/ticket/waiting/${params.ticketingId}/VIRTUAL`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({ level }),
+      });
     } catch (error) {
       console.log('가상 요청 시작 에러: ', error);
     }
