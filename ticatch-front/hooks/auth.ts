@@ -1,5 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getUserStatusClient, loginWithKakao, logoutUser } from 'api';
+import {
+  getUserInfoClient,
+  getUserStatusClient,
+  loginWithKakao,
+  logoutUser,
+} from 'api';
 import { useEffect, useState } from 'react';
 
 /**
@@ -20,8 +25,17 @@ export const useUserStatus = () => {
     enabled: isClient,
   });
 
+  const { data: userInfo, isLoading: infoLoading } = useQuery({
+    queryKey: ['userInfo'],
+    queryFn: getUserInfoClient,
+    staleTime: 1000 * 60 * 5,
+    enabled: isClient,
+  });
+
   return {
     userStatus: data,
+    userInfo,
+    infoLoading,
     isLoggedIn: !!data,
     isLoading,
     isError,

@@ -1,5 +1,5 @@
 import { LoginResponse } from 'types';
-import { authClient } from 'lib';
+import { authClient, axiosClient } from 'lib';
 
 /**
  * 카카오 인증 코드로 로그인 요청
@@ -71,6 +71,15 @@ export const getUserStatusClient = async () => {
     }
   }
   return !!accessToken;
+};
+
+export const getUserInfoClient = async () => {
+  if (typeof window === 'undefined') return false;
+  if (await getUserStatusClient()) {
+    const response = await axiosClient.get('/users/');
+    return response.data?.data;
+  }
+  return null;
 };
 
 /**
