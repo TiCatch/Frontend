@@ -16,11 +16,10 @@ export const getTicketsHistory = async (
   page: number,
   size: number,
   sort: string,
-  asc: string = 'desc',
 ) => {
   try {
     const response = await axiosClient.get('/history/ticketings', {
-      params: { page, size, sort, asc },
+      params: { page, size, sort },
     });
     console.log(response);
     return {

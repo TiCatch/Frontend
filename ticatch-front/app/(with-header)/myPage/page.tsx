@@ -35,13 +35,9 @@ export default function MyPage() {
   const fetchTickets = useCallback(
     async (page: number) => {
       setLoading(true);
+      const sort = `${sortType},${asc ? 'asc' : 'desc'}`;
       try {
-        const { status, data } = await getTicketsHistory(
-          page,
-          20,
-          sortType,
-          asc ? 'asc' : 'desc',
-        );
+        const { status, data } = await getTicketsHistory(page, 20, sort);
         if (status === 200) {
           setMyTickets((prev) =>
             page === 0 ? data.content : [...prev, ...data.content],
