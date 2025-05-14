@@ -25,7 +25,8 @@ axiosClient.interceptors.response.use(
     const originalRequest = error.config;
 
     const status = error.response?.status;
-    const isTokenError = status === 401 || status === 403;
+    const isTokenError =
+      status === 401 || status === 403 || status === 430 || status === 431;
 
     if (isTokenError && !originalRequest._retry) {
       if (isRefreshing) {
