@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { logoImage } from '@constants/imagePath';
-import Header from '@components/Header';
+import HeaderDynamic from '@components/HeaderDynamic.client';
 
 export default function Home() {
   return (
     <div className="relative">
       <div className="container absolute left-1/2 top-0 z-[1] w-[100%] -translate-x-1/2">
-        <Header />
+        <HeaderDynamic />
       </div>
       <div className="relative flex h-screen flex-col items-center justify-center gap-[72px] overflow-hidden">
         {/* 로고 이미지 */}

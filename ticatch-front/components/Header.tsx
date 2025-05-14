@@ -13,18 +13,17 @@ const Header = () => {
   const { isLoggedIn } = useUserStatus();
   const logout = useLogout();
 
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   return (
     <header className="sticky top-0 z-[10] flex bg-background py-5 text-s backdrop-opacity-80">
-      {isMounted && pathname !== '/' && (
-        <Link href="/">
-          <Image src={logoImage} alt="Header" width={128} height={24} />
-        </Link>
-      )}
+      <Link href="/">
+        <Image
+          src={logoImage}
+          alt="Header"
+          width={128}
+          height={24}
+          className={pathname === '/' ? 'invisible' : 'visible'}
+        />
+      </Link>
       <div className="flex grow justify-end">
         {isLoggedIn ? (
           <div className="flex gap-[36px]">
@@ -33,7 +32,7 @@ const Header = () => {
               className="transition-color duration-[200ms] hover:text-purple-500">
               로그아웃
             </button>
-            {isMounted && pathname !== '/myPage' && (
+            {pathname !== '/myPage' && (
               <Link
                 href="/myPage"
                 className="transition-color relative flex items-center gap-[4px] fill-purple-600 text-purple-600 duration-[200ms] hover:fill-purple-700 hover:text-purple-700">
