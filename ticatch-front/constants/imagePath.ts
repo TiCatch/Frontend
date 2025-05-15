@@ -4,6 +4,12 @@ export const levelImage = {
   HARD: '/images/HardCard.svg',
 };
 
+export const ticketImage = {
+  EASY: '/images/EasyTicket.svg',
+  NORMAL: '/images/NormalTicket.svg',
+  HARD: '/images/HardTicket.svg',
+};
+
 export const logoImage = '/images/Logo.svg';
 
 export const kakaoImage = '/images/Kakao.svg';

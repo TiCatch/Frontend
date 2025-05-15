@@ -30,3 +30,12 @@ export interface CompleteResponse {
     ticketingEndTime: string;
   };
 }
+
+export interface MyTicket {
+  historyId: number;
+  userId: number;
+  seatInfo: string;
+  ticketingScore: number;
+  ticketingLevel: TicketingLevel;
+  ticketingTime: string;
+}

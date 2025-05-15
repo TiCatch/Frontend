@@ -56,6 +56,7 @@ export default {
           '3-50': 'var(--color-sub3-50)',
           4: 'var(--color-sub4)',
           '4-50': 'var(--color-sub4-50)',
+          '4-100': 'var(--color-sub4-100)',
           5: 'var(--color-sub5)',
           6: 'var(--color-sub6)',
           7: 'var(--color-sub7)',
