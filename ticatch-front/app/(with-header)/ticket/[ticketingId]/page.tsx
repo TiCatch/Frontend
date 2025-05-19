@@ -1,6 +1,6 @@
 'use client';
 
-import { enterWaiting, getTicket, updateTicket } from 'api';
+import { enterWaiting, getTicket } from 'api';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import { TicketingResponse } from 'types';
@@ -8,6 +8,9 @@ import CommonButton from '@components/button/CommonButton';
 import { getRemainingTime } from '@utils/getRemainingTime';
 import CommonModal from '@components/Modal/CommonModal';
 import { useActiveTicket, useUserStatus } from '@hooks';
+import ReserveTabContent from '@components/ticketInfo/ReserveTab';
+import GuideTabContent from '@components/ticketInfo/GuideTab';
+import { levelAttribute, tabs, performanceInfo } from 'constants/ticketingInfo';
 
 export default function TicketDetailPage() {
   const params = useParams<{ ticketingId: string }>();
@@ -23,21 +26,7 @@ export default function TicketDetailPage() {
   const [remainingTime, setRemainingTime] = useState<string>('0:00');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isTicketingOpen = remainingTime === '0:00';
-
-  const levelAttribute = {
-    EASY: {
-      backgroundColor: 'bg-sub-4',
-      levelText: '하',
-    },
-    NORMAL: {
-      backgroundColor: 'bg-sub-3',
-      levelText: '중',
-    },
-    HARD: {
-      backgroundColor: 'bg-primary',
-      levelText: '상',
-    },
-  };
+  const [activeTab, setActiveTab] = useState<string>('info');
 
   useEffect(() => {
     const handleStorageChange = async (event: StorageEvent) => {
@@ -147,59 +136,74 @@ export default function TicketDetailPage() {
   };
 
   return (
-    <div>
-      <div className="flex flex-col gap-6 rounded-md border p-6">
-        <div className="flex gap-6">
-          {/* 이미지 */}
-          <div className="w-[180px] rounded-md bg-gray-300"></div>
-
-          {/* 공연 정보 */}
-          <div className="w-full">
-            <h2 className="text-xl">공연 제목</h2>
-            <span className={`${backgroundColor} text-white`}>
-              난이도 {levelText}
-            </span>
-
-            <ul className="mt-4 flex flex-wrap gap-y-4">
-              <li className="w-1/2">공연 기간: 2024.12.22 - 2024.12.31</li>
-              <li className="w-1/2">공연장: 예술의전당 오페라극장</li>
-              <li className="w-1/2">관람 시간: 180분</li>
-              <li className="w-1/2">관람 등급: 8세 이상</li>
-              <li className="w-1/2">장르: 공연</li>
-              <li className="w-1/2">할인 혜택: 없음</li>
-            </ul>
+    <div className="space-y-6 py-6">
+      <div className="rounded-xl border bg-white p-6 shadow-md">
+        <div className="flex gap-8">
+          <div className="h-[380px] w-[280px] rounded-lg bg-gray-300" />
+          <div className="flex flex-1 flex-col justify-between">
+            <div className="flex items-center gap-3">
+              <h2 className="text-2xl font-bold">공연제목 공연제목 공연제목</h2>
+              <span
+                className={`${backgroundColor} rounded px-1 py-[2px] text-sm text-white`}>
+                난이도 {levelText}
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-x-10 gap-y-2 text-sm">
+              {performanceInfo.map(({ key, value }, idx) => (
+                <div key={idx} className="flex flex-col gap-2 border-b pb-2">
+                  <p className="text-gray-500">{key}</p>
+                  <p>{value}</p>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-2">
+              <CommonButton
+                title="취소하기"
+                backgroundColor="bg-white"
+                textColor="black"
+                onClick={() => setIsModalOpen(true)}
+                borderColor="black"
+              />
+              <CommonButton
+                title={isTicketingOpen ? '예매하기' : remainingTime}
+                backgroundColor={
+                  isTicketingOpen ? backgroundColor : 'bg-gray-300'
+                }
+                textColor={isTicketingOpen ? 'text-white' : 'text-gray-500'}
+                isDisabled={!isTicketingOpen}
+                onClick={enterTicketing}
+              />
+            </div>
           </div>
         </div>
-        <div className="flex justify-end gap-4">
-          <CommonButton
-            title="취소하기"
-            backgroundColor="bg-white"
-            textColor="text-gray-500"
-            borderColor="border-gray-300"
-            onClick={() => setIsModalOpen(true)}
-          />
-          <CommonButton
-            title={isTicketingOpen ? '예매하기' : remainingTime}
-            backgroundColor={isTicketingOpen ? backgroundColor : 'bg-gray-300'}
-            textColor={isTicketingOpen ? 'text-white' : 'text-gray-500'}
-            isDisabled={!isTicketingOpen}
-            onClick={() => {
-              if (isTicketingOpen) {
-                enterTicketing();
-              }
-            }}
-          />
+      </div>
+
+      <div className="rounded-md border shadow-lg">
+        <div className="flex border-b">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              className={`px-4 py-2 ${
+                activeTab === tab.key
+                  ? 'border-b-2 border-primary font-bold text-primary'
+                  : ''
+              }`}
+              onClick={() => setActiveTab(tab.key)}>
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="p-4">
+          {activeTab === 'info' && <div className="h-screen bg-gray-300"></div>}
+          {activeTab === 'guide' && <GuideTabContent />}
+          {activeTab === 'reserve' && <ReserveTabContent />}
         </div>
       </div>
 
-      {/* 상세 정보 */}
-      <div className="mt-6 rounded-md border">
-        <div className="px-2 py-4">상세 정보</div>
-        <div className="h-screen w-full bg-gray-300"></div>
-      </div>
       {isModalOpen && (
         <CommonModal
-          onClose={handleClose}
+          onClose={() => setIsModalOpen(false)}
           onConfirm={handleCancelTicket}
           title="예약하신 티켓팅을 취소하시겠습니까?"
           subtitle="취소한 티켓팅은 되돌릴 수 없습니다."
