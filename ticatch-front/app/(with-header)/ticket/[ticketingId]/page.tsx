@@ -136,7 +136,7 @@ export default function TicketDetailPage() {
   };
 
   return (
-    <div className="space-y-6 py-6">
+    <div className="space-y-8 py-6">
       <div className="rounded-xl border bg-white p-6 shadow-md">
         <div className="flex gap-8">
           <div className="h-[380px] w-[280px] rounded-lg bg-gray-300" />
@@ -148,7 +148,7 @@ export default function TicketDetailPage() {
                 난이도 {levelText}
               </span>
             </div>
-            <div className="grid grid-cols-2 gap-x-10 gap-y-2 text-sm">
+            <div className="grid grid-cols-2 gap-x-10 gap-y-2">
               {performanceInfo.map(({ key, value }, idx) => (
                 <div key={idx} className="flex flex-col gap-2 border-b pb-2">
                   <p className="text-gray-500">{key}</p>
