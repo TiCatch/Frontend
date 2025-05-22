@@ -8,6 +8,18 @@ import CommonButton from '@components/button/CommonButton';
 import { getRemainingTime } from '@utils/getRemainingTime';
 import CommonModal from '@components/Modal/CommonModal';
 import { useActiveTicket, useUserStatus } from '@hooks';
+import { detailContentByLevel } from '@constants/ticketDetail';
+import { concertImage } from '@constants/imagePath';
+
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import GroupsIcon from '@mui/icons-material/Groups';
+import MusicNoteIcon from '@mui/icons-material/MusicNote';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import TimerIcon from '@mui/icons-material/Timer';
 
 export default function TicketDetailPage() {
   const params = useParams<{ ticketingId: string }>();
@@ -38,6 +50,39 @@ export default function TicketDetailPage() {
       levelText: '상',
     },
   };
+
+  const ticketDetails = [
+    {
+      title: '공연 기간',
+      text: '2024.12.22 - 2024.12.31',
+      icon: <CalendarTodayIcon />,
+    },
+    {
+      title: '공연 시간',
+      text: '180분',
+      icon: <AccessTimeIcon />,
+    },
+    {
+      title: '공연 장소',
+      text: '180분',
+      icon: <LocationOnIcon />,
+    },
+    {
+      title: '연령 제한',
+      text: '만 7세 이상',
+      icon: <GroupsIcon />,
+    },
+    {
+      title: '장르',
+      text: '콘서트',
+      icon: <MusicNoteIcon />,
+    },
+    {
+      title: '할인 정보',
+      text: '없음',
+      icon: <LocalOfferIcon />,
+    },
+  ];
 
   useEffect(() => {
     const handleStorageChange = async (event: StorageEvent) => {
@@ -146,56 +191,82 @@ export default function TicketDetailPage() {
     }
   };
 
+  const content = detailContentByLevel[level];
+
   return (
     <div>
-      <div className="flex flex-col gap-6 rounded-md border p-6">
-        <div className="flex gap-6">
-          {/* 이미지 */}
-          <div className="w-[180px] rounded-md bg-gray-300"></div>
-
-          {/* 공연 정보 */}
-          <div className="w-full">
-            <h2 className="text-xl">공연 제목</h2>
-            <span className={`${backgroundColor} text-white`}>
-              난이도 {levelText}
-            </span>
-
-            <ul className="mt-4 flex flex-wrap gap-y-4">
-              <li className="w-1/2">공연 기간: 2024.12.22 - 2024.12.31</li>
-              <li className="w-1/2">공연장: 예술의전당 오페라극장</li>
-              <li className="w-1/2">관람 시간: 180분</li>
-              <li className="w-1/2">관람 등급: 8세 이상</li>
-              <li className="w-1/2">장르: 공연</li>
-              <li className="w-1/2">할인 혜택: 없음</li>
-            </ul>
+      <div className="mb-6 rounded-lg bg-white p-6 shadow-md">
+        <div className="flex flex-col md:flex-row">
+          <div className="mb-6 md:mb-0 md:w-1/3 md:pr-6">
+            <div className="relative overflow-hidden rounded-md pb-[140%] shadow-md">
+              <img
+                src={concertImage[level]}
+                alt="콘서트 이미지"
+                className="absolute inset-0 h-full w-full object-cover object-top"
+              />
+            </div>
+          </div>
+          <div className="flex flex-col md:w-2/3">
+            <div className="mb-6">
+              <div className="mb-2 flex items-center gap-3">
+                <h1 className="break-keep text-2xl font-bold">
+                  {content.title}
+                </h1>
+                <span
+                  className={`${backgroundColor} h-[31px] min-w-[85px] break-keep rounded-full px-3 py-1 text-justify text-xs font-medium text-white`}>
+                  난이도 {levelText}
+                </span>
+              </div>
+              <p className="text-s text-gray-600">{content.description}</p>
+            </div>
+            <div className="mb-8 rounded-xl bg-gray-50 p-6">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                {ticketDetails.map((detail, index) => {
+                  return (
+                    <div
+                      className="flex items-start items-center gap-4"
+                      key={index}>
+                      <i className="w-8 text-purple-700">{detail.icon}</i>
+                      <div className="text-gray-500">
+                        <div className="text-xs">{detail.title}</div>
+                        <div className="text-s text-black">{detail.text}</div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="mt-auto flex flex-col justify-end gap-5 md:flex-row">
+              <CommonButton
+                title="취소하기"
+                backgroundColor="bg-white"
+                textColor="text-gray-500"
+                borderColor="border-gray-300"
+                onClick={() => setIsModalOpen(true)}
+                icon={<HighlightOffIcon />}
+              />
+              <CommonButton
+                title={isTicketingOpen ? '예매하기' : remainingTime}
+                backgroundColor={
+                  isTicketingOpen ? backgroundColor : 'bg-gray-300'
+                }
+                textColor={isTicketingOpen ? 'text-white' : 'text-gray-500'}
+                isDisabled={!isTicketingOpen}
+                icon={
+                  isTicketingOpen ? <ConfirmationNumberIcon /> : <TimerIcon />
+                }
+                onClick={() => {
+                  if (isTicketingOpen) {
+                    enterTicketing();
+                  }
+                }}
+              />
+            </div>
           </div>
         </div>
-        <div className="flex justify-end gap-4">
-          <CommonButton
-            title="취소하기"
-            backgroundColor="bg-white"
-            textColor="text-gray-500"
-            borderColor="border-gray-300"
-            onClick={() => setIsModalOpen(true)}
-          />
-          <CommonButton
-            title={isTicketingOpen ? '예매하기' : remainingTime}
-            backgroundColor={isTicketingOpen ? backgroundColor : 'bg-gray-300'}
-            textColor={isTicketingOpen ? 'text-white' : 'text-gray-500'}
-            isDisabled={!isTicketingOpen}
-            onClick={() => {
-              if (isTicketingOpen) {
-                enterTicketing();
-              }
-            }}
-          />
-        </div>
       </div>
-
-      {/* 상세 정보 */}
-      <div className="mt-6 rounded-md border">
-        <div className="px-2 py-4">상세 정보</div>
-        <div className="h-screen w-full bg-gray-300"></div>
+      <div className="overflow-hidden rounded-lg bg-white shadow-md">
+        {/* TODO: 티켓 상세 정보 */}
       </div>
       {isModalOpen && (
         <CommonModal
