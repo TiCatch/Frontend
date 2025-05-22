@@ -10,6 +10,12 @@ export const ticketImage = {
   HARD: '/images/HardTicket.svg',
 };
 
+export const concertImage = {
+  EASY: '/images/EasyConcertImage.png',
+  NORMAL: '/images/NormalConcertImage.png',
+  HARD: '/images/HardConcertImage.png',
+};
+
 export const logoImage = '/images/Logo.svg';
 
 export const kakaoImage = '/images/Kakao.svg';
