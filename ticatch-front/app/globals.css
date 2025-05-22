@@ -19,7 +19,8 @@
   --font-5xl: 72px;
 
   /* 색상 정의 */
-  --background: rgba(255, 255, 255, 0.7);
+  --background: #f9fafb;
+  --color-white: rgb(255, 255, 255);
   --color-primary: #c04cfd;
   --color-black: #424242;
   --color-sub1: #931f1d;
