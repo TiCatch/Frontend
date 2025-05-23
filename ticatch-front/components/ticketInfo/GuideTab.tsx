@@ -2,11 +2,15 @@ function GuideTabContent() {
   return (
     <div className="space-y-6">
       <p className="text-lg font-bold">관람 안내</p>
-      <ul className="list-disc pl-5">
-        <li>관람 시작 30분 전부터 입장이 가능합니다.</li>
-        <li>공연장 내 사진 촬영 및 녹음은 금지되어 있습니다.</li>
-        <li>공연 시작 후에는 첫 번째 곡이 끝난 후 입장 가능합니다.</li>
-        <li>8세 미만 아동은 입장이 제한됩니다.</li>
+      <ul className="list-disc space-y-2 pl-5">
+        <li>공연 시작 1시간 전부터 입장 대기 및 굿즈 구매가 가능합니다.</li>
+        <li>입장은 공연 시작 30분 전부터 순차적으로 진행됩니다.</li>
+        <li>8세 미만의 아동은 안전상의 이유로 입장이 제한됩니다.</li>
+        <li>스탠딩 구역은 현장 스태프의 안내에 따라 질서 있게 이용해주세요.</li>
+        <li>
+          응원봉, 슬로건, 핸드메이드 플래카드 등은 타 관객의 시야를 가리지 않는
+          선에서 자유롭게 사용 가능합니다.
+        </li>
       </ul>
       <p className="text-lg font-bold">좌석 등급 및 가격</p>
       <table className="w-full border-collapse border border-gray-200 text-center [&>tbody>tr>td]:border [&>thead>tr>th]:border [&_td]:border-gray-200 [&_th]:border-gray-200">
@@ -43,7 +47,7 @@ function GuideTabContent() {
 
       <div className="space-y-6">
         <p className="text-lg font-bold">할인 정보</p>
-        <ul className="list-disc pl-5">
+        <ul className="list-disc space-y-2 pl-5">
           <li>장애인 및 국가유공자: 50% 할인 (본인 및 동반 1인)</li>
           <li>65세 이상 노인: 30% 할인 (본인만)</li>
           <li>학생 할인: 20% 할인 (초/중/고/대학생, 학생증 지참 필수)</li>

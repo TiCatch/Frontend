@@ -1,8 +1,15 @@
+import { kakaoPayImage } from '@constants/imagePath';
+import Image from 'next/image';
+
 function ReserveTabContent() {
   return (
     <div className="space-y-6">
       <p className="text-lg font-bold">예매 안내</p>
-      <ul className="list-disc pl-5">
+      <ul className="list-disc space-y-2 pl-5">
+        <li className="text-primary">
+          본 예매는 티켓팅 연습을 위한 TiCatch의 가상 예매이며, 어떠한 실제
+          결제나 요금 부과가 일어나지 않습니다.
+        </li>
         <li>예매는 티켓팅 생성 후 30분 간 가능합니다.</li>
         <li>인터넷, 모바일 앱 예매가 가능합니다.</li>
         <li>예매 후 발송되는 결제 완료 문자를 확인해주세요.</li>
@@ -37,9 +44,13 @@ function ReserveTabContent() {
       </table>
 
       <p className="text-lg font-bold">결제 방법</p>
-      <ul className="list-disc pl-5">
-        <li>카카오페이</li>
-      </ul>
+
+      <div className="flex items-center gap-2">
+        <ul className="list-disc pl-5">
+          <li>카카오페이</li>
+        </ul>
+        <Image src={kakaoPayImage} alt="pay-img" width={30} height={30} />
+      </div>
     </div>
   );
 }

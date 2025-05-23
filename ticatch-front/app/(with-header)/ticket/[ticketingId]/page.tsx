@@ -10,6 +10,7 @@ import CommonModal from '@components/Modal/CommonModal';
 import { useActiveTicket, useUserStatus } from '@hooks';
 import ReserveTabContent from '@components/ticketInfo/ReserveTab';
 import GuideTabContent from '@components/ticketInfo/GuideTab';
+import InfoTabContent from '@components/ticketInfo/InfoTab';
 import { levelAttribute, tabs } from 'constants/ticketingInfo';
 import { detailContentByLevel } from '@constants/ticketDetail';
 import { concertImage } from '@constants/imagePath';
@@ -255,7 +256,7 @@ export default function TicketDetailPage() {
         </div>
       </div>
 
-      <div className="rounded-md border shadow-lg">
+      <div className="my-6 rounded-lg bg-white shadow-md">
         <div className="flex border-b">
           {tabs.map((tab) => (
             <button
@@ -271,8 +272,8 @@ export default function TicketDetailPage() {
           ))}
         </div>
 
-        <div className="p-4">
-          {activeTab === 'info' && <div className="h-screen bg-gray-300"></div>}
+        <div className="p-6">
+          {activeTab === 'info' && <InfoTabContent level={level} />}
           {activeTab === 'guide' && <GuideTabContent />}
           {activeTab === 'reserve' && <ReserveTabContent />}
         </div>
