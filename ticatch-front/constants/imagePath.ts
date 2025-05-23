@@ -16,6 +16,12 @@ export const concertImage = {
   HARD: '/images/HardConcertImage.png',
 };
 
+export const setListImage = {
+  EASY: '/images/EasySetListImage.png',
+  NORMAL: '/images/NormalSetListImage.png',
+  HARD: '/images/HardSetListImage.png',
+};
+
 export const logoImage = '/images/Logo.svg';
 
 export const kakaoImage = '/images/Kakao.svg';

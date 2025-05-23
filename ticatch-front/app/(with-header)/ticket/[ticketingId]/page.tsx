@@ -1,6 +1,6 @@
 'use client';
 
-import { enterWaiting, getTicket, updateTicket } from 'api';
+import { enterWaiting, getTicket } from 'api';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
 import { TicketingResponse } from 'types';
@@ -8,6 +8,10 @@ import CommonButton from '@components/button/CommonButton';
 import { getRemainingTime } from '@utils/getRemainingTime';
 import CommonModal from '@components/Modal/CommonModal';
 import { useActiveTicket, useUserStatus } from '@hooks';
+import ReserveTabContent from '@components/ticketInfo/ReserveTab';
+import GuideTabContent from '@components/ticketInfo/GuideTab';
+import InfoTabContent from '@components/ticketInfo/InfoTab';
+import { levelAttribute, tabs } from 'constants/ticketingInfo';
 import { detailContentByLevel } from '@constants/ticketDetail';
 import { concertImage } from '@constants/imagePath';
 
@@ -35,21 +39,7 @@ export default function TicketDetailPage() {
   const [remainingTime, setRemainingTime] = useState<string>('0:00');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isTicketingOpen = remainingTime === '0:00';
-
-  const levelAttribute = {
-    EASY: {
-      backgroundColor: 'bg-sub-4',
-      levelText: '하',
-    },
-    NORMAL: {
-      backgroundColor: 'bg-sub-3',
-      levelText: '중',
-    },
-    HARD: {
-      backgroundColor: 'bg-primary',
-      levelText: '상',
-    },
-  };
+  const [activeTab, setActiveTab] = useState<string>('info');
 
   const ticketDetails = [
     {
@@ -265,12 +255,33 @@ export default function TicketDetailPage() {
           </div>
         </div>
       </div>
-      <div className="overflow-hidden rounded-lg bg-white shadow-md">
-        {/* TODO: 티켓 상세 정보 */}
+
+      <div className="my-6 rounded-lg bg-white shadow-md">
+        <div className="flex border-b">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              className={`px-4 py-2 ${
+                activeTab === tab.key
+                  ? 'border-b-2 border-primary font-bold text-primary'
+                  : ''
+              }`}
+              onClick={() => setActiveTab(tab.key)}>
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="p-6">
+          {activeTab === 'info' && <InfoTabContent level={level} />}
+          {activeTab === 'guide' && <GuideTabContent />}
+          {activeTab === 'reserve' && <ReserveTabContent />}
+        </div>
       </div>
+
       {isModalOpen && (
         <CommonModal
-          onClose={handleClose}
+          onClose={() => setIsModalOpen(false)}
           onConfirm={handleCancelTicket}
           title="예약하신 티켓팅을 취소하시겠습니까?"
           subtitle="취소한 티켓팅은 되돌릴 수 없습니다."
