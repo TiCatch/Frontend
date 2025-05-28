@@ -136,7 +136,7 @@ export default function TicketDetailPage() {
       if (updatedTime === '0:01') {
         setTimeout(() => {
           triggerVirtualUsers(0, params.ticketingId, level);
-        }, 1000);
+        }, 500);
       } else if (updatedTime === '0:00') {
         clearInterval(interval);
       }

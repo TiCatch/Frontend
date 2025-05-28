@@ -64,7 +64,7 @@ const startTicketing = async (
       return { done: true };
   }
 
-  const k = 0.7;
+  const k = 0.5;
   const batchSize = Math.max(
     Math.round(initialBatchSize * Math.exp(-k * batchIndex)),
     minBatchSize,
