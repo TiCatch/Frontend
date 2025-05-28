@@ -14,39 +14,42 @@ const Header = () => {
   const logout = useLogout();
 
   return (
-    <header className="sticky top-0 z-[10] flex bg-background py-5 text-s backdrop-opacity-80">
-      <Link href="/">
-        <Image
-          src={logoImage}
-          alt="Header"
-          width={128}
-          height={24}
-          className={pathname === '/' ? 'invisible' : 'visible'}
-        />
-      </Link>
-      <div className="flex grow justify-end">
-        {isLoggedIn ? (
-          <div className="flex gap-[36px]">
-            <button
-              onClick={() => logout.mutate()}
+    <header className="relative sticky top-0 z-[5] overflow-hidden backdrop-blur-sm">
+      <div className="pointer-events-none absolute inset-0 bg-[var(--background)] opacity-70" />
+      <div className="relative z-10 flex py-5 text-s">
+        <Link href="/">
+          <Image
+            src={logoImage}
+            alt="Header"
+            width={128}
+            height={24}
+            className={pathname === '/' ? 'invisible' : 'visible'}
+          />
+        </Link>
+        <div className="flex grow justify-end">
+          {isLoggedIn ? (
+            <div className="flex gap-[36px]">
+              <button
+                onClick={() => logout.mutate()}
+                className="transition-color duration-[200ms] hover:text-purple-500">
+                로그아웃
+              </button>
+              {pathname !== '/myPage' && (
+                <Link
+                  href="/myPage"
+                  className="transition-color relative flex items-center gap-[4px] fill-purple-600 text-purple-600 duration-[200ms] hover:fill-purple-700 hover:text-purple-700">
+                  <ConfirmationNumberSharpIcon />
+                </Link>
+              )}
+            </div>
+          ) : (
+            <Link
+              href="/login"
               className="transition-color duration-[200ms] hover:text-purple-500">
-              로그아웃
-            </button>
-            {pathname !== '/myPage' && (
-              <Link
-                href="/myPage"
-                className="transition-color relative flex items-center gap-[4px] fill-purple-600 text-purple-600 duration-[200ms] hover:fill-purple-700 hover:text-purple-700">
-                <ConfirmationNumberSharpIcon />
-              </Link>
-            )}
-          </div>
-        ) : (
-          <Link
-            href="/login"
-            className="transition-color duration-[200ms] hover:text-purple-500">
-            로그인
-          </Link>
-        )}
+              로그인
+            </Link>
+          )}
+        </div>
       </div>
     </header>
   );
