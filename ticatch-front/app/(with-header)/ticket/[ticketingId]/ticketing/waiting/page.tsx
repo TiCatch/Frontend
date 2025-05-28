@@ -15,6 +15,7 @@ const WaitingPage = () => {
     number | null
   >(null);
   const [isWaiting, setIsWaiting] = useState<boolean>(true);
+  const [showNumber, setShowNumber] = useState<number | null>(null); // 사용자에게 보여줄 대기숫자
   const params = useParams<{ ticketingId: string }>();
   const router = useRouter();
 
@@ -62,20 +63,33 @@ const WaitingPage = () => {
       )
     : 0;
 
+  const getShowNumber = (num: number) => {
+    const multiplier = 130;
+    return Math.floor(Math.random() * multiplier) + num * multiplier;
+  };
+
+  useEffect(() => {
+    if (waitingNumber !== null && waitingNumber > -1) {
+      setShowNumber(getShowNumber(waitingNumber));
+      console.log('new number');
+    }
+  }, [waitingNumber]);
+
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center gap-[20px] px-[140px] text-center">
+    <div className="flex h-screen w-full flex-col items-center justify-center gap-[20px] whitespace-nowrap px-[96px] text-center md:px-[140px]">
       <div className="text-m text-gray-500">공연 제목 공연 제목 공연 제목</div>
-      <div className="whitespace-pre-line text-xl font-bold leading-[1.5]">
-        {`접속 인원이 많아 대기중입니다.\n 잠시 기다려주세요.`}
+      <div className="text-xl font-bold leading-[1.5]">
+        접속 인원이 많아 대기중입니다. <br />
+        잠시 기다려주세요.
       </div>
       <div className="h-[108px] text-5xl font-bold text-purple-500">
         {waitingNumber ? (
-          `${waitingNumber > -1 ? waitingNumber : '0'}번째`
+          `${waitingNumber > -1 ? showNumber : '0'}번째`
         ) : (
           <CountLoading />
         )}
       </div>
-      <div className="relative mb-[12px] h-[37px] w-full overflow-hidden rounded-[32px] border-[1px] border-solid border-gray-200 bg-gray-50">
+      <div className="relative mb-[12px] h-[37px] w-full min-w-[296px] max-w-[640px] overflow-hidden rounded-[32px] border-[1px] border-solid border-gray-200 bg-gray-50">
         <div
           className="h-full bg-purple-500 transition-all duration-500"
           style={{ width: `${progress}%` }}></div>
