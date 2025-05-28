@@ -2,7 +2,7 @@
 
 import { enterWaiting, getTicket } from 'api';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { TicketingLevel, TicketingResponse } from 'types';
 import CommonButton from '@components/button/CommonButton';
 import { getRemainingTime } from '@utils/getRemainingTime';
@@ -35,6 +35,7 @@ export default function TicketDetailPage() {
     isLoggedIn && !isUserLoading,
   );
 
+  const ticketWindowRef = useRef<Window | null>(null);
   const [ticket, setTicket] = useState<TicketingResponse['data'] | null>(null);
   const [remainingTime, setRemainingTime] = useState<string>('0:00');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -197,10 +198,13 @@ export default function TicketDetailPage() {
       const { status, data } = await enterWaiting(params.ticketingId);
       if (status === 200) {
         const waitingNumber = data.data.waitingNumber as number;
-        window.open(
+        if (ticketWindowRef.current && !ticketWindowRef.current.closed) {
+          ticketWindowRef.current.close();
+        }
+        ticketWindowRef.current = window.open(
           `/ticket/${params.ticketingId}/ticketing/${waitingNumber > 0 ? 'waiting' : 'section'}`,
-          '_blank',
-          'width=950,height=650,top=50,left=50,noopener,noreferrer',
+          'ticketing-page',
+          'width=950,height=650,top=50,left=50',
         );
       }
     } catch (error) {
