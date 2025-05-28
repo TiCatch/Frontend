@@ -3,7 +3,7 @@
 import { enterWaiting, getTicket } from 'api';
 import { useParams, useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
-import { TicketingResponse } from 'types';
+import { TicketingLevel, TicketingResponse } from 'types';
 import CommonButton from '@components/button/CommonButton';
 import { getRemainingTime } from '@utils/getRemainingTime';
 import CommonModal from '@components/Modal/CommonModal';
@@ -134,7 +134,7 @@ export default function TicketDetailPage() {
       // 가상 요청 시작! (중복 방지)
       if (updatedTime === '0:01') {
         setTimeout(() => {
-          triggerVirtualUsers();
+          triggerVirtualUsers(0, params.ticketingId, level);
         }, 1000);
       } else if (updatedTime === '0:00') {
         clearInterval(interval);
@@ -151,15 +151,42 @@ export default function TicketDetailPage() {
     return null;
   }
 
-  const triggerVirtualUsers = async () => {
+  const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
+  const triggerVirtualUsers = async (
+    batchIndex: number = 0,
+    ticketingId: string,
+    level: TicketingLevel,
+    userType: string = 'VIRTUAL',
+  ) => {
     try {
-      await fetch(`/api/ticket/waiting/${params.ticketingId}/VIRTUAL`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const res = await fetch(
+        `/api/ticket/waiting/${ticketingId}/${userType}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ level, batchIndex }),
         },
-        body: JSON.stringify({ level }),
-      });
+      );
+
+      const data = await res.json();
+
+      if (data.done) {
+        console.log('모든 배치 완료 또는 442 에러로 중단');
+        return;
+      }
+
+      console.log(`다음 배치로 이동: ${data.nextBatch}`);
+      await delay(1000);
+
+      await triggerVirtualUsers(
+        data.nextBatch,
+        data.ticketingId,
+        data.level,
+        data.userType,
+      );
     } catch (error) {
       console.log('가상 요청 시작 에러: ', error);
     }
