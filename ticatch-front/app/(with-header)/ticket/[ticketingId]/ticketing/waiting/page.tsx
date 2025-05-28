@@ -15,6 +15,7 @@ const WaitingPage = () => {
     number | null
   >(null);
   const [isWaiting, setIsWaiting] = useState<boolean>(true);
+  const [showNumber, setShowNumber] = useState<number | null>(null); // 사용자에게 보여줄 대기숫자
   const params = useParams<{ ticketingId: string }>();
   const router = useRouter();
 
@@ -62,6 +63,18 @@ const WaitingPage = () => {
       )
     : 0;
 
+  const getShowNumber = (num: number) => {
+    const multiplier = 130;
+    return Math.floor(Math.random() * multiplier) + num * multiplier;
+  };
+
+  useEffect(() => {
+    if (waitingNumber !== null && waitingNumber > -1) {
+      setShowNumber(getShowNumber(waitingNumber));
+      console.log('new number');
+    }
+  }, [waitingNumber]);
+
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center gap-[20px] px-[140px] text-center">
       <div className="text-m text-gray-500">공연 제목 공연 제목 공연 제목</div>
@@ -70,7 +83,7 @@ const WaitingPage = () => {
       </div>
       <div className="h-[108px] text-5xl font-bold text-purple-500">
         {waitingNumber ? (
-          `${waitingNumber > -1 ? waitingNumber : '0'}번째`
+          `${waitingNumber > -1 ? showNumber : '0'}번째`
         ) : (
           <CountLoading />
         )}
