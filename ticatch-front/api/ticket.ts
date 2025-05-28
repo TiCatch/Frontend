@@ -6,7 +6,7 @@ export const createTicket = async (
   startTime: number,
 ) => {
   const currentTime = new Date();
-  currentTime.setMinutes(currentTime.getMinutes() + startTime);
+  currentTime.setSeconds(currentTime.getSeconds() + startTime);
 
   currentTime.setHours(currentTime.getHours() + 9);
   const ticketingTime = currentTime.toISOString();
