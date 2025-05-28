@@ -2,8 +2,8 @@
 
 import { enterWaiting, getTicket } from 'api';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useState, useEffect } from 'react';
-import { TicketingResponse } from 'types';
+import React, { useState, useEffect, useRef } from 'react';
+import { TicketingLevel, TicketingResponse } from 'types';
 import CommonButton from '@components/button/CommonButton';
 import { getRemainingTime } from '@utils/getRemainingTime';
 import CommonModal from '@components/Modal/CommonModal';
@@ -35,6 +35,7 @@ export default function TicketDetailPage() {
     isLoggedIn && !isUserLoading,
   );
 
+  const ticketWindowRef = useRef<Window | null>(null);
   const [ticket, setTicket] = useState<TicketingResponse['data'] | null>(null);
   const [remainingTime, setRemainingTime] = useState<string>('0:00');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -134,8 +135,8 @@ export default function TicketDetailPage() {
       // 가상 요청 시작! (중복 방지)
       if (updatedTime === '0:01') {
         setTimeout(() => {
-          triggerVirtualUsers();
-        }, 1000);
+          triggerVirtualUsers(0, params.ticketingId, level);
+        }, 500);
       } else if (updatedTime === '0:00') {
         clearInterval(interval);
       }
@@ -151,15 +152,42 @@ export default function TicketDetailPage() {
     return null;
   }
 
-  const triggerVirtualUsers = async () => {
+  const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+
+  const triggerVirtualUsers = async (
+    batchIndex: number = 0,
+    ticketingId: string,
+    level: TicketingLevel,
+    userType: string = 'VIRTUAL',
+  ) => {
     try {
-      await fetch(`/api/ticket/waiting/${params.ticketingId}/VIRTUAL`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const res = await fetch(
+        `/api/ticket/waiting/${ticketingId}/${userType}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ level, batchIndex }),
         },
-        body: JSON.stringify({ level }),
-      });
+      );
+
+      const data = await res.json();
+
+      if (data.done) {
+        console.log('모든 배치 완료 또는 442 에러로 중단');
+        return;
+      }
+
+      console.log(`다음 배치로 이동: ${data.nextBatch}`);
+      await delay(1000);
+
+      await triggerVirtualUsers(
+        data.nextBatch,
+        data.ticketingId,
+        data.level,
+        data.userType,
+      );
     } catch (error) {
       console.log('가상 요청 시작 에러: ', error);
     }
@@ -170,10 +198,13 @@ export default function TicketDetailPage() {
       const { status, data } = await enterWaiting(params.ticketingId);
       if (status === 200) {
         const waitingNumber = data.data.waitingNumber as number;
-        window.open(
+        if (ticketWindowRef.current && !ticketWindowRef.current.closed) {
+          ticketWindowRef.current.close();
+        }
+        ticketWindowRef.current = window.open(
           `/ticket/${params.ticketingId}/ticketing/${waitingNumber > 0 ? 'waiting' : 'section'}`,
-          '_blank',
-          'width=950,height=650,top=50,left=50,noopener,noreferrer',
+          'ticketing-page',
+          'width=950,height=650,top=50,left=50',
         );
       }
     } catch (error) {
