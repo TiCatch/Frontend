@@ -14,7 +14,7 @@ const Header = () => {
   const logout = useLogout();
 
   return (
-    <header className="sticky top-0 z-[10] flex bg-background py-5 text-s backdrop-opacity-80">
+    <header className="sticky top-0 z-[10] flex min-w-[320px] bg-background px-[16px] py-5 text-s backdrop-opacity-80 md:px-[32px]">
       <Link href="/">
         <Image
           src={logoImage}
