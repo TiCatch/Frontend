@@ -76,10 +76,11 @@ const WaitingPage = () => {
   }, [waitingNumber]);
 
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center gap-[20px] px-[140px] text-center">
+    <div className="flex h-screen w-full flex-col items-center justify-center gap-[20px] whitespace-nowrap px-[96px] text-center md:px-[140px]">
       <div className="text-m text-gray-500">공연 제목 공연 제목 공연 제목</div>
-      <div className="whitespace-pre-line text-xl font-bold leading-[1.5]">
-        {`접속 인원이 많아 대기중입니다.\n 잠시 기다려주세요.`}
+      <div className="text-xl font-bold leading-[1.5]">
+        접속 인원이 많아 대기중입니다. <br />
+        잠시 기다려주세요.
       </div>
       <div className="h-[108px] text-5xl font-bold text-purple-500">
         {waitingNumber ? (
@@ -88,7 +89,7 @@ const WaitingPage = () => {
           <CountLoading />
         )}
       </div>
-      <div className="relative mb-[12px] h-[37px] w-full overflow-hidden rounded-[32px] border-[1px] border-solid border-gray-200 bg-gray-50">
+      <div className="relative mb-[12px] h-[37px] w-full min-w-[296px] max-w-[640px] overflow-hidden rounded-[32px] border-[1px] border-solid border-gray-200 bg-gray-50">
         <div
           className="h-full bg-purple-500 transition-all duration-500"
           style={{ width: `${progress}%` }}></div>
