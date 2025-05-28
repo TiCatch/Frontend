@@ -9,7 +9,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['var(--font-sans)', 'sans-serif'],
+        sans: ['var(--font-pretendard)', 'sans-serif'],
       },
       fontSize: {
         '2xs': 'var(--font-2xs)',

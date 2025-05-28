@@ -14,9 +14,19 @@ const pretendard = localFont({
       style: 'normal',
     },
     {
+      path: '../public/fonts/Pretendard-Medium.otf',
+      weight: '500',
+      style: 'medium',
+    },
+    {
+      path: '../public/fonts/Pretendard-SemiBold.otf',
+      weight: '600',
+      style: 'semibold',
+    },
+    {
       path: '../public/fonts/Pretendard-Bold.otf',
       weight: '700',
-      style: 'normal',
+      style: 'bold',
     },
   ],
   variable: '--font-pretendard',
@@ -41,7 +51,7 @@ export default async function RootLayout({
   const dehydratedState = dehydrate(queryClient);
 
   return (
-    <html lang="en">
+    <html lang="ko">
       <body className={pretendard.variable}>
         <Providers dehydratedState={dehydratedState}>
           <TicketingGuard />
