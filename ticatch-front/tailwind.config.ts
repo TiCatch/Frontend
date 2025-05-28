@@ -76,9 +76,13 @@ export default {
       boxShadow: {
         simple: 'var(--simple-shadow)',
         inner: 'var(--inner-shadow)',
+        glass: 'var(--glass-shadow)',
       },
       borderRadius: {
         12: '12px',
+      },
+      backdropBlur: {
+        glass: 'var(--glass-blur)',
       },
       container: { center: true, screens: { sm: '100%', md: '1040px' } },
       keyframes: {
