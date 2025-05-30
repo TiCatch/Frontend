@@ -67,6 +67,13 @@
   /* 그림자 속성 정의 */
   --simple-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
   --inner-shadow: inset -2px -2px 6px rgba(0, 0, 0, 0.25);
+  --glass-shadow: inset 4.67333px -4.67333px 4.67333px
+      rgba(143, 170, 138, 0.418),
+    inset 9.34667px -9.34667px 9.34667px rgba(255, 255, 255, 0.418),
+    inset -4.67333px 4.67333px 4.67333px rgba(255, 255, 255, 0.418),
+    inset -9.34667px 9.34667px 9.34667px rgba(143, 170, 138, 0.418);
+
+  --glass-blur: blur(36px);
 }
 
 @media (prefers-color-scheme: dark) {
