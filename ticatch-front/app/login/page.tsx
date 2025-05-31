@@ -21,7 +21,7 @@ const LoginPage = () => {
   }, []);
 
   return (
-    <div className="h-100vdh flex w-full select-none flex-col items-center justify-center gap-[8%]">
+    <div className="flex h-dvh w-full select-none flex-col items-center justify-center gap-[8%]">
       <div className="flex items-end gap-[4px] text-2xl text-gray-500">
         {/* TiCath 로고. 클릭 시 메인으로 이동 */}
         <Link href="/" className="relative mr-[4px] h-[36px] w-[191px]">

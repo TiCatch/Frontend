@@ -33,7 +33,7 @@ export default function PaymentPageClient({
   }, [pg_token]);
 
   return (
-    <div className="h-100vdh flex items-center justify-center">
+    <div className="flex h-dvh items-center justify-center">
       <p className="text-lg font-bold">결제 확인 중...</p>
     </div>
   );
