@@ -76,7 +76,7 @@ const WaitingPage = () => {
   }, [waitingNumber]);
 
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center gap-[20px] whitespace-nowrap px-[96px] text-center md:px-[140px]">
+    <div className="h-100vdh flex w-full flex-col items-center justify-center gap-[20px] whitespace-nowrap px-[96px] text-center md:px-[140px]">
       <div className="text-m text-gray-500">공연 제목 공연 제목 공연 제목</div>
       <div className="text-xl font-bold leading-[1.5]">
         접속 인원이 많아 대기중입니다. <br />
