@@ -3,5 +3,5 @@ export default function TicketingLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <div className="h-screen p-4">{children}</div>;
+  return <div className="h-dvh p-4">{children}</div>;
 }

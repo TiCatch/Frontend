@@ -64,7 +64,7 @@ export default function LevelCard({ level }: { level: TicketingLevel }) {
   const { backgroundColor, textColor } = levelAttribute[level];
 
   return (
-    <div className="group h-[392px] w-full min-w-[170px] max-w-[500px] [perspective:1000px]">
+    <div className="group h-full w-full min-w-[170px] max-w-[500px] [perspective:1000px] md:h-[392px]">
       <div className="relative h-full w-full transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(-180deg)]">
         {/* 앞면 */}
         <div
@@ -97,7 +97,7 @@ export default function LevelCard({ level }: { level: TicketingLevel }) {
           <div className="backdrop-blur-glass shadow-glass absolute left-0 top-0 z-0 h-full w-full rounded-3xl bg-white opacity-50" />
           <div className="z-3 relative flex h-full flex-col items-center justify-start md:justify-center md:gap-4">
             <div
-              className={`mt-[16px] flex flex-1 items-center whitespace-nowrap md:mt-[32px] ${isMobile ? 'text-' : 'text-l'} font-semibold text-gray-700`}>
+              className={`mt-[8px] flex flex-1 items-center whitespace-nowrap md:mt-[32px] ${isMobile ? 'text-' : 'text-l'} font-semibold text-gray-700`}>
               시간을 선택하세요.
             </div>
             <div className="flex h-full w-full flex-[3] flex-row items-center justify-around md:flex-col md:justify-center">

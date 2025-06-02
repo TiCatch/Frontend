@@ -139,81 +139,79 @@ export default function MyPage() {
   };
 
   return (
-    <>
-      <div className="container mx-auto flex h-[calc(100vh-64px)] flex-col px-4 py-8">
-        {/* 티켓 요약 섹션 */}
-        <section className="mb-[24px] flex min-h-[100px] w-[100%] items-center rounded-xl border border-gray-200 px-[24px]">
-          <div className="grow break-keep text-xl">
-            {userInfo?.userNickname}님의 티켓
+    <div className="container mx-auto flex h-[calc(100vh-64px)] flex-col px-4 py-8">
+      {/* 티켓 요약 섹션 */}
+      <section className="mb-[24px] flex min-h-[100px] w-[100%] items-center rounded-xl border border-gray-200 px-[24px]">
+        <div className="grow break-keep text-xl">
+          {userInfo?.userNickname}님의 티켓
+        </div>
+        <LevelCount cnt={totalCnt.hard} level="상" color="purple-500" />
+        <LevelCount cnt={totalCnt.normal} level="중" color="sub-3" />
+        <LevelCount cnt={totalCnt.easy} level="하" color="sub-4" />
+      </section>
+      {myTickets.length > 0 || loading ? (
+        <section className="ticket-history">
+          <div className="mb-[24px] flex justify-end gap-[16px] filter">
+            <button
+              className={`flex content-center gap-[4px] text-2xs ${sortType === 'ticketingTime' ? 'text-purple-500 hover:text-purple-700' : 'text-gray-500 hover:text-gray-700'}`}
+              onClick={() => handleClickFilter('ticketingTime')}>
+              시간 순
+              {sortType === 'ticketingTime' &&
+                (asc ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />)}
+            </button>
+            <button
+              className={`flex content-center gap-[4px] text-2xs ${sortType === 'ticketingScore' ? 'text-purple-500 hover:text-purple-700' : 'text-gray-500 hover:text-gray-700'}`}
+              onClick={() => handleClickFilter('ticketingScore')}>
+              난이도 순
+              {sortType === 'ticketingScore' &&
+                (asc ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />)}
+            </button>
           </div>
-          <LevelCount cnt={totalCnt.hard} level="상" color="purple-500" />
-          <LevelCount cnt={totalCnt.normal} level="중" color="sub-3" />
-          <LevelCount cnt={totalCnt.easy} level="하" color="sub-4" />
-        </section>
-        {myTickets.length > 0 || loading ? (
-          <section className="ticket-history">
-            <div className="mb-[24px] flex justify-end gap-[16px] filter">
-              <button
-                className={`flex content-center gap-[4px] text-2xs ${sortType === 'ticketingTime' ? 'text-purple-500 hover:text-purple-700' : 'text-gray-500 hover:text-gray-700'}`}
-                onClick={() => handleClickFilter('ticketingTime')}>
-                시간 순
-                {sortType === 'ticketingTime' &&
-                  (asc ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />)}
-              </button>
-              <button
-                className={`flex content-center gap-[4px] text-2xs ${sortType === 'ticketingScore' ? 'text-purple-500 hover:text-purple-700' : 'text-gray-500 hover:text-gray-700'}`}
-                onClick={() => handleClickFilter('ticketingScore')}>
-                난이도 순
-                {sortType === 'ticketingScore' &&
-                  (asc ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />)}
-              </button>
-            </div>
 
-            <div
-              ref={gridRef}
-              className="relative grid grid-cols-[repeat(auto-fill,minmax(182px,1fr))] gap-6 pb-[32px]">
-              {myTickets?.map((ticket, index) => (
-                <div
-                  key={ticket.historyId + '-' + index}
-                  data-id={ticket.historyId}
-                  className="ticket-item cursor-pointer"
-                  onClick={() => handleTicketClick(ticket.historyId)}>
-                  <TicketItem
-                    ticket={ticket}
-                    selected={selectedId === ticket.historyId}
-                  />
-                </div>
-              ))}
-
-              {/* 상세 패널 */}
-              {selectedId && (
-                <DetailPanel
-                  ticket={myTickets?.find((t) => t.historyId === selectedId)!}
-                  onClose={() => setSelectedId(null)}
-                  rowIndex={getSelectedTicketRowIndex()}
+          <div
+            ref={gridRef}
+            className="relative grid grid-cols-[repeat(auto-fill,minmax(182px,1fr))] gap-6 pb-[32px]">
+            {myTickets?.map((ticket, index) => (
+              <div
+                key={ticket.historyId + '-' + index}
+                data-id={ticket.historyId}
+                className="ticket-item cursor-pointer"
+                onClick={() => handleTicketClick(ticket.historyId)}>
+                <TicketItem
+                  ticket={ticket}
+                  selected={selectedId === ticket.historyId}
                 />
-              )}
-              {hasMore && <div ref={sentinelRef} style={{ height: 20 }} />}
-              {loading && (
-                <div className="col-span-full flex justify-center py-4">
-                  <CountLoading />
-                </div>
-              )}
-            </div>
-          </section>
-        ) : (
-          <section className="no-history flex w-full flex-1 flex-col items-center justify-center gap-[24px]">
-            <Image
-              src="/icons/noTicket.svg"
-              alt="no ticket"
-              width={160}
-              height={161}
-            />
-            <div className="text-l text-gray-400">예약한 티켓이 없습니다.</div>
-            <CommonButton title="예매하기" onClick={handleClickReserve} />
-          </section>
-        )}
-      </div>
-    </>
+              </div>
+            ))}
+
+            {/* 상세 패널 */}
+            {selectedId && (
+              <DetailPanel
+                ticket={myTickets?.find((t) => t.historyId === selectedId)!}
+                onClose={() => setSelectedId(null)}
+                rowIndex={getSelectedTicketRowIndex()}
+              />
+            )}
+            {hasMore && <div ref={sentinelRef} style={{ height: 20 }} />}
+            {loading && (
+              <div className="col-span-full flex justify-center py-4">
+                <CountLoading />
+              </div>
+            )}
+          </div>
+        </section>
+      ) : (
+        <section className="no-history flex w-full flex-1 flex-col items-center justify-center gap-[24px]">
+          <Image
+            src="/icons/noTicket.svg"
+            alt="no ticket"
+            width={160}
+            height={161}
+          />
+          <div className="text-l text-gray-400">예약한 티켓이 없습니다.</div>
+          <CommonButton title="예매하기" onClick={handleClickReserve} />
+        </section>
+      )}
+    </div>
   );
 }
