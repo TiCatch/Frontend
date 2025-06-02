@@ -77,9 +77,19 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  html {
+  :root {
     --background: #424242;
     --color-black: #ffffff;
+    --color-white: #353535;
+    --gray-800: #f2f2f2;
+    --gray-700: #d5d5d5;
+    --gray-600: #c1c1c1;
+    --gray-500: #a5a5a5;
+    --gray-400: #939393;
+    --gray-300: #787878;
+    --gray-200: #6d6d6d;
+    --gray-100: #555555;
+    --gray-50: #424242;
   }
 }
 
