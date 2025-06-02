@@ -9,7 +9,7 @@ export default function Home() {
       <div className="container absolute left-1/2 top-0 z-[1] w-[100%] -translate-x-1/2">
         <HeaderDynamic />
       </div>
-      <div className="relative flex h-screen flex-col items-center justify-center gap-[72px] overflow-hidden">
+      <div className="relative flex h-dvh flex-col items-center justify-center gap-[72px] overflow-hidden">
         {/* 로고 이미지 */}
         <div className="relative h-[64px] w-[343px]">
           <Image src={logoImage} alt="TiCatch" fill className="object-cover" />
@@ -19,7 +19,7 @@ export default function Home() {
         <Link href="/ticket/level" className="group relative">
           <div className="relative z-[3] mb-[16px] h-[96px] w-[96px] overflow-hidden rounded-[16px] bg-purple-500 shadow-inner duration-500 group-hover:scale-105 group-hover:bg-purple-100">
             {/* 질감 효과 */}
-            <div className="absolute h-[36px] w-[300px] rotate-[-45deg] animate-shine bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
+            <div className="via-white/20 absolute h-[36px] w-[300px] rotate-[-45deg] animate-shine bg-gradient-to-b from-transparent to-transparent"></div>
           </div>
           <div className="pointer-events-none absolute left-1/2 top-1/2 z-[4] translate-x-[-50%] translate-y-[calc(50%+56px)] animate-show-text whitespace-nowrap text-xl text-gray-400 opacity-0 transition-all duration-[1500ms] group-hover:text-white group-hover:opacity-[100%]">
             좌석을 클릭하세요!
