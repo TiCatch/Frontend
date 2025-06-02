@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLoginWithKakao } from '@hooks';
+import Loading from '@app/loading';
 
 interface AuthPageClientProps {
   code: string;
@@ -24,7 +25,7 @@ const AuthPageClient = ({ code }: AuthPageClientProps) => {
     });
   }, [code, loginWithKakao, router]);
 
-  return <div>로그인 중...</div>;
+  return <Loading />;
 };
 
 export default AuthPageClient;

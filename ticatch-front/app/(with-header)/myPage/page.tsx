@@ -139,7 +139,7 @@ export default function MyPage() {
   };
 
   return (
-    <div className="container mx-auto flex h-[calc(100dvh-64px)] flex-col px-4 py-8">
+    <div className="container mx-auto flex h-[calc(100vh-64px)] flex-col px-4 py-8">
       {/* 티켓 요약 섹션 */}
       <section className="mb-[24px] flex min-h-[100px] w-[100%] items-center rounded-xl border border-gray-200 px-[24px]">
         <div className="grow break-keep text-xl">

@@ -24,6 +24,7 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import TimerIcon from '@mui/icons-material/Timer';
+import Loading from '@app/loading';
 
 export default function TicketDetailPage() {
   const params = useParams<{ ticketingId: string }>();
@@ -148,10 +149,6 @@ export default function TicketDetailPage() {
   const level = ticket?.ticketingLevel ?? 'EASY';
   const { backgroundColor, levelText } = levelAttribute[level];
 
-  if (!ticket) {
-    return null;
-  }
-
   const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
   const triggerVirtualUsers = async (
@@ -213,6 +210,10 @@ export default function TicketDetailPage() {
   };
 
   const content = detailContentByLevel[level];
+
+  if (!ticket) {
+    return <Loading />;
+  }
 
   return (
     <div>

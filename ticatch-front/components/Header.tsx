@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import ConfirmationNumberSharpIcon from '@mui/icons-material/ConfirmationNumberSharp';
 import { logoImage } from '@constants/imagePath';
 import { useLogout, useUserStatus } from '@hooks';
@@ -12,6 +11,9 @@ const Header = () => {
   const pathname = usePathname();
   const { isLoggedIn } = useUserStatus();
   const logout = useLogout();
+  const isTicketingPage = pathname.includes('/ticketing');
+
+  if (isTicketingPage) return null;
 
   return (
     <header className="relative sticky top-0 z-[5] min-w-[320px] overflow-hidden backdrop-blur-sm">

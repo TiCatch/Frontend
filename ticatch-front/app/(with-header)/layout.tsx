@@ -1,18 +1,12 @@
-'use client';
 import Header from '@components/Header';
-import { usePathname } from 'next/navigation';
+import Footer from '@components/Footer';
 
-export default function HeaderLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  const pathname = usePathname();
-  const isTicketingPage = pathname.includes('/ticketing');
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="container">
-      {!isTicketingPage && <Header />}
+      <Header />
       {children}
+      <Footer />
     </div>
   );
 }
