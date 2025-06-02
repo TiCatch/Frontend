@@ -10,7 +10,7 @@ const Footer = () => {
   if (isTicketingPage) return null;
 
   return (
-    <footer className="absolute left-0 right-0 bg-[#1c2531] text-sm text-white">
+    <footer className="bg-[#1c2531] text-sm text-white">
       <div className="grid grid-cols-1 gap-8 px-6 py-10 md:grid-cols-4">
         <div>
           <h2 className="mb-2 text-lg font-bold">TiCatch</h2>
