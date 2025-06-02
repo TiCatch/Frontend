@@ -13,7 +13,6 @@ import Image from 'next/image';
 import CommonButton from '@components/button/CommonButton';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import FooterDynamic from '@components/FooterDynamic.client';
 
 export default function MyPage() {
   const { userInfo } = useUserStatus();
@@ -215,7 +214,6 @@ export default function MyPage() {
           </section>
         )}
       </div>
-      <FooterDynamic />
     </>
   );
 }

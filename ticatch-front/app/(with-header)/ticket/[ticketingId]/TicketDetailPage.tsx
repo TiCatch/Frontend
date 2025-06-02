@@ -24,7 +24,6 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import TimerIcon from '@mui/icons-material/Timer';
-import FooterDynamic from '@components/FooterDynamic.client';
 
 export default function TicketDetailPage() {
   const params = useParams<{ ticketingId: string }>();
@@ -148,10 +147,6 @@ export default function TicketDetailPage() {
 
   const level = ticket?.ticketingLevel ?? 'EASY';
   const { backgroundColor, levelText } = levelAttribute[level];
-
-  if (!ticket) {
-    return null;
-  }
 
   const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
@@ -321,7 +316,6 @@ export default function TicketDetailPage() {
           cancelButtonText="닫기"
         />
       )}
-      <FooterDynamic />
     </div>
   );
 }

@@ -1,7 +1,6 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import FooterDynamic from '@components/FooterDynamic.client';
 
 const CheckAnimation = dynamic(() => import('@components/Animation/Check'), {
   ssr: false,
@@ -18,7 +17,6 @@ export default function CompletePage() {
           자세한 정보는 '마이페이지'에서 확인이 가능합니다.
         </p>
       </div>
-      <FooterDynamic />
     </>
   );
 }
