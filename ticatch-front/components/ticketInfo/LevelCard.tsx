@@ -14,7 +14,9 @@ import { useMediaQuery } from 'hooks/useMediaQuery';
 
 export default function LevelCard({ level }: { level: TicketingLevel }) {
   const { isLoggedIn, isLoading: isUserLoading } = useUserStatus();
-  const { createTicket } = useActiveTicket(isLoggedIn && !isUserLoading);
+  const { activeTicket, createTicket } = useActiveTicket(
+    isLoggedIn && !isUserLoading,
+  );
   const isMobile = useMediaQuery('(max-width: 480px)', false);
 
   const bgClassMap: Record<TicketingLevel, string> = {
@@ -34,6 +36,7 @@ export default function LevelCard({ level }: { level: TicketingLevel }) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleSubmit = async () => {
+    if (activeTicket) return;
     if (isSubmitting) return;
     setIsSubmitting(true);
     try {
