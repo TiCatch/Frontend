@@ -14,7 +14,9 @@ import { useMediaQuery } from 'hooks/useMediaQuery';
 
 export default function LevelCard({ level }: { level: TicketingLevel }) {
   const { isLoggedIn, isLoading: isUserLoading } = useUserStatus();
-  const { createTicket } = useActiveTicket(isLoggedIn && !isUserLoading);
+  const { activeTicket, createTicket } = useActiveTicket(
+    isLoggedIn && !isUserLoading,
+  );
   const isMobile = useMediaQuery('(max-width: 480px)', false);
 
   const bgClassMap: Record<TicketingLevel, string> = {
@@ -31,8 +33,12 @@ export default function LevelCard({ level }: { level: TicketingLevel }) {
   const router = useRouter();
 
   const [startTime, setStartTime] = useState<number>(30);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleSubmit = async () => {
+    if (activeTicket) return;
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     try {
       const ticketData = await createTicket({
         level,
@@ -43,6 +49,8 @@ export default function LevelCard({ level }: { level: TicketingLevel }) {
       router.push(`/ticket/${ticketingId}`);
     } catch (error) {
       console.error('티켓팅 생성 중 문제가 발생했습니다.', error);
+    } finally {
+      setTimeout(() => setIsSubmitting(false), 2000);
     }
   };
 

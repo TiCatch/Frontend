@@ -42,6 +42,7 @@ export default function TicketDetailPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const isTicketingOpen = remainingTime === '0:00';
   const [activeTab, setActiveTab] = useState<string>('info');
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const ticketDetails = [
     {
@@ -191,6 +192,9 @@ export default function TicketDetailPage() {
   };
 
   const enterTicketing = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
     try {
       const { status, data } = await enterWaiting(params.ticketingId);
       if (status === 200) {
@@ -206,6 +210,8 @@ export default function TicketDetailPage() {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setTimeout(() => setIsSubmitting(false), 2000);
     }
   };
 
