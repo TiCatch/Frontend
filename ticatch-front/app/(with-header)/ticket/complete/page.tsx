@@ -8,6 +8,10 @@ const CheckAnimation = dynamic(() => import('@components/Animation/Check'), {
 });
 
 export default function CompletePage() {
+  localStorage.removeItem('ticketingId');
+  localStorage.removeItem('tid');
+  localStorage.removeItem('seatInfo');
+
   return (
     <div className="flex min-h-[calc(100dvh-64px)] flex-col items-center justify-center overflow-hidden text-center">
       <CheckAnimation />

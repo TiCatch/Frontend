@@ -19,9 +19,6 @@ export default function PaymentPageClient({
 
         localStorage.setItem('paymentSuccess', 'true');
         localStorage.removeItem('paymentSuccess');
-        localStorage.removeItem('ticketingId');
-        localStorage.removeItem('tid');
-        localStorage.removeItem('seatInfo');
         window.close();
         window.opener.close();
       } catch (error) {
