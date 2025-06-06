@@ -11,6 +11,18 @@ export default {
       fontFamily: {
         sans: ['var(--font-pretendard)', 'sans-serif'],
       },
+      height: {
+        'inner-screen':
+          'calc(100dvh - var(--header-height) - var(--footer-height))',
+        'without-header': 'calc(100dvh - var(--header-height))',
+        'without-footer': 'calc(100dvh - var(--footer-height))',
+      },
+      minHeight: {
+        'inner-screen':
+          'calc(100dvh - var(--header-height) - var(--footer-height))',
+        'without-header': 'calc(100dvh - var(--header-height))',
+        'without-footer': 'calc(100dvh - var(--footer-height))',
+      },
       fontSize: {
         '2xs': 'var(--font-2xs)',
         xs: 'var(--font-xs)',
