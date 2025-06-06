@@ -102,10 +102,10 @@ export default function LevelCard({ level }: { level: TicketingLevel }) {
         {/* 뒷면 */}
         <div
           className={`absolute inset-0 rounded-3xl ${bgClassMap[level]} p-[24px] shadow-simple [backface-visibility:hidden] [transform:rotateY(180deg)]`}>
-          <div className="absolute left-0 top-0 z-0 h-full w-full rounded-3xl bg-white opacity-50 shadow-glass backdrop-blur-glass" />
+          <div className="bg-abs-white absolute left-0 top-0 z-0 h-full w-full rounded-3xl opacity-50 shadow-glass backdrop-blur-glass" />
           <div className="z-3 relative flex h-full flex-col items-center justify-start md:justify-center md:gap-4">
             <div
-              className={`mt-[8px] flex flex-1 items-center whitespace-nowrap md:mt-[32px] ${isMobile ? 'text-' : 'text-l'} font-semibold text-gray-700`}>
+              className={`mt-[8px] flex flex-1 items-center whitespace-nowrap md:mt-[32px] ${isMobile ? 'text-' : 'text-l'} text-abs-black font-semibold`}>
               시간을 선택하세요.
             </div>
             <div className="flex h-full w-full flex-[3] flex-row items-center justify-around md:flex-col md:justify-center">
