@@ -74,6 +74,10 @@
     inset -9.34667px 9.34667px 9.34667px rgba(143, 170, 138, 0.418);
 
   --glass-blur: blur(36px);
+
+  /* 높이 정의 */
+  --header-height: 64px;
+  --footer-height: 100px;
 }
 
 @media (prefers-color-scheme: dark) {
