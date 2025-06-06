@@ -84,6 +84,10 @@ export default {
           0.28: 'var(--blackTip-28)',
           0.6: 'var(--blackTip-60)',
         },
+        abs: {
+          white: 'var(--abs-white)',
+          black: 'var(--abs-black)',
+        },
       },
       boxShadow: {
         simple: 'var(--simple-shadow)',

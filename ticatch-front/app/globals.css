@@ -34,6 +34,9 @@
   --color-sub6: #3396ff;
   --color-sub7: #134074;
 
+  --abs-white: rgb(255, 255, 255);
+  --abs-black: #424242;
+
   --purple-50: #f9edff;
   --purple-100: #ebc8fe;
   --purple-200: #e2adfe;
