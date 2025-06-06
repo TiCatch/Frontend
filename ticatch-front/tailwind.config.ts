@@ -86,10 +86,6 @@ export default {
       },
       container: { center: true, screens: { sm: '100%', md: '1040px' } },
       keyframes: {
-        blink: {
-          '0%, 100%': { backgroundColor: 'var(--gray-500)' },
-          '50%': { backgroundColor: 'var(--purple-400)' },
-        },
         shine: {
           '0%': {
             transform: 'translateY(100%) translateX(-65%) rotate(-45deg)',
@@ -104,7 +100,6 @@ export default {
         },
       },
       animation: {
-        blink: 'blink 1.5s infinite',
         shine: 'shine 2s infinite ease',
         'show-text': 'showText .5s ease-out forwards 4s',
       },
