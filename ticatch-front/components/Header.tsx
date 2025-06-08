@@ -18,7 +18,7 @@ const Header = () => {
   return (
     <header className="relative sticky top-0 z-[5] min-w-[320px] overflow-hidden backdrop-blur-sm">
       <div className="pointer-events-none absolute inset-0 bg-[var(--background)] opacity-70" />
-      <div className="relative z-10 flex px-[16px] py-5 text-s md:px-[32px]">
+      <div className="container relative z-10 flex px-[16px] py-5 text-s md:px-[32px]">
         <Link href="/">
           <Image
             src={logoImage}

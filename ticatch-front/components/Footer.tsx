@@ -11,7 +11,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-[#1c2531] text-sm text-white">
-      <div className="grid grid-cols-1 gap-8 px-6 py-10 md:grid-cols-4">
+      <div className="container grid grid-cols-1 gap-8 px-6 py-10 md:grid-cols-4">
         <div>
           <h2 className="mb-2 text-lg font-bold">TiCatch</h2>
           <p className="mb-4 text-gray-400">최고의 공연 예매 연습 서비스</p>

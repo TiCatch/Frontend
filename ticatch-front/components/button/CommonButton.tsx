@@ -12,7 +12,7 @@ interface ButtonProps {
 const CommonButton: React.FC<ButtonProps> = ({
   title,
   backgroundColor = 'bg-primary',
-  textColor = 'text-white',
+  textColor = 'text-abs-white',
   isDisabled = false,
   onClick,
   borderColor = 'border-transparent',

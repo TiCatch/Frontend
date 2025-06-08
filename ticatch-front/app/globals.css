@@ -34,6 +34,9 @@
   --color-sub6: #3396ff;
   --color-sub7: #134074;
 
+  --abs-white: rgb(255, 255, 255);
+  --abs-black: #424242;
+
   --purple-50: #f9edff;
   --purple-100: #ebc8fe;
   --purple-200: #e2adfe;
@@ -74,6 +77,10 @@
     inset -9.34667px 9.34667px 9.34667px rgba(143, 170, 138, 0.418);
 
   --glass-blur: blur(36px);
+
+  /* 높이 정의 */
+  --header-height: 64px;
+  --footer-height: 100px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -91,6 +98,36 @@
     --gray-100: #555555;
     --gray-50: #424242;
   }
+}
+
+*::-webkit-scrollbar,
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-thumb {
+  all: unset;
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+  margin-block: 2px;
+  border-radius: 9999px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--gray-100);
+  border-radius: 9999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.08);
+  transition: background 1s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--gray-200);
 }
 
 body {
