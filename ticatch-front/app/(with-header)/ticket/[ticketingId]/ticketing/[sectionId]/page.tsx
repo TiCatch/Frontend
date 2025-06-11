@@ -1,47 +1,54 @@
 'use client';
 
-import { fetchSVG } from '@utils/fetchSVG';
-import { use, useEffect, useState, useRef, useCallback } from 'react';
-import { ArrowBackIos } from '@mui/icons-material';
+import { use, useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { ArrowBackIos } from '@mui/icons-material';
+import { fetchSVG } from '@utils/fetchSVG';
 import { getCheckSeat, getSectionSeats } from 'api';
+import Loading from '@app/loading';
 
 interface SeatsPageProps {
   params: Promise<{ sectionId: string; ticketingId: string }>;
 }
 
 export default function SeatsPage({ params }: SeatsPageProps) {
+  const { sectionId, ticketingId } = use(params);
   const router = useRouter();
-  const resolvedParams = use(params);
-  const { sectionId, ticketingId } = resolvedParams;
 
   const [seatSVG, setSeatSVG] = useState<string | null>(null);
+  const [totalSVG, setTotalSVG] = useState<string | null>(null);
   const [selectedSeat, setSelectedSeat] = useState<string | null>(null);
   const [disabledSeats, setDisabledSeats] = useState<Set<string>>(new Set());
-  const [isLoading, setIsLoading] = useState(true);
+  const [isPageLoading, setIsPageLoading] = useState(true);
+
   const svgContainerRef = useRef<HTMLDivElement | null>(null);
 
   const fetchSeatsData = useCallback(async () => {
-    setIsLoading(true);
+    setIsPageLoading(true);
     try {
       const seats = await getSectionSeats(ticketingId, sectionId);
-      console.log(seats);
-
-      const reservedSeats = new Set(
+      const reserved = new Set(
         Object.entries(seats)
-          .filter(([_, value]) => value === true)
+          .filter(([, reserved]) => reserved === true)
           .map(([key]) => key),
       );
-      setDisabledSeats(reservedSeats);
+      setDisabledSeats(reserved);
 
-      const svg = await fetchSVG(
-        `https://ticatch-content.s3.ap-southeast-2.amazonaws.com/seat-img/S${sectionId}.svg`,
-      );
-      setSeatSVG(svg);
-    } catch (error) {
-      console.error(error);
+      const [seatSvgData, totalSvgData] = await Promise.all([
+        fetchSVG(
+          `https://ticatch-content.s3.ap-southeast-2.amazonaws.com/seat-img/S${sectionId}.svg`,
+        ),
+        fetchSVG(
+          'https://ticatch-content.s3.ap-southeast-2.amazonaws.com/seat-img/TOTAL.svg',
+        ),
+      ]);
+
+      setSeatSVG(seatSvgData);
+      setTotalSVG(totalSvgData);
+    } catch (err) {
+      console.error(err);
     } finally {
-      setIsLoading(false);
+      setIsPageLoading(false);
     }
   }, [ticketingId, sectionId]);
 
@@ -50,7 +57,14 @@ export default function SeatsPage({ params }: SeatsPageProps) {
   }, [fetchSeatsData]);
 
   useEffect(() => {
-    if (!svgContainerRef.current || isLoading || !seatSVG) return;
+    const stagePaths = document.querySelectorAll('svg path.STAGE');
+    stagePaths.forEach((el) => {
+      el.setAttribute('style', 'cursor: default');
+    });
+  }, [totalSVG]);
+
+  useEffect(() => {
+    if (!svgContainerRef.current || !seatSVG) return;
 
     const rects = svgContainerRef.current.querySelectorAll('rect');
 
@@ -70,48 +84,55 @@ export default function SeatsPage({ params }: SeatsPageProps) {
         rect.setAttribute('fill', '#D587FE');
       }
     });
-  }, [seatSVG, disabledSeats, selectedSeat, isLoading, sectionId]);
+  }, [seatSVG, disabledSeats, selectedSeat, sectionId]);
 
-  const handleSeatClick = (event: React.MouseEvent<HTMLElement>) => {
-    if (!svgContainerRef.current) return;
-
-    const target = event.target as SVGElement;
+  const handleSeatClick = (e: React.MouseEvent<HTMLElement>) => {
+    const target = e.target as SVGElement;
     if (target.tagName !== 'rect') return;
 
-    const clickedRect = target as SVGRectElement;
-    const rowGroup = clickedRect.closest('g');
-    const row = rowGroup?.getAttribute('class');
-    const col = clickedRect.getAttribute('class');
+    const rect = target as SVGRectElement;
+    const row = rect.closest('g')?.getAttribute('class');
+    const col = rect.getAttribute('class');
     const seatInfo = `S${sectionId}:${row}:${col}`;
 
-    if (selectedSeat === seatInfo) {
-      setSelectedSeat(null);
-    } else {
-      setSelectedSeat(seatInfo);
+    setSelectedSeat((prev) => (prev === seatInfo ? null : seatInfo));
+  };
+
+  const handleSectionClick = (e: React.MouseEvent<HTMLElement>) => {
+    const target = e.target as SVGElement;
+    const targetClass = target.getAttribute('class');
+
+    if (target.tagName === 'path' && targetClass && targetClass !== 'STAGE') {
+      router.push(`/ticket/${ticketingId}/ticketing/${targetClass}`);
     }
   };
 
   const handleConfirmSeat = async () => {
     if (!selectedSeat) return;
     try {
-      const seatData = await getCheckSeat(ticketingId, selectedSeat);
-      if (seatData.status === 200) {
+      const res = await getCheckSeat(ticketingId, selectedSeat);
+      if (res.status === 200) {
         router.push(
           `/ticket/${ticketingId}/ticketing/payment?seat=${selectedSeat}`,
         );
-      } else if (seatData.status === 450) {
+      } else if (res.status === 450) {
         alert('이미 선점된 좌석입니다.');
         setSelectedSeat(null);
         await fetchSeatsData();
       }
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
+
+  if (isPageLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="flex h-full w-full flex-col gap-4">
       <div className="text-lg font-bold">좌석선택</div>
+
       <div className="flex min-h-0 flex-grow gap-4">
         {/* 왼쪽 구역 */}
         <div className="flex w-2/3 flex-col items-center justify-center gap-4 rounded bg-gray-50 p-8 shadow-md">
@@ -126,36 +147,46 @@ export default function SeatsPage({ params }: SeatsPageProps) {
             <div className="text-sm">좌석도 전체보기</div>
           </div>
 
-          {isLoading ? (
-            <div className="flex h-full items-center justify-center">
-              <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-gray-600"></div>
-            </div>
-          ) : (
-            <div
-              ref={svgContainerRef}
-              className="h-full"
-              dangerouslySetInnerHTML={{ __html: seatSVG || '' }}
-              onClick={handleSeatClick}
-            />
-          )}
+          <div
+            ref={svgContainerRef}
+            className="h-full"
+            dangerouslySetInnerHTML={{ __html: seatSVG || '' }}
+            onClick={handleSeatClick}
+          />
         </div>
 
         {/* 오른쪽 구역 */}
-        <div className="flex w-1/3 flex-col gap-4 rounded bg-gray-50 p-8 shadow-md">
-          <div className="flex justify-center text-sm text-gray-600">
-            좌석선택 이후 5분 이내 결제가 완료되지 않을 시 선택하신 좌석의 선점
-            기회를 잃게 됩니다.
-          </div>
-
-          {selectedSeat && (
-            <div className="text-center text-lg font-semibold">
-              선택한 좌석: {selectedSeat}
+        <div className="flex h-full w-1/3 flex-col justify-between rounded bg-gray-50 p-8 shadow-md">
+          {totalSVG && (
+            <div className="border-b border-gray-300 pb-8">
+              <div className="mb-2 text-center text-sm font-semibold">
+                다른 구역 선택
+              </div>
+              <div
+                className="cursor-pointer"
+                dangerouslySetInnerHTML={{ __html: totalSVG }}
+                onClick={handleSectionClick}
+              />
             </div>
           )}
 
-          <div className="mt-auto w-full">
+          <div className="mt-4">
+            <div className="mb-2 h-6 text-center text-lg font-semibold">
+              {selectedSeat && `선택한 좌석: ${selectedSeat}`}
+            </div>
+
+            <div className="text-center text-sm leading-relaxed tracking-tight text-gray-600">
+              좌석 선택 이후{' '}
+              <strong className="font-semibold">5분 이내 결제</strong>가
+              완료되지 않으면
+              <br />
+              선택하신 좌석의 선점 기회를 잃게 됩니다.
+            </div>
+          </div>
+
+          <div className="mt-6">
             <button
-              className={`mt-4 w-full rounded-12 py-4 text-lg text-white transition ${
+              className={`w-full rounded-12 py-4 text-lg text-white transition ${
                 selectedSeat
                   ? 'cursor-pointer bg-primary'
                   : 'cursor-not-allowed bg-gray-300'
