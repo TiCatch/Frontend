@@ -6,6 +6,7 @@ import { ArrowBackIos } from '@mui/icons-material';
 import { fetchSVG } from '@utils/fetchSVG';
 import { getCheckSeat, getSectionSeats } from 'api';
 import Loading from '@app/loading';
+import selectTotalSVG from '@utils/selectTotalSVG';
 
 interface SeatsPageProps {
   params: Promise<{ sectionId: string; ticketingId: string }>;
@@ -34,7 +35,7 @@ export default function SeatsPage({ params }: SeatsPageProps) {
       );
       setDisabledSeats(reserved);
 
-      const [seatSvgData, totalSvgData] = await Promise.all([
+      const [seatRaw, totalRaw] = await Promise.all([
         fetchSVG(
           `https://ticatch-content.s3.ap-southeast-2.amazonaws.com/seat-img/S${sectionId}.svg`,
         ),
@@ -43,8 +44,8 @@ export default function SeatsPage({ params }: SeatsPageProps) {
         ),
       ]);
 
-      setSeatSVG(seatSvgData);
-      setTotalSVG(totalSvgData);
+      setSeatSVG(seatRaw);
+      setTotalSVG(selectTotalSVG(totalRaw!, sectionId));
     } catch (err) {
       console.error(err);
     } finally {
@@ -55,13 +56,6 @@ export default function SeatsPage({ params }: SeatsPageProps) {
   useEffect(() => {
     fetchSeatsData();
   }, [fetchSeatsData]);
-
-  useEffect(() => {
-    const stagePaths = document.querySelectorAll('svg path.STAGE');
-    stagePaths.forEach((el) => {
-      el.setAttribute('style', 'cursor: default');
-    });
-  }, [totalSVG]);
 
   useEffect(() => {
     if (!svgContainerRef.current || !seatSVG) return;
@@ -125,19 +119,14 @@ export default function SeatsPage({ params }: SeatsPageProps) {
     }
   };
 
-  if (isPageLoading) {
-    return <Loading />;
-  }
+  if (isPageLoading) return <Loading />;
 
   return (
     <div className="flex h-full w-full flex-col gap-4">
       <div className="text-lg font-bold">좌석선택</div>
-
       <div className="flex min-h-0 flex-grow gap-4">
-        {/* 왼쪽 구역 */}
         <div className="flex w-2/3 flex-col items-center justify-center gap-4 rounded bg-gray-50 p-8 shadow-md">
           <div>현재 보고계신 구역은 S{sectionId} 구역 입니다.</div>
-
           <div
             className="flex cursor-pointer items-center self-start"
             onClick={() =>
@@ -146,7 +135,6 @@ export default function SeatsPage({ params }: SeatsPageProps) {
             <ArrowBackIos sx={{ fontSize: 16 }} />
             <div className="text-sm">좌석도 전체보기</div>
           </div>
-
           <div
             ref={svgContainerRef}
             className="h-full"
@@ -155,7 +143,6 @@ export default function SeatsPage({ params }: SeatsPageProps) {
           />
         </div>
 
-        {/* 오른쪽 구역 */}
         <div className="flex h-full w-1/3 flex-col justify-between rounded bg-gray-50 p-8 shadow-md">
           {totalSVG && (
             <div className="border-b border-gray-300 pb-8">
@@ -166,6 +153,7 @@ export default function SeatsPage({ params }: SeatsPageProps) {
                 className="cursor-pointer"
                 dangerouslySetInnerHTML={{ __html: totalSVG }}
                 onClick={handleSectionClick}
+                key={sectionId}
               />
             </div>
           )}
@@ -174,7 +162,6 @@ export default function SeatsPage({ params }: SeatsPageProps) {
             <div className="mb-2 h-6 text-center text-lg font-semibold">
               {selectedSeat && `선택한 좌석: ${selectedSeat}`}
             </div>
-
             <div className="text-center text-sm leading-relaxed tracking-tight text-gray-600">
               좌석 선택 이후{' '}
               <strong className="font-semibold">5분 이내 결제</strong>가
