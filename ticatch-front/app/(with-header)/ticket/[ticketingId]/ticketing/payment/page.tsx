@@ -35,7 +35,7 @@ export default function PaymentPage() {
       <div className="text-lg font-bold">결제/예매정보</div>
       <div className="flex flex-grow gap-4">
         {/* 왼쪽 구역 */}
-        <div className="flex w-2/3 flex-col gap-4 rounded bg-gray-50 p-8 shadow-md">
+        <div className="flex w-2/3 flex-col gap-4 rounded bg-gray-50 p-4 shadow-md">
           <div>
             <span>결제수단</span>
             <div className="mt-2 flex items-center gap-2">
@@ -64,7 +64,7 @@ export default function PaymentPage() {
         </div>
 
         {/* 오른쪽 구역 */}
-        <div className="flex w-1/3 flex-col gap-4 rounded bg-gray-50 p-8 shadow-md">
+        <div className="flex w-1/3 flex-col gap-4 rounded bg-gray-50 p-4 shadow-md">
           <div className="flex justify-center text-gray-600">
             공연제목 공연제목
           </div>
