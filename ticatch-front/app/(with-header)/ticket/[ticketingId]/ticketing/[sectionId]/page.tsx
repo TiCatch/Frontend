@@ -125,6 +125,19 @@ export default function SeatsPage({ params }: SeatsPageProps) {
     }
   };
 
+  const entries = Object.entries(unreservedSeats).map(([key, value]) => {
+    return { key: key.replace(/^S/, ''), value };
+  });
+
+  const letterEntries = entries.filter(({ key }) => isNaN(Number(key)));
+  letterEntries.sort((a, b) => a.key.localeCompare(b.key));
+
+  const numberEntries = entries
+    .filter(({ key }) => !isNaN(Number(key)))
+    .sort((a, b) => Number(a.key) - Number(b.key));
+
+  const sortedEntries = [...letterEntries, ...numberEntries];
+
   if (isPageLoading) return <Loading />;
 
   return (
@@ -166,19 +179,18 @@ export default function SeatsPage({ params }: SeatsPageProps) {
 
           <div className="flex min-h-0 flex-1 flex-col">
             <div className="flex-1 overflow-y-auto rounded border border-gray-200 p-2 text-sm text-gray-600">
-              {Object.entries(unreservedSeats).map(([id, count]) => {
-                const numericId = id.replace(/^S/, '');
-                const isCurrent = numericId === sectionId;
+              {sortedEntries.map(({ key, value }) => {
+                const isCurrent = key === sectionId;
 
                 return (
                   <div
-                    key={id}
+                    key={key}
                     onClick={
                       isCurrent
                         ? undefined
                         : () =>
                             router.push(
-                              `/ticket/${ticketingId}/ticketing/${numericId}`,
+                              `/ticket/${ticketingId}/ticketing/${key}`,
                             )
                     }
                     className={`flex justify-between px-2 py-1 transition ${
@@ -186,8 +198,10 @@ export default function SeatsPage({ params }: SeatsPageProps) {
                         ? 'cursor-not-allowed text-gray-400'
                         : 'cursor-pointer hover:bg-gray-100'
                     }`}>
-                    <span>{id} 구역</span>
-                    <span>{count}석 남음</span>
+                    <span className="inline-block w-12 text-right">
+                      {key} 구역
+                    </span>
+                    <span>{value}석 남음</span>
                   </div>
                 );
               })}
