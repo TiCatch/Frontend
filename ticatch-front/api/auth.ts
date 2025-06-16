@@ -56,7 +56,7 @@ export const isTokenExpired = (token: string): boolean => {
  * 클라이언트 단에서 로그인 상태 확인 (localStorage의 accessToken 여부로 판단)
  * @returns 로그인 여부
  */
-export const getUserStatusClient = async () => {
+export const getUserStatusClient = async (): Promise<boolean> => {
   if (typeof window === 'undefined') return false;
   let accessToken = localStorage.getItem('accessToken');
 
@@ -65,21 +65,19 @@ export const getUserStatusClient = async () => {
       accessToken = await refreshAccessToken();
       if (accessToken) {
         localStorage.setItem('accessToken', accessToken);
+      } else {
+        return false;
       }
     } catch {
       return false;
     }
   }
-  return !!accessToken;
+  return true;
 };
 
 export const getUserInfoClient = async () => {
-  if (typeof window === 'undefined') return false;
-  if (await getUserStatusClient()) {
-    const response = await axiosClient.get('/users/');
-    return response.data?.data;
-  }
-  return null;
+  const response = await axiosClient.get('/users/');
+  return response.data?.data;
 };
 
 /**
@@ -92,7 +90,7 @@ export const logoutUser = async () => {
 };
 
 /**
- *
+ * accessToken 재발급
  * @returns 새로운 accessToken
  */
 export const refreshAccessToken = async () => {

@@ -2,14 +2,14 @@
 
 import ConfirmationNumberSharpIcon from '@mui/icons-material/ConfirmationNumberSharp';
 import { logoImage } from '@constants/imagePath';
-import { useLogout, useUserStatus } from '@hooks';
+import { useLogout, useAuthStatus } from '@hooks';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const Header = () => {
   const pathname = usePathname();
-  const { isLoggedIn } = useUserStatus();
+  const { data: isLoggedIn } = useAuthStatus();
   const logout = useLogout();
   const isTicketingPage = pathname.includes('/ticketing');
 
@@ -29,7 +29,7 @@ const Header = () => {
           />
         </Link>
         <div className="flex grow justify-end">
-          {isLoggedIn ? (
+          {!!isLoggedIn ? (
             <div className="flex gap-[36px]">
               <button
                 onClick={() => logout.mutate()}

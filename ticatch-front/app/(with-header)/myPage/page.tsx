@@ -5,7 +5,7 @@ import TicketItem from '@components/myTickets/TicketItem';
 import DetailPanel from '@components/myTickets/DetailPanel';
 import LevelCount from '@components/myTickets/LevelCount';
 import { MyTicket } from 'types';
-import { useUserStatus } from '@hooks';
+import { useUserInfo } from '@hooks';
 import { getHistoryLevels, getTicketsHistory } from 'api';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -15,7 +15,7 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
 export default function MyPage() {
-  const { userInfo } = useUserStatus();
+  const { data: userInfo, isLoading } = useUserInfo();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [totalCnt, setTotalCnt] = useState({ hard: '', normal: '', easy: '' });
   const gridRef = useRef<HTMLDivElement>(null);
@@ -143,7 +143,7 @@ export default function MyPage() {
       {/* 티켓 요약 섹션 */}
       <section className="mb-[24px] flex min-h-[100px] w-[100%] items-center rounded-xl border border-gray-200 px-[24px]">
         <div className="grow break-keep text-xl">
-          {userInfo?.userNickname}님의 티켓
+          {isLoading ? '로딩 중...' : `${userInfo?.userNickname}님의 티켓`}
         </div>
         <LevelCount cnt={totalCnt.hard} level="상" color="purple-500" />
         <LevelCount cnt={totalCnt.normal} level="중" color="sub-3" />
