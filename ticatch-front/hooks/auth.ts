@@ -5,41 +5,29 @@ import {
   loginWithKakao,
   logoutUser,
 } from 'api';
-import { useEffect, useState } from 'react';
 
 /**
- * 로그인 상태 확인 (localStorage)
+ * 로그인 여부 확인 (localStorage의 accessToken 검사)
  */
-export const useUserStatus = () => {
-  const [isClient, setIsClient] = useState(false);
-
-  // hydration 이후에만 쿼리 실행
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  const { data, isLoading, isError } = useQuery({
+export const useAuthStatus = () => {
+  return useQuery({
     queryKey: ['userStatus'],
     queryFn: getUserStatusClient,
     staleTime: 1000 * 60 * 5,
-    enabled: isClient,
   });
+};
 
-  const { data: userInfo, isLoading: infoLoading } = useQuery({
+/**
+ * 로그인된 유저 정보 조회
+ */
+export const useUserInfo = () => {
+  return useQuery({
     queryKey: ['userInfo'],
     queryFn: getUserInfoClient,
     staleTime: 1000 * 60 * 5,
-    enabled: isClient,
+    retry: false,
+    enabled: typeof window !== 'undefined',
   });
-
-  return {
-    userStatus: data,
-    userInfo,
-    infoLoading,
-    isLoggedIn: !!data,
-    isLoading,
-    isError,
-  };
 };
 
 /**
@@ -51,6 +39,7 @@ export const useLoginWithKakao = () => {
     mutationFn: loginWithKakao,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userStatus'] });
+      queryClient.invalidateQueries({ queryKey: ['userInfo'] });
     },
   });
 };
@@ -65,6 +54,7 @@ export const useLogout = () => {
     mutationFn: logoutUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['userStatus'] });
+      queryClient.invalidateQueries({ queryKey: ['userInfo'] });
     },
     onError: (error) => {
       console.log('Logout failed: ', error);
