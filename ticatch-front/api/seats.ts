@@ -25,3 +25,17 @@ export const getSectionSeats = async (ticketingId: string, section: string) => {
     throw new Error('section 좌석 조회 오류');
   }
 };
+
+export const getUnreservedSeats = async (
+  ticketingId: string,
+): Promise<Record<string, number>> => {
+  try {
+    const response = await axiosClient.get(
+      `/ticket/seats/${ticketingId}/unreserved`,
+    );
+
+    return response.data.data;
+  } catch (error) {
+    throw new Error('잔여석 수 조회 오류');
+  }
+};
