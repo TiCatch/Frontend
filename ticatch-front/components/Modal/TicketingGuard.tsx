@@ -1,6 +1,6 @@
 'use client';
 
-import { useActiveTicket, useUserStatus } from '@hooks';
+import { useActiveTicket, useAuthStatus } from '@hooks';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import CommonModal from './CommonModal';
@@ -8,16 +8,16 @@ import CommonModal from './CommonModal';
 const TicketingGuard = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const { isLoggedIn, isLoading: isUserLoading } = useUserStatus();
+  const { data: isLoggedIn, isLoading: isAuthLoading } = useAuthStatus();
   const { activeTicketId, isLoading, updateTicket } = useActiveTicket(
-    isLoggedIn && !isUserLoading,
+    isLoggedIn && !isAuthLoading,
   );
 
   const [openInvalidModal, setOpenInvalidModal] = useState(false);
   const [openLeaveModal, setOpenLeaveModal] = useState(false);
 
   useEffect(() => {
-    if (isLoading || isUserLoading) return;
+    if (isLoading || isAuthLoading) return;
     setOpenInvalidModal(false);
     setOpenLeaveModal(false);
 
@@ -62,7 +62,7 @@ const TicketingGuard = () => {
     }
   };
 
-  if (isLoading || isUserLoading || !isLoggedIn) return null;
+  if (isLoading || isAuthLoading || !isLoggedIn) return null;
 
   if (openInvalidModal) {
     return (

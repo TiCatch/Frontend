@@ -2,12 +2,12 @@
 
 import { enterWaiting, getTicket } from 'api';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { TicketingLevel, TicketingResponse } from 'types';
 import CommonButton from '@components/button/CommonButton';
 import { getRemainingTime } from '@utils/getRemainingTime';
 import CommonModal from '@components/Modal/CommonModal';
-import { useActiveTicket, useUserStatus } from '@hooks';
+import { useActiveTicket, useAuthStatus, useUserInfo } from '@hooks';
 import ReserveTabContent from '@components/ticketInfo/ReserveTab';
 import GuideTabContent from '@components/ticketInfo/GuideTab';
 import InfoTabContent from '@components/ticketInfo/InfoTab';
@@ -31,9 +31,10 @@ export default function TicketDetailPage() {
   const router = useRouter();
   const ticketingId = Number(params.ticketingId);
 
-  const { isLoggedIn, isLoading: isUserLoading } = useUserStatus();
+  const { data: isLoggedIn, isLoading: isAuthLoading } = useAuthStatus();
+  const { data: userInfo, isLoading: isUserInfoLoading } = useUserInfo();
   const { updateTicket, successTicket } = useActiveTicket(
-    isLoggedIn && !isUserLoading,
+    isLoggedIn && !isAuthLoading,
   );
 
   const ticketWindowRef = useRef<Window | null>(null);
@@ -43,6 +44,13 @@ export default function TicketDetailPage() {
   const isTicketingOpen = remainingTime === '0:00';
   const [activeTab, setActiveTab] = useState<string>('info');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  const level = useMemo<TicketingLevel>(
+    () => ticket?.ticketingLevel ?? 'EASY',
+    [ticket],
+  );
+
+  const { backgroundColor, levelText } = levelAttribute[level];
 
   const ticketDetails = [
     {
@@ -127,6 +135,7 @@ export default function TicketDetailPage() {
 
   // 시간 update
   useEffect(() => {
+    if (!ticket) return;
     const targetTime = new Date(ticket?.ticketingTime + 'Z').getTime();
     setRemainingTime(getRemainingTime(targetTime));
 
@@ -137,7 +146,7 @@ export default function TicketDetailPage() {
       // 가상 요청 시작! (중복 방지)
       if (updatedTime === '0:01') {
         setTimeout(() => {
-          triggerVirtualUsers(0, params.ticketingId, level);
+          triggerVirtualUsers(0, String(params.ticketingId), level);
         }, 500);
       } else if (updatedTime === '0:00') {
         clearInterval(interval);
@@ -146,9 +155,6 @@ export default function TicketDetailPage() {
 
     return () => clearInterval(interval);
   }, [ticket]);
-
-  const level = ticket?.ticketingLevel ?? 'EASY';
-  const { backgroundColor, levelText } = levelAttribute[level];
 
   const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
@@ -217,7 +223,7 @@ export default function TicketDetailPage() {
 
   const content = detailContentByLevel[level];
 
-  if (!ticket) {
+  if (!ticket || isAuthLoading || isUserInfoLoading) {
     return <Loading />;
   }
 

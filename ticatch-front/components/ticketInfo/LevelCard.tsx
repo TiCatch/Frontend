@@ -8,12 +8,13 @@ import { useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useRouter } from 'next/navigation';
-import { useActiveTicket, useUserStatus } from '@hooks';
+
+import { useActiveTicket, useAuthStatus } from '@hooks';
 import CommonButton from '@components/button/CommonButton';
 import { useMediaQuery } from 'hooks/useMediaQuery';
 
 export default function LevelCard({ level }: { level: TicketingLevel }) {
-  const { isLoggedIn, isLoading: isUserLoading } = useUserStatus();
+  const { data: isLoggedIn, isLoading: isUserLoading } = useAuthStatus();
   const { activeTicket, createTicket } = useActiveTicket(
     isLoggedIn && !isUserLoading,
   );
@@ -36,8 +37,12 @@ export default function LevelCard({ level }: { level: TicketingLevel }) {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleSubmit = async () => {
-    if (activeTicket) return;
-    if (isSubmitting) return;
+    if (!isLoggedIn) {
+      router.push('/login');
+      return;
+    }
+
+    if (activeTicket || isSubmitting) return;
     setIsSubmitting(true);
     try {
       const ticketData = await createTicket({
@@ -102,10 +107,10 @@ export default function LevelCard({ level }: { level: TicketingLevel }) {
         {/* 뒷면 */}
         <div
           className={`absolute inset-0 rounded-3xl ${bgClassMap[level]} p-[24px] shadow-simple [backface-visibility:hidden] [transform:rotateY(180deg)]`}>
-          <div className="bg-abs-white absolute left-0 top-0 z-0 h-full w-full rounded-3xl opacity-50 shadow-glass backdrop-blur-glass" />
+          <div className="absolute left-0 top-0 z-0 h-full w-full rounded-3xl bg-abs-white opacity-50 shadow-glass backdrop-blur-glass" />
           <div className="z-3 relative flex h-full flex-col items-center justify-start md:justify-center md:gap-4">
             <div
-              className={`mt-[8px] flex flex-1 items-center whitespace-nowrap md:mt-[32px] ${isMobile ? 'text-' : 'text-l'} text-abs-black font-semibold`}>
+              className={`mt-[8px] flex flex-1 items-center whitespace-nowrap md:mt-[32px] ${isMobile ? 'text-' : 'text-l'} font-semibold text-abs-black`}>
               시간을 선택하세요.
             </div>
             <div className="flex h-full w-full flex-[3] flex-row items-center justify-around md:flex-col md:justify-center">

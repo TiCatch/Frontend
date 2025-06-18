@@ -8,7 +8,7 @@ import {
 import queryClient from 'providers/queryClient';
 import { TicketingLevel } from 'types';
 
-export const useActiveTicket = (enabled: boolean) => {
+export const useActiveTicket = (enabled?: boolean) => {
   const { data: activeTicket, isLoading } = useQuery({
     queryKey: ['activeTicket'],
     queryFn: fetchActiveTicket,
