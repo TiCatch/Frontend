@@ -46,9 +46,9 @@ export default function SectionPage() {
   return (
     <div className="flex h-full w-full flex-col gap-4">
       <div className="text-lg font-bold">좌석선택</div>
-      <div className="flex min-h-0 flex-grow gap-4">
+      <div className="flex min-h-0 flex-grow flex-col gap-4 md:flex-row">
         {/* 왼쪽 구역 */}
-        <div className="-center flex w-2/3 flex-col justify-center rounded bg-gray-50 p-4 shadow-md">
+        <div className="-center flex w-full flex-col justify-center rounded bg-gray-50 p-4 shadow-md md:w-2/3">
           {!selectedSection ? (
             <TotalSeats setSelectedSection={setSelectedSection} />
           ) : (
@@ -64,9 +64,9 @@ export default function SectionPage() {
         </div>
 
         {/* 오른쪽 구역 */}
-        <div className="flex h-full w-1/3 flex-col gap-4 rounded bg-gray-50 p-4 shadow-md">
+        <div className="flex h-full w-full flex-col gap-4 rounded bg-gray-50 p-4 shadow-md md:w-1/3">
           {selectedSection && (
-            <div className="min-h-0 flex-1">
+            <div className="order-3 mt-10 min-h-0 flex-1 md:order-1 md:mt-0">
               <SectionNavigation
                 key={`${selectedSection}-${reloadKey}-nav`}
                 selectedSection={selectedSection}
@@ -76,7 +76,7 @@ export default function SectionPage() {
             </div>
           )}
 
-          <div className="mt-auto w-full">
+          <div className="order-1 w-full md:order-2 md:mt-auto">
             <div className="mt-4 text-center">
               <div className="mb-2 min-h-[28px] text-lg font-semibold">
                 {selectedSeat
@@ -89,7 +89,7 @@ export default function SectionPage() {
                 선택하신 좌석의 선점 기회를 잃게 됩니다.
               </div>
             </div>
-            <div className="pt-4">
+            <div className="order-2 pt-4 md:order-3">
               <button
                 className={`w-full rounded-12 py-4 text-lg text-white transition ${
                   selectedSeat
