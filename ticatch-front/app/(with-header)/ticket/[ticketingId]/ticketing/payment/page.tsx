@@ -33,9 +33,9 @@ export default function PaymentPage() {
   return (
     <div className="flex h-full w-full flex-col gap-4">
       <div className="text-lg font-bold">결제/예매정보</div>
-      <div className="flex flex-grow gap-4">
+      <div className="flex min-h-0 flex-grow flex-col gap-4 md:flex-row">
         {/* 왼쪽 구역 */}
-        <div className="flex w-2/3 flex-col gap-4 rounded bg-gray-50 p-4 shadow-md">
+        <div className="flex w-full flex-grow flex-col gap-4 rounded bg-gray-50 p-4 shadow-md md:w-2/3">
           <div>
             <span>결제수단</span>
             <div className="mt-2 flex items-center gap-2">
@@ -46,7 +46,7 @@ export default function PaymentPage() {
             </div>
           </div>
 
-          <div className="flex min-h-0 flex-grow flex-col gap-4">
+          <div className="flex flex-grow flex-col gap-4">
             <span>예매자동의</span>
             <div className="flex items-center gap-2">
               <input
@@ -64,11 +64,11 @@ export default function PaymentPage() {
         </div>
 
         {/* 오른쪽 구역 */}
-        <div className="flex w-1/3 flex-col gap-4 rounded bg-gray-50 p-4 shadow-md">
+        <div className="flex w-full flex-col items-center gap-4 rounded bg-gray-50 p-4 shadow-md md:w-1/3">
           <div className="flex justify-center text-gray-600">
             공연제목 공연제목
           </div>
-          <div className="flex flex-1 items-center justify-center bg-gray-300"></div>
+          <div className="w-items-center flex aspect-[3/4] w-1/4 justify-center bg-gray-300 md:w-full"></div>
 
           <div className="mt-auto w-full">
             <span className="font-bold">총 결제금액 0원</span>

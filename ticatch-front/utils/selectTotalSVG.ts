@@ -14,7 +14,7 @@ function selectTotalSVG(svg: string, activeId: string): string {
     }
 
     if (cls !== activeId) {
-      path.setAttribute('fill', 'white');
+      path.setAttribute('fill', '#D5D5D5');
       path.setAttribute('stroke', '#D5D5D5');
     }
   });

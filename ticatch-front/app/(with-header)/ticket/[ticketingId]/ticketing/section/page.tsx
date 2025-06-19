@@ -1,76 +1,106 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { fetchSVG } from '@utils/fetchSVG';
 import { useParams, useRouter } from 'next/navigation';
+import TotalSeats from '@components/seats/TotalSeats';
+import SectionSeats from '@components/seats/SectionSeats';
+import SectionNavigation from '@components/seats/SectionNavigation';
+import { getCheckSeat } from 'api';
 
 export default function SectionPage() {
   const params = useParams<{ ticketingId: string }>();
-  const [totalSVG, setTotalSVG] = useState<string | null>(null);
+  const [selectedSection, setSelectedSection] = useState<string | null>(null);
+  const [selectedSeat, setSelectedSeat] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
   const router = useRouter();
 
   useEffect(() => {
-    const loadSvg = async () => {
-      const svg = await fetchSVG(
-        'https://ticatch-content.s3.ap-southeast-2.amazonaws.com/seat-img/TOTAL.svg',
-      );
-      setTotalSVG(svg);
-    };
+    setSelectedSeat(null);
+  }, [selectedSection]);
 
-    loadSvg();
-  }, []);
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    const target = event.target as SVGElement;
-    const targetClass = target.getAttribute('class');
-
-    if (target.tagName === 'path' && targetClass !== 'STAGE') {
-      router.push(`/ticket/${params.ticketingId}/ticketing/${targetClass}`);
+  const handleConfirmSeat = async () => {
+    if (!selectedSeat) return;
+    try {
+      const res = await getCheckSeat(params.ticketingId, selectedSeat);
+      if (res.status === 200) {
+        router.push(
+          `/ticket/${params.ticketingId}/ticketing/payment?seat=${selectedSeat}`,
+        );
+      } else if (res.status === 450) {
+        alert('이미 선점된 좌석입니다.');
+        setSelectedSeat(null);
+        setReloadKey((prev) => prev + 1);
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  const handleMouseOver = (event: React.MouseEvent<HTMLElement>) => {
-    const target = event.target as SVGElement;
-    const targetClass = target.getAttribute('class');
-
-    if (target.tagName === 'path' && targetClass !== 'STAGE') {
-      target.style.opacity = '0.5';
-      target.style.cursor = 'pointer';
-    }
-  };
-
-  const handleMouseOut = (event: React.MouseEvent<HTMLElement>) => {
-    const target = event.target as SVGElement;
-    const targetClass = target.getAttribute('class');
-    if (target.tagName === 'path' && targetClass !== 'STAGE') {
-      target.style.opacity = '1';
-    }
+  const formatSeatInfo = (seatInfo: string): string => {
+    const [section, row, col] = seatInfo.split(':');
+    const sectionNum = section.replace('S', '');
+    const rowNum = row.replace('R', '');
+    const colNum = col.replace('C', '');
+    return `${sectionNum}구역 ${rowNum}행 ${colNum}번`;
   };
 
   return (
     <div className="flex h-full w-full flex-col gap-4">
       <div className="text-lg font-bold">좌석선택</div>
-      <div className="flex min-h-0 flex-grow gap-4">
+      <div className="flex min-h-0 flex-grow flex-col gap-4 md:flex-row">
         {/* 왼쪽 구역 */}
-        <div className="-center flex w-2/3 flex-col justify-center rounded bg-gray-50 p-4 shadow-md">
-          <div
-            className="h-full"
-            dangerouslySetInnerHTML={{ __html: totalSVG || '' }}
-            onMouseOver={handleMouseOver}
-            onMouseOut={handleMouseOut}
-            onClick={handleClick}
-          />
+        <div className="-center flex w-full flex-col justify-center rounded bg-gray-50 p-4 shadow-md md:w-2/3">
+          {!selectedSection ? (
+            <TotalSeats setSelectedSection={setSelectedSection} />
+          ) : (
+            <SectionSeats
+              key={`${selectedSection}-${reloadKey}-seats`}
+              setSelectedSection={setSelectedSection}
+              section={selectedSection}
+              setSelectedSeat={setSelectedSeat}
+              selectedSeat={selectedSeat}
+              ticketingId={params.ticketingId}
+            />
+          )}
         </div>
 
         {/* 오른쪽 구역 */}
-        <div className="flex w-1/3 flex-col gap-4 rounded bg-gray-50 p-4 shadow-md">
-          <div className="flex justify-center text-sm text-gray-600">
-            좌석선택 이후 5분 이내 결제가 완료되지 않을 시 선택하신 좌석의 선점
-            기회를 잃게 됩니다.
-          </div>
-          <div className="mt-auto w-full">
-            <button className="mt-4 w-full cursor-not-allowed rounded-12 bg-gray-300 py-4 text-lg text-white">
-              좌석 선택 완료
-            </button>
+        <div className="flex h-full w-full flex-col gap-4 rounded bg-gray-50 p-4 shadow-md md:w-1/3">
+          {selectedSection && (
+            <div className="order-3 mt-10 min-h-0 flex-1 md:order-1 md:mt-0">
+              <SectionNavigation
+                key={`${selectedSection}-${reloadKey}-nav`}
+                selectedSection={selectedSection}
+                setSelectedSection={setSelectedSection}
+                ticketingId={params.ticketingId}
+              />
+            </div>
+          )}
+
+          <div className="order-1 w-full md:order-2 md:mt-auto">
+            <div className="mt-4 text-center">
+              <div className="mb-2 min-h-[28px] text-lg font-semibold">
+                {selectedSeat
+                  ? `선택한 좌석: ${formatSeatInfo(selectedSeat)}`
+                  : ''}
+              </div>
+              <div className="text-sm leading-relaxed tracking-tight text-gray-600">
+                좌석 선택 이후 <strong>5분 이내 결제</strong>가 완료되지 않으면
+                <br />
+                선택하신 좌석의 선점 기회를 잃게 됩니다.
+              </div>
+            </div>
+            <div className="order-2 pt-4 md:order-3">
+              <button
+                className={`w-full rounded-12 py-4 text-lg text-white transition ${
+                  selectedSeat
+                    ? 'cursor-pointer bg-primary'
+                    : 'cursor-not-allowed bg-gray-300'
+                }`}
+                disabled={!selectedSeat}
+                onClick={handleConfirmSeat}>
+                좌석 선택 완료
+              </button>
+            </div>
           </div>
         </div>
       </div>
