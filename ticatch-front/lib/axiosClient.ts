@@ -1,4 +1,4 @@
-import { refreshAccessToken } from 'api';
+import { logoutUser, refreshAccessToken } from 'api';
 import axios from 'axios';
 
 export const axiosClient = axios.create({
@@ -24,22 +24,22 @@ axiosClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    const status = error.response?.status;
-    const isTokenError =
-      status === 401 || status === 403 || status === 430 || status === 431;
+    if (!originalRequest._retry) {
+      originalRequest._retry = true;
 
-    if (isTokenError && !originalRequest._retry) {
       if (isRefreshing) {
         return new Promise((resolve) => {
           failedRequests.push(() => resolve(axiosClient(originalRequest)));
         });
       }
 
-      originalRequest._retry = true;
       isRefreshing = true;
 
       try {
         const newAccessToken = await refreshAccessToken();
+
+        if (!newAccessToken) throw new Error('No access token returned');
+
         localStorage.setItem('accessToken', newAccessToken);
         axiosClient.defaults.headers.common['Authorization'] =
           `Bearer ${newAccessToken}`;
@@ -50,14 +50,7 @@ axiosClient.interceptors.response.use(
         return axiosClient(originalRequest);
       } catch (refreshError) {
         localStorage.removeItem('accessToken');
-
-        if (typeof window !== 'undefined') {
-          const isOnLoginPage = window.location.pathname === '/login';
-          if (!isOnLoginPage) {
-            window.location.href = '/login';
-          }
-        }
-
+        await logoutUser();
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
