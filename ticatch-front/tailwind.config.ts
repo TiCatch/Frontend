@@ -16,6 +16,11 @@ export default {
           'calc(100dvh - var(--header-height) - var(--footer-height))',
         'without-header': 'calc(100dvh - var(--header-height))',
         'without-footer': 'calc(100dvh - var(--footer-height))',
+        'without-header-ad':
+          'calc(100dvh - var(--header-height) - var(--mobile-ad-height))',
+      },
+      margin: {
+        header: 'var(--header-height)',
       },
       minHeight: {
         'inner-screen':
