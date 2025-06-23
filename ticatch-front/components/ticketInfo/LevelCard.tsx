@@ -18,7 +18,7 @@ export default function LevelCard({ level }: { level: TicketingLevel }) {
   const { activeTicket, createTicket } = useActiveTicket(
     isLoggedIn && !isUserLoading,
   );
-  const isMobile = useMediaQuery('(max-width: 480px)', false);
+  const isMobile = useMediaQuery('(max-width: 640px)', false);
 
   const bgClassMap: Record<TicketingLevel, string> = {
     EASY: 'bg-sub-4-50',
@@ -74,7 +74,7 @@ export default function LevelCard({ level }: { level: TicketingLevel }) {
     },
   };
 
-  const { backgroundColor, textColor } = levelAttribute[level];
+  const { backgroundColor } = levelAttribute[level];
 
   return (
     <div className="group h-full w-full min-w-[170px] max-w-[500px] [perspective:1000px] md:h-[392px]">
@@ -110,7 +110,7 @@ export default function LevelCard({ level }: { level: TicketingLevel }) {
           <div className="absolute left-0 top-0 z-0 h-full w-full rounded-3xl bg-abs-white opacity-50 shadow-glass backdrop-blur-glass" />
           <div className="z-3 relative flex h-full flex-col items-center justify-start md:justify-center md:gap-4">
             <div
-              className={`mt-[8px] flex flex-1 items-center whitespace-nowrap md:mt-[32px] ${isMobile ? 'text-' : 'text-l'} font-semibold text-abs-black`}>
+              className={`flex flex-1 items-center whitespace-nowrap md:mt-[32px] md:mt-[8px] ${isMobile ? 'text-m' : 'text-l'} font-semibold text-abs-black`}>
               시간을 선택하세요.
             </div>
             <div className="flex h-full w-full flex-[3] flex-row items-center justify-around md:flex-col md:justify-center">

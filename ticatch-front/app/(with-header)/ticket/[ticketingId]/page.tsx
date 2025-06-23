@@ -25,6 +25,7 @@ import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import TimerIcon from '@mui/icons-material/Timer';
 import Loading from '@app/loading';
+import MainAd from '@components/Ad/MainAd';
 
 export default function TicketDetailPage() {
   const params = useParams<{ ticketingId: string }>();
@@ -211,7 +212,7 @@ export default function TicketDetailPage() {
         ticketWindowRef.current = window.open(
           `/ticket/${params.ticketingId}/ticketing/${waitingNumber > 0 ? 'waiting' : 'section'}`,
           'ticketing-page',
-          'width=950,height=650,top=50,left=50',
+          'width=950,height=750,top=50,left=50',
         );
       }
     } catch (error) {
@@ -228,7 +229,7 @@ export default function TicketDetailPage() {
   }
 
   return (
-    <div>
+    <div className="p-0">
       <div className="mb-6 rounded-lg bg-white p-6 shadow-md">
         <div className="flex flex-col md:flex-row">
           <div className="mb-6 md:mb-0 md:w-1/3 md:pr-6">
@@ -299,7 +300,9 @@ export default function TicketDetailPage() {
           </div>
         </div>
       </div>
-
+      <div className="flex w-full justify-center rounded-lg bg-white shadow-md">
+        <MainAd />
+      </div>
       <div className="my-6 rounded-lg bg-white shadow-md">
         <div className="flex border-b">
           {tabs.map((tab) => (

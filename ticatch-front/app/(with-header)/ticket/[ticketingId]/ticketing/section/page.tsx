@@ -5,6 +5,8 @@ import TotalSeats from '@components/seats/TotalSeats';
 import SectionSeats from '@components/seats/SectionSeats';
 import SectionNavigation from '@components/seats/SectionNavigation';
 import { getCheckSeat } from 'api';
+import MainAd from '@components/Ad/MainAd';
+import SideAd from '@components/Ad/SideAd';
 
 export default function SectionPage() {
   const params = useParams<{ ticketingId: string }>();
@@ -46,9 +48,12 @@ export default function SectionPage() {
   return (
     <div className="flex h-full w-full flex-col gap-4">
       <div className="text-lg font-bold">좌석선택</div>
+      <div className="flex justify-center">
+        <MainAd />
+      </div>
       <div className="flex min-h-0 flex-grow flex-col gap-4 md:flex-row">
         {/* 왼쪽 구역 */}
-        <div className="-center flex w-full flex-col justify-center rounded bg-gray-50 p-4 shadow-md md:w-2/3">
+        <div className="flex w-full flex-col items-center justify-center rounded bg-gray-50 p-4 shadow-md md:w-2/3">
           {!selectedSection ? (
             <TotalSeats setSelectedSection={setSelectedSection} />
           ) : (
@@ -65,6 +70,14 @@ export default function SectionPage() {
 
         {/* 오른쪽 구역 */}
         <div className="flex h-full w-full flex-col gap-4 rounded bg-gray-50 p-4 shadow-md md:w-1/3">
+          {selectedSection === null && (
+            <div className="flex justify-center">
+              <div className="w-[250px] max-w-full">
+                <SideAd />
+              </div>
+            </div>
+          )}
+
           {selectedSection && (
             <div className="order-3 mt-10 min-h-0 flex-1 md:order-1 md:mt-0">
               <SectionNavigation

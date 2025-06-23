@@ -4,6 +4,7 @@ import { getWaitingStatus } from 'api';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
+import MainAd from '@components/Ad/MainAd';
 
 const CountLoading = dynamic(() => import('@components/Animation/Count'), {
   ssr: false,
@@ -76,20 +77,25 @@ const WaitingPage = () => {
   }, [waitingNumber]);
 
   return (
-    <div className="flex h-dvh w-full flex-col items-center justify-center gap-[20px] whitespace-nowrap px-[96px] text-center md:px-[140px]">
-      <div className="text-m text-gray-500">공연 제목 공연 제목 공연 제목</div>
-      <div className="text-xl font-bold leading-[1.5]">
+    <div className="relative flex h-dvh w-full flex-col items-center justify-center gap-[20px] whitespace-nowrap px-[96px] py-0 text-center md:px-[140px]">
+      <div className="absolute right-1/2 top-0 translate-x-1/2 py-2">
+        <MainAd />
+      </div>
+      <div className="text-s text-gray-500 md:text-m">
+        공연 제목 공연 제목 공연 제목
+      </div>
+      <div className="text-l font-bold leading-[1.5] md:text-xl">
         접속 인원이 많아 대기중입니다. <br />
         잠시 기다려주세요.
       </div>
-      <div className="h-[108px] text-5xl font-bold text-purple-500">
+      <div className="text-4xl font-bold text-purple-500 md:h-[108px] md:text-5xl">
         {waitingNumber ? (
           `${waitingNumber > -1 ? showNumber : '0'}번째`
         ) : (
           <CountLoading />
         )}
       </div>
-      <div className="relative mb-[12px] h-[37px] w-full min-w-[296px] max-w-[640px] overflow-hidden rounded-[32px] border-[1px] border-solid border-gray-200 bg-gray-50">
+      <div className="relative mb-[12px] h-[20px] w-full min-w-[296px] max-w-[640px] overflow-hidden rounded-[32px] border-[1px] border-solid border-gray-200 bg-gray-50 md:h-[37px]">
         <div
           className="h-full bg-purple-500 transition-all duration-500"
           style={{ width: `${progress}%` }}></div>

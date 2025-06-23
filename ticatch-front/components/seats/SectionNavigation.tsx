@@ -69,7 +69,7 @@ const SectionNavigation = ({
       )}
 
       {sortedEntries.length > 0 && (
-        <div className="flex min-h-0 flex-1 flex-col">
+        <div className="flex min-h-20 flex-1 flex-col">
           <div className="flex-1 overflow-y-auto rounded border border-gray-200 p-2 text-sm text-gray-600">
             {sortedEntries.map(({ key, value }) => {
               const isCurrent = key === selectedSection;
