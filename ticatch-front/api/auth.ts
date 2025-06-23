@@ -84,7 +84,12 @@ export const getUserInfoClient = async () => {
  * 로그아웃
  */
 export const logoutUser = async () => {
-  await authClient.post('/auth/logout');
+  try {
+    await authClient.post('/auth/logout');
+  } catch (e) {
+    console.log('logout API error', e);
+  }
+
   localStorage.removeItem('accessToken');
   window.location.href = '/';
 };
