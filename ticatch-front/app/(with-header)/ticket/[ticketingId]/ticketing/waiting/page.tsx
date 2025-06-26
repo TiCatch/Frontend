@@ -5,6 +5,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import MainAd from '@components/Ad/MainAd';
+import { detailContentByLevel } from 'constants/ticketDetail';
+import { useTicketingContext } from '../TicketingContext';
 
 const CountLoading = dynamic(() => import('@components/Animation/Count'), {
   ssr: false,
@@ -19,6 +21,9 @@ const WaitingPage = () => {
   const [showNumber, setShowNumber] = useState<number | null>(null); // 사용자에게 보여줄 대기숫자
   const params = useParams<{ ticketingId: string }>();
   const router = useRouter();
+  const { level } = useTicketingContext();
+
+  const { title } = detailContentByLevel[level];
 
   const checkWaitingStatus = async () => {
     try {
@@ -81,9 +86,7 @@ const WaitingPage = () => {
       <div className="absolute right-1/2 top-0 translate-x-1/2 py-2">
         <MainAd />
       </div>
-      <div className="text-s text-gray-500 md:text-m">
-        공연 제목 공연 제목 공연 제목
-      </div>
+      <div className="text-s text-gray-500 md:text-m">{title}</div>
       <div className="text-l font-bold leading-[1.5] md:text-xl">
         접속 인원이 많아 대기중입니다. <br />
         잠시 기다려주세요.

@@ -7,9 +7,10 @@ import SectionNavigation from '@components/seats/SectionNavigation';
 import { getCheckSeat } from 'api';
 import MainAd from '@components/Ad/MainAd';
 import SideAd from '@components/Ad/SideAd';
+import { useTicketingContext } from '../TicketingContext';
 
 export default function SectionPage() {
-  const params = useParams<{ ticketingId: string }>();
+  const { ticketingId } = useTicketingContext();
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
   const [selectedSeat, setSelectedSeat] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -22,10 +23,10 @@ export default function SectionPage() {
   const handleConfirmSeat = async () => {
     if (!selectedSeat) return;
     try {
-      const res = await getCheckSeat(params.ticketingId, selectedSeat);
+      const res = await getCheckSeat(ticketingId, selectedSeat);
       if (res.status === 200) {
         router.push(
-          `/ticket/${params.ticketingId}/ticketing/payment?seat=${selectedSeat}`,
+          `/ticket/${ticketingId}/ticketing/payment?seat=${selectedSeat}`,
         );
       } else if (res.status === 450) {
         alert('이미 선점된 좌석입니다.');
@@ -63,7 +64,7 @@ export default function SectionPage() {
               section={selectedSection}
               setSelectedSeat={setSelectedSeat}
               selectedSeat={selectedSeat}
-              ticketingId={params.ticketingId}
+              ticketingId={ticketingId}
             />
           )}
         </div>
@@ -84,7 +85,7 @@ export default function SectionPage() {
                 key={`${selectedSection}-${reloadKey}-nav`}
                 selectedSection={selectedSection}
                 setSelectedSection={setSelectedSection}
-                ticketingId={params.ticketingId}
+                ticketingId={ticketingId}
               />
             </div>
           )}
