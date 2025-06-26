@@ -4,9 +4,9 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import TicketItem from '@components/myTickets/TicketItem';
 import DetailPanel from '@components/myTickets/DetailPanel';
 import LevelCount from '@components/myTickets/LevelCount';
-import { MyTicket } from 'types';
+import { MyTicket, TicketingLevel } from 'types';
 import { useUserInfo } from '@hooks';
-import { getHistoryLevels, getTicketsHistory } from 'api';
+import { getHistoryLevels, getTicketsByLevel, getTicketsHistory } from 'api';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import Image from 'next/image';
@@ -18,7 +18,6 @@ export default function MyPage() {
   const { data: userInfo, isLoading } = useUserInfo();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [totalCnt, setTotalCnt] = useState({ hard: '', normal: '', easy: '' });
-  const gridRef = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState(0);
   const [myTickets, setMyTickets] = useState<MyTicket[]>([]);
   const [hasMore, setHasMore] = useState(true);
@@ -26,6 +25,7 @@ export default function MyPage() {
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   const [sortType, setSortType] = useState('ticketingTime');
   const [asc, setAsc] = useState(false);
+  const [levelFilter, setLevelFilter] = useState<TicketingLevel | null>(null);
   const router = useRouter();
 
   const CountLoading = dynamic(() => import('@components/Animation/Count'), {
@@ -37,7 +37,15 @@ export default function MyPage() {
       setLoading(true);
       const sort = `${sortType},${asc ? 'asc' : 'desc'}`;
       try {
-        const { status, data } = await getTicketsHistory(page, 20, sort);
+        let response;
+        // 레벨 필터가 있으면 레벨별 API 사용, 없으면 전체 히스토리 API 사용
+        if (levelFilter) {
+          response = await getTicketsByLevel(page, 30, sort, levelFilter);
+        } else {
+          response = await getTicketsHistory(page, 30, sort);
+        }
+
+        const { status, data } = response;
         if (status === 200) {
           setMyTickets((prev) =>
             page === 0 ? data.content : [...prev, ...data.content],
@@ -50,7 +58,7 @@ export default function MyPage() {
         setLoading(false);
       }
     },
-    [sortType, asc],
+    [sortType, asc, levelFilter],
   );
 
   useEffect(() => {
@@ -76,56 +84,12 @@ export default function MyPage() {
     getLevel();
   }, []);
 
-  useEffect(() => {
-    if (!sentinelRef.current) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore && !loading) {
-          setPage((prev) => prev + 1);
-        }
-      },
-      {
-        root: null,
-        rootMargin: '400px 0px 400px 0px',
-        threshold: 0,
-      },
-    );
-    observer.observe(sentinelRef.current);
-    return () => observer.disconnect();
-  }, [hasMore, loading]);
-
   const handleTicketClick = (id: number) => {
     setSelectedId(id === selectedId ? null : id);
   };
 
-  // 선택된 티켓의 행 번호 찾기
-  const getSelectedTicketRowIndex = () => {
-    if (!selectedId || !gridRef.current) return -1;
-
-    const items = gridRef.current.querySelectorAll('.ticket-item');
-    const selectedItem = Array.from(items).find(
-      (item) => item.getAttribute('data-id') === selectedId.toString(),
-    );
-    if (!selectedItem) return -1;
-
-    const selectedTop = selectedItem.getBoundingClientRect().top;
-    let rowIndex = 0;
-    let lastTop = -1;
-
-    for (let i = 0; i < items.length; i++) {
-      const top = items[i].getBoundingClientRect().top;
-      if (i > 0 && Math.round(Math.abs(top - lastTop)) > 0) {
-        rowIndex++;
-      }
-      if (Math.round(Math.abs(top - selectedTop)) === 0) {
-        return rowIndex;
-      }
-      lastTop = top;
-    }
-    return -1;
-  };
-
   const handleClickFilter = (filter: string) => {
+    setLevelFilter(null);
     setSelectedId(null);
     if (filter !== sortType) {
       setSortType(filter);
@@ -134,20 +98,57 @@ export default function MyPage() {
     setPage(0);
   };
 
+  const handleClickLevel = (level: TicketingLevel) => {
+    setSelectedId(null);
+    setLevelFilter(levelFilter === level ? null : level);
+    setPage(0);
+  };
+
   const handleClickReserve = () => {
     router.push('/ticket/level');
   };
 
+  const addTotalCnt =
+    Number(totalCnt.hard) + Number(totalCnt.normal) + Number(totalCnt.easy);
+
   return (
-    <div className="container mx-auto flex h-[calc(100vh-64px)] flex-col px-4 py-8">
-      {/* 티켓 요약 섹션 */}
-      <section className="mb-[24px] flex min-h-[100px] w-[100%] items-center rounded-xl border border-gray-200 px-[24px]">
-        <div className="grow break-keep text-xl">
+    <div className="container mx-auto flex min-h-inner-screen flex-col px-8 py-8">
+      <section className="container">
+        <div className="mb-2 grow break-keep text-2xl font-medium">
           {isLoading ? '로딩 중...' : `${userInfo?.userNickname}님의 티켓`}
         </div>
-        <LevelCount cnt={totalCnt.hard} level="상" color="purple-500" />
-        <LevelCount cnt={totalCnt.normal} level="중" color="sub-3" />
-        <LevelCount cnt={totalCnt.easy} level="하" color="sub-4" />
+        <div className="text-m text-gray-500">
+          총 {userInfo?.userScore.toLocaleString('ko-KR')}점을 획득했습니다.{' '}
+        </div>
+        <div className="grid grid-cols-1 gap-6 pb-[32px] pt-[16px] md:grid-cols-3">
+          <LevelCount
+            cnt={totalCnt.easy}
+            total={addTotalCnt}
+            level="EASY"
+            levelKo="쉬운"
+            color="sub-4"
+            onClick={() => handleClickLevel('EASY')}
+            isActive={levelFilter === 'EASY'}
+          />
+          <LevelCount
+            cnt={totalCnt.normal}
+            total={addTotalCnt}
+            level="NORMAL"
+            levelKo="중간"
+            color="sub-3"
+            onClick={() => handleClickLevel('NORMAL')}
+            isActive={levelFilter === 'NORMAL'}
+          />
+          <LevelCount
+            cnt={totalCnt.hard}
+            total={addTotalCnt}
+            level="HARD"
+            levelKo="어려운"
+            color="purple-500"
+            onClick={() => handleClickLevel('HARD')}
+            isActive={levelFilter === 'HARD'}
+          />
+        </div>
       </section>
       {myTickets.length > 0 || loading ? (
         <section className="ticket-history">
@@ -167,31 +168,17 @@ export default function MyPage() {
                 (asc ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />)}
             </button>
           </div>
-
-          <div
-            ref={gridRef}
-            className="relative grid grid-cols-[repeat(auto-fill,minmax(182px,1fr))] gap-6 pb-[32px]">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {myTickets?.map((ticket, index) => (
-              <div
+              <TicketItem
                 key={ticket.historyId + '-' + index}
                 data-id={ticket.historyId}
-                className="ticket-item cursor-pointer"
-                onClick={() => handleTicketClick(ticket.historyId)}>
-                <TicketItem
-                  ticket={ticket}
-                  selected={selectedId === ticket.historyId}
-                />
-              </div>
+                ticket={ticket}
+                selected={selectedId === ticket.historyId}
+                onClick={() => handleTicketClick(ticket.historyId)}
+              />
             ))}
 
-            {/* 상세 패널 */}
-            {selectedId && (
-              <DetailPanel
-                ticket={myTickets?.find((t) => t.historyId === selectedId)!}
-                onClose={() => setSelectedId(null)}
-                rowIndex={getSelectedTicketRowIndex()}
-              />
-            )}
             {hasMore && <div ref={sentinelRef} style={{ height: 20 }} />}
             {loading && (
               <div className="col-span-full flex justify-center py-4">
@@ -199,14 +186,21 @@ export default function MyPage() {
               </div>
             )}
           </div>
+          {/* 상세 패널 */}
+          {selectedId && (
+            <DetailPanel
+              ticket={myTickets?.find((t) => t.historyId === selectedId)!}
+              onClose={() => setSelectedId(null)}
+            />
+          )}
         </section>
       ) : (
-        <section className="no-history flex w-full flex-1 flex-col items-center justify-center gap-[24px]">
+        <section className="no-history flex w-full flex-1 flex-col items-center justify-center gap-[16px] py-[48px]">
           <Image
             src="/icons/noTicket.svg"
             alt="no ticket"
-            width={160}
-            height={161}
+            width={80}
+            height={80}
           />
           <div className="text-l text-gray-400">예약한 티켓이 없습니다.</div>
           <CommonButton title="예매하기" onClick={handleClickReserve} />
