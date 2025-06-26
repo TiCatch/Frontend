@@ -22,7 +22,7 @@ const LevelCount = ({
 }) => {
   return (
     <div
-      className={`rounded-lg border-l-4 border-${color} cursor-pointer bg-white p-6 shadow-md`}
+      className={`rounded-lg border-l-4 border-${color} transform cursor-pointer bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-md ${isActive ? '-translate-y-1 shadow-md' : 'shadow-sm'}`}
       onClick={onClick}>
       <div className="itemscente mb-4 flex justify-between">
         <div>
