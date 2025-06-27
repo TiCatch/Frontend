@@ -1,22 +1,24 @@
-export const levelImage = {
+import { TicketingLevel } from 'types';
+
+export const levelImage: Record<TicketingLevel, string> = {
   EASY: '/images/EasyCard.png',
   NORMAL: '/images/NormalCard.png',
   HARD: '/images/HardCard.png',
 };
 
-export const ticketImage = {
+export const ticketImage: Record<TicketingLevel, string> = {
   EASY: '/images/EasyTicket.svg',
   NORMAL: '/images/NormalTicket.svg',
   HARD: '/images/HardTicket.svg',
 };
 
-export const concertImage = {
+export const concertImage: Record<TicketingLevel, string> = {
   EASY: '/images/EasyConcertImage.png',
   NORMAL: '/images/NormalConcertImage.png',
   HARD: '/images/HardConcertImage.png',
 };
 
-export const setListImage = {
+export const setListImage: Record<TicketingLevel, string> = {
   EASY: '/images/EasySetListImage.png',
   NORMAL: '/images/NormalSetListImage.png',
   HARD: '/images/HardSetListImage.png',
