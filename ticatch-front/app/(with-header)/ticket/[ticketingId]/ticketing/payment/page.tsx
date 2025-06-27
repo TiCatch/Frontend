@@ -93,12 +93,6 @@ export default function PaymentPage() {
             </div>
           </div>
 
-          <div className="max-h-25 flex w-full justify-center overflow-hidden">
-            <div className="w-[250px] max-w-full">
-              <SideAd />
-            </div>
-          </div>
-
           <div className="mt-auto w-full pt-4">
             <span className="font-bold">
               총 결제금액 {price.toLocaleString()}원
