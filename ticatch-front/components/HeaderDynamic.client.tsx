@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 
 const Header = dynamic(() => import('./Header'), {
   ssr: false,
-  loading: () => <div className="h-[60px] bg-background" />,
+  loading: () => <div className="bg-white/70 h-[60px]" />,
 });
 
 export default function HeaderDynamic() {

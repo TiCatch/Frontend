@@ -20,13 +20,7 @@ const Header = () => {
       <div className="pointer-events-none absolute inset-0 bg-[var(--background)] opacity-70" />
       <div className="container relative z-10 flex px-[16px] py-5 text-s md:px-[32px]">
         <Link href="/">
-          <Image
-            src={logoImage}
-            alt="Header"
-            width={128}
-            height={24}
-            className={pathname === '/' ? 'invisible' : 'visible'}
-          />
+          <Image src={logoImage} alt="Header" width={128} height={24} />
         </Link>
         <div className="flex grow justify-end">
           {!!isLoggedIn ? (
