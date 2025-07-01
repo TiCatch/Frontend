@@ -127,4 +127,8 @@ export default {
     },
   },
   plugins: [],
+  corePlugins: {
+    scrollSnapType: true,
+    scrollSnapAlign: true,
+  },
 } satisfies Config;
