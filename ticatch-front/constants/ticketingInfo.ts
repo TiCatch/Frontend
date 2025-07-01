@@ -18,3 +18,19 @@ export const tabs = [
   { key: 'guide', label: '관람안내' },
   { key: 'reserve', label: '예매안내' },
 ];
+
+export const seatPrice: { [key: string]: number } = {
+  A: 120000,
+  E: 120000,
+  B: 100000,
+  C: 100000,
+  D: 100000,
+
+  ...Object.fromEntries(
+    Array.from({ length: 15 }, (_, i) => [`${i + 1}`, 80000]),
+  ),
+
+  ...Object.fromEntries(
+    Array.from({ length: 20 }, (_, i) => [`${i + 24}`, 60000]),
+  ),
+};
