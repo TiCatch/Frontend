@@ -1,11 +1,7 @@
-export default function Loading({
-  height = 'h-inner-screen',
-}: {
-  height?: string;
-}) {
+export default function Loading({ height = 'h-full' }: { height?: string }) {
   return (
     <div
-      className={`flex ${height} w-full flex-col items-center justify-center bg-white`}>
+      className={`flex ${height} w-full flex-col items-center justify-center bg-background`}>
       <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-primary" />
       <p className="mt-4 text-base text-gray-600">로딩 중입니다...</p>
     </div>
