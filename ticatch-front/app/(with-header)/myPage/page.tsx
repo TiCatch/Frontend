@@ -199,10 +199,10 @@ export default function MyPage() {
           <Image
             src="/icons/noTicket.svg"
             alt="no ticket"
-            width={80}
-            height={80}
+            width={120}
+            height={120}
           />
-          <div className="text-l text-gray-400">예약한 티켓이 없습니다.</div>
+          <div className="text-m text-gray-400">예약한 티켓이 없습니다.</div>
           <CommonButton title="예매하기" onClick={handleClickReserve} />
         </section>
       )}
